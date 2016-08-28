@@ -1,28 +1,8 @@
 
+\chapter{FRONT-END SIGNAL PROCESSING}
+
 \section{INTRODUCTION}
 \label{sec:intro}
-
-\begin{figure}[b]
-\hrule
-\vspace{.03cm}
-{\rmfamily{\small \em { Mail All Correspondence To:}\vspace{-0.2cm}\\}}
-\begin{minipage}{0.2\linewidth}
-\centering
-\includegraphics[width=0.5\linewidth]{figures/CRSS_logo}
-\end{minipage}
-\begin{minipage}{0.8\linewidth}
-\begin{singlespace}
-\small \vspace{.5cm}
-\footnotesize
-Prof. John H.L. Hansen\\
-Center for Robust Speech Systems (CRSS), Erik Jonsson School of Engineering and Computer Science, Dept. of
-Electrical Engineering, University of Texas at Dallas\\
-2601 N. Floyd Road, EC33, Richardson, TX 75080-1407, U.S.A\\
-\end{singlespace}
-\end{minipage}
-\small{$^*$This project was funded by AFRL under contract FA8750-12-1-0188 and partially by the University of Texas at Dallas from the Distinguished University Chair in Telecommunications Engineering held by J.H.L. Hansen.}\\
-\end{figure}
-
 
 Overlapped speech is referred to a monophonic audio recording in which at least two speakers are simultaneously active. 
 Single-channel recordings from meetings or conversations are examples during which speakers may overlap.
@@ -143,29 +123,29 @@ f(n) = \frac{1}{2\pi}\arccos \Big (1-\frac{\Psi[x(n)-x(n-1)]}{2\Psi[x(n)]}\Big),
 \end{equation}
 
 
-\begin{figure}[!t]
-	\vspace{2mm}
-	\centering
-	\textbf{DESA-1 outputs}\par\medskip    
-	\begin{subfigure}[b]{3.5in}
-		\frame{\includegraphics[height=1.5in, width=4in]{figures/teo_signal}}
-	\end{subfigure}
-	\\
-	\vspace{1.0mm}
-	\begin{subfigure}[b]{3.5in}
-		\frame{\includegraphics[height=1.5in, width=4in]{figures/teo_amp}}
-	\end{subfigure}
-	\\
-	\vspace{1.0mm}
-	\hspace{0.1mm}
-	\begin{subfigure}[b]{3.5in}
-		%\hspace{0.7\textwidth}
-		\frame{\includegraphics[height=1.5in, width=4in]{figures/teo_freq}}
-	\end{subfigure}
-	\vspace{-1mm}
-	\caption{Instantaneous amplitude and frequency component. These are the outputs of DESA-1. Top: Input signal. Middle: Signal amplitude component estimated using TEO, Eq.~(\ref{eq:instamp}). Bottom: Signal frequency component estimated using TEO, Eq.~(\ref{eq:instfreq}).}
-	\label{fig:desa1}
-\end{figure}
+%\begin{figure}[!t]
+%	\vspace{2mm}
+%	\centering
+%	\textbf{DESA-1 outputs}\par\medskip    
+%	\begin{subfigure}[b]{3.5in}
+%		\frame{\includegraphics[height=1.5in, width=4in]{figures/teo_signal}}
+%	\end{subfigure}
+%	\\
+%	\vspace{1.0mm}
+%	\begin{subfigure}[b]{3.5in}
+%		\frame{\includegraphics[height=1.5in, width=4in]{figures/teo_amp}}
+%	\end{subfigure}
+%	\\
+%	\vspace{1.0mm}
+%	\hspace{0.1mm}
+%	\begin{subfigure}[b]{3.5in}
+%		%\hspace{0.7\textwidth}
+%		\frame{\includegraphics[height=1.5in, width=4in]{figures/teo_freq}}
+%	\end{subfigure}
+%	\vspace{-1mm}
+%	\caption{Instantaneous amplitude and frequency component. These are the outputs of DESA-1. Top: Input signal. Middle: Signal amplitude component estimated using TEO, Eq.~(\ref{eq:instamp}). Bottom: Signal frequency component estimated using TEO, Eq.~(\ref{eq:instfreq}).}
+%	\label{fig:desa1}
+%\end{figure}
 
 
 The weighted average of instantaneous frequency components (see~(\ref{eq:weighted_f})) is used to derive a short-time estimate of the dominant frequency in each sub-band over time-frame (typically 25 msec)~\cite{cohenlee90}. 
@@ -509,46 +489,46 @@ We find this to be a misunderstanding caused by comparing stationary and non-sta
 For a given target speech file, adding a certain amount of stationary noise will affect all frames, whereas in the case of non-stationary noise (here speech) only a portion of the frames receive non-uniform interference. 
 This leads to incomparable results under presumably similar conditions which we decided to exclude from this study to avoid confusion. 
 
-\begin{figure*}[t!]
-	\centering
-	\begin{subfigure}[t]{0.5\textwidth}
-		\includegraphics[width=\textwidth]{figures/sidingrid_ovlintest}
-		\vspace{-1mm}
-		\caption{~}
-		\label{fig:sidingrid_ovlintest_train_a}
-	\end{subfigure}%
-	~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
-	%(or a blank line to force the subfigure onto a new line)
-	\begin{subfigure}[t]{0.5\textwidth}
-		\includegraphics[width=\textwidth]{figures/sidingrid_ovlintrain}
-		\vspace{-1mm}
-		\caption{~}
-		\label{fig:sidingrid_ovlintest_train_b}
-	\end{subfigure}
-	\vspace{-3.6mm}
-	\caption{The rise in EER values as we increase the effect of overlapped speech (via decreasing the SIR). Starting from clean (i.e. single-speaker speech) to lower SIR values. a) Shows the case where train files are clean, but test files contain overlaps.  b) clean test files but train files contain overlaps.}
-	\vspace{-1.2mm}
-\end{figure*}
+%\begin{figure*}[t!]
+%	\centering
+%	\begin{subfigure}[t]{0.5\textwidth}
+%		\includegraphics[width=\textwidth]{figures/sidingrid_ovlintest}
+%		\vspace{-1mm}
+%		\caption{~}
+%		\label{fig:sidingrid_ovlintest_train_a}
+%	\end{subfigure}%
+%	~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
+%	%(or a blank line to force the subfigure onto a new line)
+%	\begin{subfigure}[t]{0.5\textwidth}
+%		\includegraphics[width=\textwidth]{figures/sidingrid_ovlintrain}
+%		\vspace{-1mm}
+%		\caption{~}
+%		\label{fig:sidingrid_ovlintest_train_b}
+%	\end{subfigure}
+%	\vspace{-3.6mm}
+%	\caption{The rise in EER values as we increase the effect of overlapped speech (via decreasing the SIR). Starting from clean (i.e. single-speaker speech) to lower SIR values. a) Shows the case where train files are clean, but test files contain overlaps.  b) clean test files but train files contain overlaps.}
+%	\vspace{-1.2mm}
+%\end{figure*}
 
 
-\begin{figure}[!t]
-	\vspace{2mm}
-	%\centering
-	\begin{subfigure}[b]{0.3\textwidth}
-		\includegraphics[height = 2.43in, width=1.6\textwidth]{figures/sidingrid_ovlintrainvstest_male_rev1}
-		\caption{male}
-		\label{fig:sidingrid_ovlintrainvstest_male}
-	\end{subfigure}
-	\begin{subfigure}[b]{0.3\textwidth}
-		\hspace{0.7\textwidth}
-		\includegraphics[height = 2.43in, width=1.6\textwidth]{figures/sidingrid_ovlintrainvstest_female_rev1}
-		\caption{female}
-		\label{fig:sidingrid_ovlintrainvstest_female}
-	\end{subfigure}
-	\caption{Comparing the impact of increasing overlap (OVL) in train vs. test data by decreasing SIR values. Experiments for male (a) and female (b) speakers. Lower SIR drops the performance more rapidly when applied to test data.}
-	
-	\vspace{2mm}
-\end{figure}
+%\begin{figure}[!t]
+%	\vspace{2mm}
+%	%\centering
+%	\begin{subfigure}[b]{0.3\textwidth}
+%		\includegraphics[height = 2.43in, width=1.6\textwidth]{figures/sidingrid_ovlintrainvstest_male_rev1}
+%		\caption{male}
+%		\label{fig:sidingrid_ovlintrainvstest_male}
+%	\end{subfigure}
+%	\begin{subfigure}[b]{0.3\textwidth}
+%		\hspace{0.7\textwidth}
+%		\includegraphics[height = 2.43in, width=1.6\textwidth]{figures/sidingrid_ovlintrainvstest_female_rev1}
+%		\caption{female}
+%		\label{fig:sidingrid_ovlintrainvstest_female}
+%	\end{subfigure}
+%	\caption{Comparing the impact of increasing overlap (OVL) in train vs. test data by decreasing SIR values. Experiments for male (a) and female (b) speakers. Lower SIR drops the performance more rapidly when applied to test data.}
+%	
+%	\vspace{2mm}
+%\end{figure}
 
 
 \subsection{Overlaps in train data}
@@ -586,26 +566,26 @@ The other two features, kurtosis and SFM, show less correlation, however provide
 The best result is obtained when all four features are concatenated, since each overlap detection system may yield better performance in certain scenarios.  
 
 
-\begin{table}[t]
-	\begin{tabular}{|c|c|c|c|c|c|}
-		\hline
-		SID & pykno & kurtosis & SFM & SAPVR & $\textit{\textbf{EER (\%)}}$ \\ \hline
-		\cellcolor[HTML]{C0C0C0}{\color[HTML]{343434} } \checkmark &  &  &  &  & 11.36\\ \hline \hline
-		\cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark &  &  &  & 10.19 \\ \hline
-		\cellcolor[HTML]{C0C0C0} \checkmark &  & \cellcolor[HTML]{C0C0C0} \checkmark &  &  & 13.51 \\ \hline
-		\cellcolor[HTML]{C0C0C0}{\color[HTML]{343434} } \checkmark &  &  & \cellcolor[HTML]{C0C0C0}{\color[HTML]{343434} } \checkmark &  & 28.35 \\ \hline
-		\cellcolor[HTML]{C0C0C0} \checkmark &  &  &  & \cellcolor[HTML]{C0C0C0} \checkmark & 9.48 \\ \hline \hline
-		\cellcolor[HTML]{C0C0C0}{\color[HTML]{343434} } \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0}{\color[HTML]{343434} } \checkmark &  &  & 10.20 \\ \hline
-		\cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark &  & \cellcolor[HTML]{C0C0C0} \checkmark &  & 10.47 \\ \hline
-		\cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark &  &  & \cellcolor[HTML]{C0C0C0} \checkmark & 9.57 \\ \hline \hline
-		\cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark &  & 10.31 \\ \hline
-		\cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{FFFFFF} & \cellcolor[HTML]{C0C0C0} \checkmark & 9.18 \\ \hline
-		\cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & {\bf 9.10}\\ \hline
-	\end{tabular}
-	\caption{SID performance (EER) with and without overlap detection scores as meta-data. Grey cells highlight the features used in each experiment. The relative change in EER is presented in the last column.}
-	\label{tab:sid_stack_results}
-	\vspace{-5mm}
-\end{table}
+%\begin{table}[t]
+%	\begin{tabular}{|c|c|c|c|c|c|}
+%		\hline
+%		SID & pykno & kurtosis & SFM & SAPVR & $\textit{\textbf{EER (\%)}}$ \\ \hline
+%		\cellcolor[HTML]{C0C0C0}{\color[HTML]{343434} } \checkmark &  &  &  &  & 11.36\\ \hline \hline
+%		\cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark &  &  &  & 10.19 \\ \hline
+%		\cellcolor[HTML]{C0C0C0} \checkmark &  & \cellcolor[HTML]{C0C0C0} \checkmark &  &  & 13.51 \\ \hline
+%		\cellcolor[HTML]{C0C0C0}{\color[HTML]{343434} } \checkmark &  &  & \cellcolor[HTML]{C0C0C0}{\color[HTML]{343434} } \checkmark &  & 28.35 \\ \hline
+%		\cellcolor[HTML]{C0C0C0} \checkmark &  &  &  & \cellcolor[HTML]{C0C0C0} \checkmark & 9.48 \\ \hline \hline
+%		\cellcolor[HTML]{C0C0C0}{\color[HTML]{343434} } \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0}{\color[HTML]{343434} } \checkmark &  &  & 10.20 \\ \hline
+%		\cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark &  & \cellcolor[HTML]{C0C0C0} \checkmark &  & 10.47 \\ \hline
+%		\cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark &  &  & \cellcolor[HTML]{C0C0C0} \checkmark & 9.57 \\ \hline \hline
+%		\cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark &  & 10.31 \\ \hline
+%		\cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{FFFFFF} & \cellcolor[HTML]{C0C0C0} \checkmark & 9.18 \\ \hline
+%		\cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & {\bf 9.10}\\ \hline
+%	\end{tabular}
+%	\caption{SID performance (EER) with and without overlap detection scores as meta-data. Grey cells highlight the features used in each experiment. The relative change in EER is presented in the last column.}
+%	\label{tab:sid_stack_results}
+%	\vspace{-5mm}
+%\end{table}
 
 \vspace{0mm}
 
