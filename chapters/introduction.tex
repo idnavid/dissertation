@@ -57,3 +57,20 @@ In speaker diarization, it becomes difficult to assess system performance at ove
 The same goes for speech recognition. 
 Since aside from determining which is the ``primary'' speaker, recognizing speech at overlaps is more difficult due to interference from ``interfering'' speakers. 
 For this and other reasons detailed in the next chapter, the first portion of this study is devoted to overlapped speech detection. 
+Our approach to overlap detection will be to focus on developing signal processing techniques to detect and separate overlapped from single speaker speech. 
+
+Aside from overlaps, in many applications, such as speaker recognition, the mere presence of interfering speakers is a nuisance. 
+In fact, in many conversational speaker recognition corpora, the amount of overlap in co-channel data is negligible. 
+Therefore, we propose using techniques to remove interfering speakers from co-channel data. 
+This is performed in two different ways: 
+\begin{itemize}
+\item Remove interfering speakers in the signal level: speaker diarization.
+\item Remove interfering speakers in the feature subspace: i-vector subspace factorization.
+\end{itemize}
+
+Each of these methods will be described in a separate chapter. 
+Speaker diarization, will attempt to recognize and group speech that belongs to the same speaker in a co-channel audio stream. 
+While subspace factorization maps speaker dependent models to a subspace that will only contain parameters identifying the speaker of interest (aka primary speaker). 
+
+
+ 
