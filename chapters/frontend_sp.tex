@@ -4,20 +4,24 @@
 \section{Introduction}
 \label{sec:intro}
  
-Single-channel recordings from meetings or conversations are examples during which speakers may overlap.
+Overlapped speech constitutes a significant amount of research in co-channel speech. 
+To such an extant that in many cases co-channel and overlap are considered synonymous. 
+This chapter is focuses on proposing signal processing techniques to recognize and instances of co-channel data where speakers overlap; overlapped speech detection. 
+Single-channel recordings from meetings or conversations are examples during which speakers may overlap. 
 Separating the resulting mixture becomes especially difficult when one does not assume prior knowledge about speaker identities or speech content. 
+
 Most studies on overlapped speech have focused on separating the target or suppressing interfering speech~\cite{morgan_cochannel}. 
 Often to de-noise and thereby improve the performance of automatic speech applications~\cite{Quat_Dan_cch_sup,Chazan_93,cooke20101} (primarily speech recognition). 
 However, over the past decade, due to vast developments in recognition systems such as speaker identification (SID) and diarization, a growing trend of detecting overlapped regions has been observed. 
 In speaker identification, the presence of interfering speech in conversational speech styles not only reduces the effectiveness of trained speaker models but also increases the uncertainty in scoring test files with overlapped regions~\cite{yantorno_report}. 
 Removing overlapped segments increases model reliabilities which consequently improves recognition~\cite{shokouhi2015}.    
 State-of-the-art speaker diarization systems are also currently at a stage where one of the main sources of error is the presence of overlapped speech~\cite{boakye_icassp_08,zelenak12Trans}. 
-Overlaps are a source of confusion in speaker diarization systems, since there is no basis for selecting ground-truth in overlapped regions. 
+One of the main reasons overlaps become a source of confusion in speaker diarization systems is that there is no basis for selecting ground-truth in overlapped regions. 
 This makes evaluating speaker diarization systems more challenging\footnote{Future chapters will describe co-channel speech data in speaker diarization in more detail.}. 
-A reasonable work-around is to ignore overlapped regions when evaluating diarization performance. 
 Fortunately, for applications such as speaker identification and diarization it is rarely necessary to separate the target from interfering speaker in overlapped speech, since preserving speech content is not a priority. 
 One can improve system performance by detecting and excluding overlapped segments for both SID and diarization. 
-This task, which replaces interferer suppression and target separation with overlapped speech detection, is sometimes called ``usable speech detection''\footnote{In order to avoid any confusion between this study and the assumptions made in \cite{yantorno_report}, we use the more general term overlapped speech detection.} \cite{yantorno_report}. 
+ 
+Replacing interferer suppression and target separation with overlapped speech detection, is sometimes called ``usable speech detection''\footnote{In order to avoid any confusion between this study and the assumptions made in \cite{yantorno_report}, we use the more general term overlapped speech detection.} \cite{yantorno_report}. 
 An overlapped speech detection system can be used in any of the aforementioned tasks as a data purification step or a signal processing front-end. 
 
 \begin{figure*}[t!]
@@ -34,25 +38,49 @@ An overlapped speech detection system can be used in any of the aforementioned t
 	\vspace{-3mm}
 \end{figure*}
 
-For all the reasons mentioned above, the signal processing front-end solution proposed to dealing with co-channel speech in this study focus solely on overlapped speech detection. 
-Figure~\ref{fig:pykno_blockdiag} summarizes the various ways through which overlap detection could be used to improve speech processing technology. 
+Signal processing front-end solutions proposed to dealing with co-channel speech in this study focus solely on overlapped speech detection. 
+Figure~\ref{fig:pykno_blockdiag} summarizes the utilizing overlap detection in speech processing technology. 
 
 
 Detecting overlapped segments has previously been considered in tasks such as speaker identification (SID) and speaker diarization~\cite{boakye_thesis,yantorno_report}. 
 In such problems, the presence of a secondary speaker either decreases model reliability (in training), or introduces confusion in the decision-making process by distorting test files. 
-In cases where speech is of contextual value, such as in speech recognition, the traditional approach is to somehow magnify the presence of a target speaker or weaken interfering speakers. 
+In cases where speech is of contextual value, such as in speech recognition, the traditional approach is to somehow enhance the target speaker or weaken interfering speakers. 
 Unfortunately, removing unwanted speech at overlaps is not straightforward and requires prior knowledge of one or both speakers. 
 Such difficulties further motivate the use of overlapped speech detection. 
 Detecting overlaps is computationally advantageous when one has the luxury of neglecting overlapped data~\cite{yantorno_report}. 
 As is the case for speaker recognition and diarization~\cite{Boakye_is_08}. 
-This study proposes a method for overlap detection in monophonic speech. 
+This study proposes methods for overlap detection in monophonic speech. 
 By detecting overlapped speech, we are able to remove them from the training and decision-making process. 
 
 
 \section{Background}
 
-Traditionally, studies have used spectral harmonicity as a key component in detecting overlapped speech~\cite{nav_icassp13,smolenski_tut}. 
-This approach is motivated by the fact that two fundamental frequencies exist in many instances of overlapped speech which disarranges the harmonic structure observed in single-speaker speech. 
+Traditionally, studies have used spectral harmonicity as a key factor in detecting overlapped speech~\cite{nav_icassp13,smolenski_tut}. 
+This approach is motivated by the fact that two fundamental frequencies exist in most instances of overlapped speech which disarranges the harmonic structure observed in single-speaker speech. 
+As a side-note here, we point out that most focus in overlapped speech has been at regions where both speakers produce ``voiced'' speech. In~\cite{morgan_cochannel} a classification of different types of segments in co-channel speech is presented. Figure~\ref{fig:morgan_v_uv_table} is adopted from~\cite{morgan_cochannel}. 
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[height = 3.1in, width=0.5\textwidth]{figures/morgan_v_uv_table}
+	\label{fig:morgan_v_uv_table}
+	\caption{Classification of different segments in a co-channel file. In overlap detection we are interected in 
+		the voiced-voiced (shaded) region.}
+\end{figure}
+
+Most of our focus will be on the voiced-voiced cell. 
+Merely because detecting other regions becomes far more difficult. 
+A more detailed classification of overlapped regions is presented in~\cite{fig:nav_icassp13}, where a grid containing all phones is used to rank-order overlapped segments in terms of difficulty. 
+The analysis in~\cite{fig:nav_icasssp13} expands Fig.~\ref{fig:morgan_v_uv_table} as shown in Fig.~\ref{fig:nav_v_uv_table}. 
+General consensus is to focus on detecting voiced-voiced overlap detection, which from now on we will refer to as overlap detection. 
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[height = 3.1in, width=0.5\textwidth]{figures/nav_v_uv_table}	
+	\label{fig:nav_v_uv_table}
+	\caption{phone-based expansion of overlapped segments in Fig.~\ref{fig:morgan_v_uv_table}.}
+\end{figure}
+
+Concentrating on voiced speech allows us to use more discriminating harmonic structures to detect overlaps. 
 In~\cite{sapvr_2000}, the peak-to-valley ratios in frame-based spectral autocorrelations are introduced as a discriminating feature for overlapped speech detection through the same assumption. 
 Spectral flatness measure, the ratio of geometric to arithmetic means calculated from spectral bins in a speech frame, has also been used as a measure to capture harmonicity and has been used to detect the presence of overlapped speech~\cite{nav_icassp13}. 
 Another related characteristic is observed when monitoring fundamental frequencies along time. 
@@ -73,7 +101,9 @@ Characterizing pole interactions using standard LP models easily becomes intract
 Add to this complication, the unknown speaker locations with respect to each other and the microphone. 
 As a result, we focus our attention to nonlinear speech models, some of what have proven more successful in the scenarios described above. 
 
-The AM-FM speech model along sub-bands\cite{maragos_kaiser_quatieri} has been used in previous studies to model speech resonances without any specific requirements for the source signal. These energy operators have also been used to deal with signals with more than one source~\cite{maragos_instantaneousenergy}, aka co-channels signals~\footnote{Co-channel is a more general terminology used to described multi-component signals. In the case of speech, co-channel speech may refer to any single-channel recording that contains speech from multiple speakers, regardless of whether there is overlap.}. 
+Nonlinear speech models, including the AM-FM speech model~\cite{maragos_kaiser_quatieri} have been used in previous studies to model speech resonances without any specific requirements for the source signal. 
+These energy operators have also been used to deal with signals with more than one source~\cite{maragos_instantaneousenergy}, aka co-channels signals~\footnote{Co-channel is a more general terminology used to described multi-component signals. 
+In the case of speech, co-channel speech may refer to any single-channel recording that contains speech from multiple speakers, regardless of whether there is overlap.}. 
 Maragos et al. use higher order energy operators to develop an algorithm that simultaneously demodulates the components of a co-channel mixture in AM-FM modulated signals~\cite{maragos_instantaneousenergy}. 
 Litvina et al. separate speech from music using the Teager energy operator (TEO) separation algorithm~\cite{maragos_kaiser_quatieri}~\cite{Litvin2010}, where they used the extracted components to design a time-varying filter and suppress the interfering signal. 
 Similar multicomponent signal decomposition techniques have been addressed using energy operators to separate narrow-band signals~\cite{Linicassp95,hu12_nullspacepersuit,santhanam_maragos_2000}. 
@@ -82,7 +112,7 @@ Our goal is to incorporate sub-band analysis to design a technique suitable for 
 Two algorithms are proposed that incorporate sub-band analysis for overlap detection. 
 \begin{itemize}
 	\item using TEO methods on narrow-band components to detect speech harmonics. 
-	\item applying cosine functions to sub-band outputs to magnify the presence of multiple harmonics. 
+	\item apply cosine functions across sub-band outputs to magnify the presence of multiple harmonics. 
 \end{itemize}
 
 
