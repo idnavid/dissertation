@@ -47,30 +47,32 @@ As we will show in this chapter, conversational co-channel speech does not neces
 \section{Approach}
 
 The goal of this thesis is to provide tangible solutions to problems caused by co-channel speech in automatic speech technology. 
-We argue that part of these issues are caused by overlapped speech (direct speech interference) and the remaining are a result of multiple speakers in audio streams. 
-Both of which reduce the reliability of trained acoustic models while at the same time adding interference to test data. 
-We will address different ways of removing such interferences; in the signal level and also in model subspaces. 
-
+We argue that part of these issues are caused by overlapped speech (direct speech interference), which plays a significant role in making co-channel speech a difficult problem. 
 The presence of overlapped speech can be detrimental to speaker diarization and speech recognition systems. 
 There is no clear and unique way of labeling or transcribing overlapped segments. 
 In speaker diarization, it becomes difficult to assess system performance at overlaps. 
 The same goes for speech recognition. 
-Since aside from determining which is the ``primary'' speaker, recognizing speech at overlaps is more difficult due to interference from ``interfering'' speakers. 
+Aside from determining which is the ``primary'' speaker, recognizing speech at overlaps is more difficult due to interference from other speakers. 
 For this and other reasons detailed in the next chapter, the first portion of this study is devoted to overlapped speech detection. 
-Our approach to overlap detection will be to focus on developing signal processing techniques to detect and separate overlapped from single speaker speech. 
+Our approach to overlap detection will be to focus on developing signal processing techniques to detect and separate overlap from single-speaker speech. 
 
-Aside from overlaps, in many applications, such as speaker recognition, the mere presence of interfering speakers is a nuisance. 
-In fact, in many conversational speaker recognition corpora, the amount of overlap in co-channel data is negligible. 
-Therefore, we propose using techniques to remove interfering speakers from co-channel data. 
+Although overlap is considered an important aspect of co-channel speech, in many conversational speaker recognition data, the amount of overlap in co-channel speech could be considered negligible for some tasks. 
+For example, in the case of speaker recognition, we are usually interested in a specific speaker, but the audio file may contain other speakers as well. 
+The standard approach in dealing with this problem is speaker diarization. 
+Speaker diarization is considered a ``signal-level'' solution to this problem. 
+In addition to devoting one chapter to speaker diarization, a novel approach is presented with the intention of bypassing the use of speaker diarization in the aforementioned scenario while preserving speaker recognition performance. 
+This approach is to remove unwanted speaker-dependent information from latent variable subspaces generated from audio files. 
+We refer to such solutions as ``subspace level''. 
+We propose using two techniques to remove interfering speakers from co-channel data. 
 This is performed in two different ways: 
-\begin{itemize}
+\begin{enumerate}
+\item Remove interfering speakers in the feature subspace level: i-vector subspace factorization.
 \item Remove interfering speakers in the signal level: speaker diarization.
-\item Remove interfering speakers in the feature subspace: i-vector subspace factorization.
-\end{itemize}
-
+\end{enumerate}
 Each of these methods will be described in a separate chapter. 
 Speaker diarization, will attempt to recognize and group speech that belongs to the same speaker in a co-channel audio stream. 
-While subspace factorization maps speaker dependent models to a subspace that will only contain parameters identifying the speaker of interest (aka primary speaker). 
+While subspace factorization maps speaker-dependent models to a subspace that will only contain parameters identifying the speaker of interest (aka primary speaker). 
+
 
 
  
