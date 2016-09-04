@@ -3,41 +3,58 @@
 
 Co-channel speech refers to single-channel audio signals that contain more than one speaker. 
 A wide range of terms have been used to describe various aspects of co-channel speech, 
-which we will clarify throughout this chapter. 
+which will be clarified throughout this chapter. 
 We consider both conversational speech and artificially mixed streams as co-channel. 
 All signals treated in this study are single-channel recordings. 
 Of all such data, a subset may have more than one ``active'' speaker at the same time, i.e. multi-speaker segments, 
 which we label as ``overlapped speech''. 
 Overlapped regions are segments of a co-channel signal where both speakers are simultaneously active. This categorization is summarized in Fig.~\ref{fig:cochannel_vs_overlap}.
 
-The specifics of recording conditions are overlooked in this study. 
-For example, information that relates to each speaker’s distance from the microphone and room acoustics. 
-This is intentional, since most of the difficulty in dealing with co-channel speech arises 
-from it being single-channel, which implies limited access to spatial 
-information as well as other sources of meta-data.
+% FIX CROPPING ON MAC
+\begin{figure}[h!]
+	\centering
+	\vspace{0mm}
+	\includegraphics[height = 3in, width=0.9\textwidth]{figures/cochannel_vs_overlap-crop}
+	\vspace{-3mm}
+	\caption{Difference between co-channel and overlapped speech. Overlap refers to instances where more than one speaker is active. Co-channel is defined as an entire stream that contains multiple speakers. All co-channel files do not necessarily contain overlap. }
+	\label{fig:cochannel_vs_overlap}
+	\vspace{-3mm}
+\end{figure}
 
-There are different ways of categorizing co-channel data in terms of how it is generated. This study considers a semantic classification that focuses on the speakers' interactions with one-another. We divide co-channel data into two subgroups: 
+
+%The specifics of recording conditions are overlooked in this study. 
+%For example, information that relates to each speaker’s distance from the microphone and room acoustics. 
+%This is intentional, since most of the difficulty in dealing with co-channel speech arises 
+%from it being single-channel, which implies limited access to spatial 
+%information as well as other sources of meta-data.
+
+There are different ways of categorizing co-channel data in terms of how it is generated. This study considers a semantic classification that focuses on speakers' interactions with each other. We divide co-channel data into two subgroups: 
 \begin{itemize}
 	\item conversational co-channel speech
-	\item co-channel speech with independent parties	
+	\item co-channel speech with independent parties
 \end{itemize} 
 
 Conversational co-channel speech refers to recordings in which speakers acknowledge other parties in the recording and engage in dialog. 
-Alterations of speech production by each speaker are an important artifact of conversational co-channel speech, which are the result of conscious and unconscious reactions of the foreground speaker and interferer(s) during speech especially at or around overlaps. 
+Alterations of speech production are an important artifact of conversational co-channel speech, which are the result of conscious and unconscious reactions of the foreground speaker and interferer(s) during speech especially at or around overlaps. 
 Examples of such alterations are raised pitch and energy level [2]. 
-The ESPN show First Take is filled with arguments between the show’s two regular sports commentators Stephen A. Smith and Skip Bayless. 
-First Take is a perfect example of an exaggerated version of the above-mentioned changes in speech production. 
+Political debates are filled with arguments between rival candidates. 
+Debates can be perfect examples of an exaggerated version of the above-mentioned changes in speech production. 
+Speakers tend to alter their voice in order to control the floor in such ``conversations''. 
 These changes are problematic in automatic speech applications and are considered a type of distortion. 
 Consequently, the treatment will be directed towards applications that suffer the most from such alterations, predominantly speech recognition. 
+Obviously, aside from changes in each speaker's voice, the element of interference by competing speakers also introduces overlaps. 
+Therefore, in conversational co-channel data, one has to consider both overlaps and speaker specific alterations as sources of distortion and mismatch. 
 
 Co-channel data with independent parties, are examples of co-channel data where the speakers do not interact with each other. 
 Cross-talk between separate channels is considered a source of such co-channel speech. 
 The main characteristic of such data is that speakers are not aware of each other and therefore do not pertain to normal conversational mannerisms. 
-That includes following turn-takings rules and limiting overlapped speech. 
+That includes following turn-taking rules, which in most cases limits overlapped speech. 
 Artificially generated co-channel data (mixing independent channels) is another example of co-channel speech with independent parties. 
 A considerable portion of this study will focus on this type of artificially generated co-channel data to analyze performance of overlap detection and also speaker recognition. 
 We rely on this data since it provides the flexibility of controlling the amount of overlapped speech. 
 As we will show in this chapter, conversational co-channel speech does not necessarily contain sufficient overlapped data for some of our experiments. 
+The main source of distortion in independent party co-channel speech is considered overlapped speech. 
+This allows an isolated treatment of overlap, which is considered a main focus in this study. 
 
 \section{Background}
 \label{sec:background}
