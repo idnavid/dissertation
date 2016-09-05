@@ -1,0 +1,37 @@
+
+\chapter{FEATURE SUBSPACE MODELING}
+
+In this chapter, we address the problem of speaker recognition for co-channel recordings. 
+The difference between what we present here and every other study in this area is that we would like to bypass solutions that require removing interfering speech from the original signal, primarily speaker diarization. 
+Hence we are interested in modifying speaker model parameters extracted from co-channel data in a way that they would only represent the primary speaker. 
+The most standard generative parameterization of speaker dependent models is called i-vector extraction~\cite{najeem_frontendanalysis}. 
+These vectors (i.e., i-vectors) are latent parameters that model the covariance of speaker-dependent Gaussian mixture models (GMM) with respect to a generic speaker-independent GMM. 
+In other words, i-vectors model speaker specific traits by quantifying the variation of GMM means that belong to a certain speaker by comparing the means to universal background model (UBM) means. 
+This variation is represented by factor loading vectors in a ``total variability'' matrix. 
+The use of i-vectors, factor analysis in general, has become a standard way of viewing and modeling speaker specific traits in the field. 
+This type of analysis is sometimes called subspace analysis; since it reduces the dimension of GMM means to a lower dimensional subspace that only represents certain variabilities in the acoustic space. 
+The goal of this chapter is to build upon this perspective in order to improve speaker recognition in co-channel signals. 
+This provides the luxury of short-circuiting speaker diarization which as we will see in the next chapter is a computationally intensive problem. 
+
+We will first describe the problem statement to develop a better understanding of how and why our approach is useful. 
+
+\section{Problem Statement}
+
+One of the main contributors to advancements in speaker recognition is the unique way in which the problem has been formulated. 
+The standard speaker recognition problem used in the community is in the form of a detection problem, called speaker verification. 
+Patrick Kenny, one of the main researchers behind the factor analysis solution in speaker recognition, describes it as the ``cleanest problem'' in speech research~\cite{anintroductiontoapplicationindependentevaluationofspeakerrecognitionsystems}. 
+Consider the problem of identifying speakers by their voice. 
+In this form, the problem is extremely difficult and intractable since it implies that we need a database of all speakers and a parameterization of their voice. 
+In smaller scales, this problem seems easy enough; for example identifying members of a family. 
+But imagine if we are interested in larger groups. 
+Then collecting data and also storing speaker parameters grows with the size of the database. 
+Moreover, comparing systems becomes more difficult when each system is designed to perform well on a certain group and under specific conditions. 
+The solution to this problem has been to reformulated it into a verification problem. 
+Where instead of identifying a speaker, we are interested in determining whether two audio samples belong to the same speaker. 
+Or more accurately, whether a given audio sample belongs to a known speaker or not. 
+Now with this new problem, speaker verification, we only need to consider solutions that consider a ``trial'' independently. 
+One can easily imagine the applications of such systems. 
+In user authorization systems (e.g. banking) or in forensic cases. 
+This chapter focuses more on forensic implications. 
+Consider the case where we have considerable amounts of data available for a certain speaker. 
+However, the recordings are co-channel and include data from speakers other than the person of interest. 
