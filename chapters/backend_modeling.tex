@@ -17,21 +17,21 @@ We will first describe the problem statement to develop a better understanding o
 
 \section{Problem Statement}
 
-One of the main contributors to advancements in speaker recognition is the unique way in which the problem has been formulated. 
+A main contributor to advancements in speaker recognition is the unique way in which the problem has been formulated. 
 The standard speaker recognition problem used in the community is in the form of a detection problem, called speaker verification. 
-Patrick Kenny, one of the main researchers behind the factor analysis solution in speaker recognition, describes it as the ``cleanest problem'' in speech research~\cite{anintroductiontoapplicationindependentevaluationofspeakerrecognitionsystems}. 
-Consider the problem of identifying speakers by their voice. 
+The speaker verification, considered the ``cleanest problem'' in speech research~\cite{anintroductiontoapplicationindependentevaluationofspeakerrecognitionsystems}, was developed and improved upon over the years by the National Institute of Standards and Technology (NIST) and the speaker recognition research community. 
+Consider the problems of identifying speakers by their voice. 
 In this form, the problem is extremely difficult and intractable since it implies that we need a database of all speakers and a parameterization of their voice. 
-In smaller scales, this problem seems easy enough; for example identifying members of a family. 
-But imagine if we are interested in larger groups. 
-Then collecting data and also storing speaker parameters grows with the size of the database. 
+In smaller scales, this problem appears easy enough; for example identifying members of a family. 
+But imagine if we are interested in larger groups, then the required number of parameters to model speakers and data grow with the number of speakers. 
 Moreover, comparing systems becomes more difficult when each system is designed to perform well on a certain group and under specific conditions. 
-The solution to this problem has been to reformulated it into a verification problem. 
+The solution to this problem has been to reformulate it into a verification problem. 
 Where instead of identifying a speaker, we are interested in determining whether two audio samples belong to the same speaker. 
 Or more accurately, whether a given audio sample belongs to a known speaker or not. 
-Now with this new problem, speaker verification, we only need to consider solutions that consider a ``trial'' independently. 
-One can easily imagine the applications of such systems. 
+Now with this new problem, speaker verification, ``trial''\'s are evaluated independently. 
+This independence has enabled the scalability of speaker recognition problems. 
+One can easily imagine the applications of such a problem formulation. 
 In user authorization systems (e.g. banking) or in forensic cases. 
 This chapter focuses more on forensic implications. 
 Consider the case where we have considerable amounts of data available for a certain speaker. 
-However, the recordings are co-channel and include data from speakers other than the person of interest. 
+However, the recordings are co-channel and contain data from speakers other than the person of interest. 
