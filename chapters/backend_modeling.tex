@@ -21,25 +21,54 @@ We first describe the problem statement to develop a better understanding of how
 
 A main contributor to advancements in speaker recognition is the unique way in which the problem has been formulated. 
 The standard speaker recognition problem used in the community is in the form of a detection problem, called speaker verification. 
-The speaker verification framework, considered the ``cleanest problem'' in speech research~\cite{anintroductiontoapplicationindependentevaluationofspeakerrecognitionsystems}, was developed and improved upon over the years by the speaker recognition research community. 
-Consider the problems of identifying speakers by their voice. 
+Speaker verification, considered the ``cleanest problem'' in speech research~\cite{anintroductiontoapplicationindependentevaluationofspeakerrecognitionsystems}, was developed and improved upon over the years by speaker recognition research community. 
+Consider identifying speakers by their voice. 
 In this form, the problem is extremely difficult and intractable since it implies the need for a database of all speakers and a parameterization of their voice. 
-In smaller scales, identification appears to be somewhat feasible; for example identifying members of a family. 
+In smaller scales, identification appears to be somewhat feasible; for example identifying members of a family from each other. 
 But imagine if we are interested in larger groups, then the amount of data and number of parameters required to model speakers grows rapidly. 
 Also, comparing systems becomes difficult since each system is designed to perform well on a certain group of speakers and under specific conditions. 
 Keep in mind that some speakers are inherently more difficult to identify~\cite{farmmodel}.
 The aforementioned issues have been addressed by reformulating speaker recognition as a verification problem. 
 Where instead of identifying a speaker, we are interested in determining whether two audio samples belong to the same speaker. 
 Or more accurately, whether a given audio sample belongs to a known speaker(or not). 
-With this formulation, speaker verification, ``trial''\'s are evaluated independently. 
+With this formulation, speaker verification, trial's are evaluated independently. 
 This independence has enabled the scalability of speaker recognition problems. 
 One can easily imagine the applications of such a formulation. 
 In user authorization systems (e.g. banking) or in forensic cases. 
 Which brings us to our next discussion, forensic applications. 
+
 Despite significant improvements in automatic speaker recognition systems over the past two decades, the use of speaker recognition systems has yet to flourish as a means for biometric verification. 
-The reasons of why the criminal justice system is still largely hesitant to more widely adapt automatic speaker verification is beyond the scope of this study. 
-However, I will cite an analogy presented in~\cite{reva_nist} between DNA biometric verification and voice-based verification that shows the importance of studying speaker verification in co-channel speech. 
-The comparison between math problems and DNA verification is provided 
-This chapter focuses more on forensic implications. 
-Consider the case where we have considerable amounts of data available for a certain speaker. 
-However, the recordings are co-channel and contain data from speakers other than the person of interest. 
+The reasons why criminal justice is still hesitant to further adopt automatic speaker verification is beyond the scope of this study. 
+However, I will cite an analogy between DNA biometric verification and voice-based verification that shows one aspect of its difficulty and more importantly tells us how it relates to co-channel speech\footnote{This analogy was made by Reva Schwartz from NIST at a talk in the special session for speaker recognition in forensic applications, Interspeech 2016 in San Francisco, CA.}. 
+In DNA verification, a widely used tool in forensic cases, trial difficulty and the intricate scientific procedures required to solve cases depends on the amount and type of evidence (i.e., data) available. 
+In such a way that verifying trials using DNA can be split into three categories in order of difficulty. To put this in perspective, the list below shows an analogy between criminal cases and math. 
+
+\begin{enumerate}
+	\item Cases where there is access to blood samples [arithmetic $2 + 2 = 4$]
+	\item Sexual assault cases [algebra $x^2 + 2x + 1 = 0$]
+	\item DNA samples of touch contact [calculus $\int_{0}^{T}f(x) = C$]
+\end{enumerate}
+The following comparison was also made for speaker verification problems where the difficulty of speaker verification trials is similarly put into perspective. 
+Most of the difficulty comes from the fact that speech samples have been recorded in different situations, which causes the so called mismatched scenario. 
+This categorization shows difficulty in the type of mismatch and also amount of data available~\cite{campbell2009forensic_findonline}. 
+
+\begin{enumerate}
+	\item Considerable amount of data with no mismatch [arithmetic $2 + 2 = 4$]
+	\item Sufficient data and channel mismatch [algebra $x^2 + 2x + 1 = 0$]
+	\item short segments, significant mismatch, and overlapping speech [calculus $\int_{0}^{T}f(x) = C$]
+\end{enumerate}
+
+It is fair to say that current speaker recognition technology is stage $2$ (long segments \& channel mismatch) with equal error rates as low as $0.59\%$ on the NIST SRE 2010 challenge~\cite{omid_IBM,hansen_taufiq}. 
+However, current technology has a long way to go before we can claim high accuracy in overlapped speech (stage $3$). 
+This chapter focuses more on improving speaker recognition in co-channel speech (which includes overlapped speech).
+
+\subsection{Speaker Verification in Co-channel Speech}
+
+We talked about how speaker recognition is commonly formulated as a verification problem. 
+We also pointed out the importance of focusing on co-channel speech for forensic applications. 
+Now, we consider the case where:
+\begin{itemize}
+	\item There is sufficient data from multiple recording sessions for each speaker. 
+	\item Recordings are co-channel and contain data from speakers other than the person of interest.
+\end{itemize} 
+
