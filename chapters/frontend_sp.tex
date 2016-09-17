@@ -1,4 +1,5 @@
 
+
 \chapter{FRONT-END SIGNAL PROCESSING}
 
 %\section{Introduction}
@@ -375,20 +376,42 @@ The presence of a second speaker creates harmonic tracks that in general do not 
 
 \subsection{Pyknogram Analysis in Overlap}
 
-Now that we have chosen a sound representation for our signal, we are interested in analyzing its behavior at and around overlapped regions. 
-A reasonable way to approach this would be to have a closer look at Pyknograms to confirm whether they follow the same trend mentioned in Sec.~\ref{sp:background}. 
-This will be accomplished by calculating Pyknograms of overlapped phones for which ground-truth labels are already present. 
-The outcome of this analysis will provide insight to develop an overlap detection methodology. 
+Now that we have chosen a representation for our signal, we would like to analyze its behavior at overlapped regions. 
+A reasonable way to approach this would be to have a close-up look at Pyknograms to confirm whether they follow the same trend mentioned in Sec.~\ref{sp:background}. 
+This is accomplished by calculating Pyknograms of segmented phones overlapping each other. 
+The outcome of this analysis will provide insight in developing an overlap detection strategy. 
 
-\subsubsection{Pyknograms in Vowels}
+\subsubsection{Pyknograms in Voiced Phonemes}
 
-The most important group of pairs we are interested in detecting are vowels. 
-From a practical point of view, vowels are more likely to demonstrate distinguishable patterns during overlaps. 
-In addition, vowels and in general voiced speech contain more useful spectral content for speaker recognition~\cite{early_speakerid_paper}. 
+The most important group of overlapped pairs are voiced-voiced combinations. 
+Phonemes in which foreground and background speech contains harmonic structures.
+From a practical point of view, voiced speech is more likely to demonstrate distinguishable patterns during overlaps. 
+In addition, vowels and in general voiced speech contain more useful spectral content for speaker recognition~\cite{early_speakerid_paper}, which is one of the pinnacles of this study. 
 To compare the behavior of Pyknograms at single-speaker and overlapped speech segments, a series of artificial overlapped segments are created from TIMIT data. 
-These segments are overlapped by other phones from different speakers. 
+These segments are overlapped by phones from different speakers. 
 To investigate the effect of energy levels, a range of signal-to-interference (SIR) values from $0dB$ (most overlapped) to $100dB$ (single-speaker) is used. 
-Note that negative SIR values are not important here, since we do not favor any particular speakers. 
+
+Take the phone /\textscripta/, for example. By creating all the combinations of overlaps with this phone, we  see how the Pyknogram spectra are affected (Fig.~\ref{fig:overlapped_pykno_aa}).
+
+The comparison will be between single-speaker /\textscripta/ (spoken by male speakers), compared with /\textscripta/ overlapped by three groups of phonemes (also from male speakers). 
+The overlapping phones are: 
+\begin{itemize}
+	\item Front-Vowels (/i\textlengthmark/,/\textsci/,/e/,/\ae/)
+	\item Mid-Vowels (/\textscripta/,/\textrhookrevepsilon/,/\textturnv/,/\textopeno/)
+	\item Back-Vowels (/u/,/\textscu/,/o/)
+	\item Diphthongs (/\textscripta\textsci/,/\textopeno\textsci/,/\textscripta\textscu/,/e\textsci/,/o\textscu/,/ju/)
+	\item Semivowels (/w/,/l/,/r/,/y/)
+	\item Nasal Consonants (/m/,/n/,/$\eta$/)
+	\item Other Consonants (except nasals)
+\end{itemize}
+
+Nasals have been separated from the list above due to their significant role in speaker identification. Figure~\ref{fig:overlapped_pykno_aa} shows that cross-frequency dimension of Pyknograms tends to become more flat as overlapped framed are introduced. 
+Such behavior is also observed in the autocorrelation spectra~\cite{sapvr_paper}. 
+
+ 
+
+
+
 
 \subsection{Unsupervised overlap detection Pyknograms}
 
