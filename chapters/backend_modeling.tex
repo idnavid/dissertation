@@ -1,27 +1,27 @@
 
-\chapter{FEATURE SUBSPACE MODELING}
+\chapter{Back-End Advancements for Speaker Recognition in Co-channel Speech}
 
 In this chapter, we address the problem of speaker recognition for co-channel recordings. 
 The difference between what we present here and every other study in this area is that we would like to bypass solutions that require removing interfering speech from the original signal, which are primarily known as speaker diarization. 
 Alternatively, we are interested in modifying model parameters extracted from co-channel data in a way that would only represent the primary speaker. 
-The most standard generative parameterization of speaker dependent models is called i-vector extraction~\cite{najeem_frontendanalysis}. 
+Currently, the most common parameterization of speaker dependent models is called i-vector extraction~\cite{najeem_frontendanalysis}. 
 These vectors (i.e., i-vectors) are latent parameters that model the covariance of speaker-dependent Gaussian mixture models (GMM) with respect to a generic speaker-independent GMM. 
-In other words, i-vectors model speaker specific traits by quantifying GMM mean variabilities that belong to a certain speaker by comparing the means to universal background model (UBM) means. 
-GMM means for each speaker are summarized into a single ``super-vector'' by concatenating means from all mixtures in a speaker-dependent GMM. 
-This variation across super-vectors is represented by factor loading vectors in a ``total variability'' matrix. 
-Factor loading coefficients provide a projection of super-vectors into a smaller subspace, i-vector subspace. 
-The use of i-vectors, factor analysis in general, has become a standard way of viewing and modeling speaker specific traits in speaker recognition community. 
+In other words, i-vectors model speaker specific characteristics by quantifying GMM mean variabilities that belong to a certain speaker. This quantification is achieved by comparing the GMM means to a universal background model. 
+%GMM means for each speaker are summarized into a single ``super-vector'' by concatenating means from all mixtures in a speaker-dependent GMM. 
+%The variation across super-vectors is represented by factor loading vectors in a ``total variability'' matrix. 
+%Factor loading coefficients provide a projection of super-vectors into a smaller subspace, i-vector subspace. 
+The use of i-vectors, has become a standard way of viewing and modeling speaker specific traits for speaker recognition. 
 This type of analysis is sometimes called subspace analysis; since it reduces the dimension of GMM means to a lower dimensional subspace that only represents certain variabilities in the acoustic space. 
 The goal of this chapter is to build upon this perspective in order to improve speaker recognition in co-channel signals. 
 This provides the luxury of short-circuiting speaker diarization, which as we will see in the next chapter is a computationally intensive solution. 
 
-We first describe the problem statement to develop a better understanding of how and why our approach is useful. 
+We first describe our problem statement to develop a better understanding of how and why our proposed approach is useful. 
 
 \section{Problem Statement}
 
 A main contributor to advancements in speaker recognition is the unique way in which the problem has been formulated. 
-The standard speaker recognition problem used in the community is in the form of a detection problem, called speaker verification. 
-Speaker verification, considered the ``cleanest problem'' in speech research~\cite{anintroductiontoapplicationindependentevaluationofspeakerrecognitionsystems}, was developed and improved upon over the years by speaker recognition research community. 
+The standard speaker recognition problem used in the research community is in the form of a detection problem, called speaker verification. 
+%Speaker verification, considered the ``cleanest problem'' in speech research~\cite{anintroductiontoapplicationindependentevaluationofspeakerrecognitionsystems}, was developed and improved upon over the years by speaker recognition research community. 
 Consider identifying speakers by their voice. 
 In this form, the problem is extremely difficult and intractable since it implies the need for a database of all speakers and a parameterization of their voice. 
 In smaller scales, identification appears to be somewhat feasible; for example identifying members of a family from each other. 
@@ -31,15 +31,15 @@ Keep in mind that some speakers are inherently more difficult to identify~\cite{
 The aforementioned issues have been addressed by reformulating speaker recognition as a verification problem. 
 Where instead of identifying a speaker, we are interested in determining whether two audio samples belong to the same speaker. 
 Or more accurately, whether a given audio sample belongs to a known speaker(or not). 
-With this formulation, speaker verification, trial's are evaluated independently. 
+With this formulation, i.e., speaker verification, trial's are evaluated independently. 
 This independence has enabled the scalability of speaker recognition problems. 
 One can easily imagine the applications of such a formulation. 
 In user authorization systems (e.g. banking) or in forensic cases. 
 Which brings us to our next discussion, forensic applications. 
 
 Despite significant improvements in automatic speaker recognition systems over the past two decades, the use of speaker recognition systems has yet to flourish as a means for biometric verification. 
-The reasons why criminal justice is still hesitant to further adopt automatic speaker verification is beyond the scope of this study. 
-However, I will cite an analogy between DNA biometric verification and voice-based verification that shows one aspect of its difficulty and more importantly tells us how it relates to co-channel speech\footnote{This analogy was made by Reva Schwartz from NIST at a talk in the special session for speaker recognition in forensic applications, Interspeech 2016 in San Francisco, CA.}. 
+The criminal justice system is still hesitant to further adopt automatic speaker verification for reasons beyond the scope of this study. 
+However, I will cite an analogy between DNA biometric verification and voice-based verification that shows one aspect of its difficulty that relates to this study\footnote{This analogy was made by Reva Schwartz from NIST at a talk in the special session for speaker recognition in forensic applications, Interspeech 2016 in San Francisco, CA.}. 
 In DNA verification, a widely used tool in forensic cases, trial difficulty and the intricate scientific procedures required to solve cases depends on the amount and type of evidence (i.e., data) available. 
 In such a way that verifying trials using DNA can be split into three categories in order of difficulty. To put this in perspective, the list below shows an analogy between criminal cases and math. 
 
