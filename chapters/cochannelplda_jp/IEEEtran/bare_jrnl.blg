@@ -1,0 +1,81 @@
+This is BibTeX, Version 0.99c (TeX Live 2009/Debian)
+The top-level auxiliary file: bare_jrnl.aux
+The style file: IEEEtran.bst
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Database file #1: IEEEtrans_refs.bib
+Repeated entry---line 466 of file IEEEtrans_refs.bib
+ : @inproceedings{sapvr_2000
+ :                          ,
+I'm skipping whatever remains of this entry
+Warning--I didn't find a database entry for "najeem_frontendanalysis"
+Warning--I didn't find a database entry for "kenny_jfa"
+Warning--I didn't find a database entry for "yantorno_work"
+Warning--I didn't find a database entry for "shao_wang_icassp03"
+Warning--I didn't find a database entry for "shao_wang_jp"
+Warning--I didn't find a database entry for "smolenski_magazine"
+Warning--I didn't find a database entry for "navid_pyknogram_jp"
+Warning--I didn't find a database entry for "ssr_saiedi_icpr_2010"
+Warning--I didn't find a database entry for "ssr_mowlaee_icassp2010"
+Warning--I didn't find a database entry for "zhao_wang_wang_ieeetrans_2015"
+Warning--I didn't find a database entry for "sadjadi_heck_icassp14"
+Warning--I didn't find a database entry for "shriberg"
+Warning--I didn't find a database entry for "yantorno"
+Warning--I didn't find a database entry for "kenny_first_plda"
+Warning--I didn't find a database entry for "kenny_heavytailplda"
+Warning--I didn't find a database entry for "garcia_plda"
+Warning--I didn't find a database entry for "brummer_plda"
+Warning--I didn't find a database entry for "niko_twocov"
+Warning--I didn't find a database entry for "brummer_twocovariance"
+Warning--I didn't find a database entry for "finnian"
+Warning--I didn't find a database entry for "navid_phd_thesis"
+-- IEEEtran.bst version 1.13 (2008/09/30) by Michael Shell.
+-- http://www.michaelshell.org/tex/ieeetran/bibtex/
+-- See the "IEEEtran_bst_HOWTO.pdf" manual for usage information.
+Warning--empty booktitle in NIST04
+Warning--empty booktitle in NIST05
+Warning--empty booktitle in NIST06
+Warning--empty booktitle in NIST08
+
+Done.
+You've used 28 entries,
+            4039 wiz_defined-function locations,
+            986 strings with 13110 characters,
+and the built_in function-call counts, 21937 in all, are:
+= -- 1613
+> -- 550
+< -- 165
++ -- 311
+- -- 97
+* -- 1044
+:= -- 3075
+add.period$ -- 60
+call.type$ -- 28
+change.case$ -- 28
+chr.to.int$ -- 423
+cite$ -- 32
+duplicate$ -- 1590
+empty$ -- 2015
+format.name$ -- 118
+if$ -- 5167
+int.to.chr$ -- 0
+int.to.str$ -- 28
+missing$ -- 294
+newline$ -- 115
+num.names$ -- 28
+pop$ -- 778
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 2
+skip$ -- 1683
+stack$ -- 0
+substring$ -- 1015
+swap$ -- 1220
+text.length$ -- 24
+text.prefix$ -- 0
+top$ -- 5
+type$ -- 28
+warning$ -- 4
+while$ -- 87
+width$ -- 30
+write$ -- 279
+(There was 1 error message)
