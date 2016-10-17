@@ -1,0 +1,38 @@
+
+\chapter{Speaker Diarization in Co-channel Speech}
+\label{chap:spkr_diar}
+
+Throughout the course of this study, part of the agenda has been to acknowledge non-overlapping speech as an important component of co-channel. 
+We saw that distinguishing overlap from co-channel speech expands the type of signals that are considered co-channel. 
+Therefore, a close investigation of conversational speech is part of co-channel analysis. 
+Among the various aspects of analyzing conversations, the one most related to speaker recognition is {\it speaker diarization}.
+Speaker diarization refers to the task of automatically identifying who spoke when within an audio signal comprising of two or more speakers. 
+This chapter addresses the tasks of 1) segmenting co-channel data into single-speaker excerpts and 2) clustering segments to identify which belong to the same speaker. 
+The tasks are described within the context of CRSSDiar, a speaker diarization tool-kit designed to perform speaker diarization while simultaneously supporting speaker recognition and speech recognition using Kaldi\cite{kaldi}. 
+
+CRSSDiar is a speaker diarization tool-kit developed as part of a collaboration with Chengzhu Yu, a fellow PhD student at CRSS. 
+The main motivation behind developing this tool-kit was to establish an integrated end-to-end conversation analysis system that provides the capability of diarizing the signal while supporting speech recognition. 
+Currently, one of the most popular speech recognition platforms used in research is Kaldi, developed by Johns Hopkins University~\cite{kaldi}. 
+Existing diarization systems are implemented in different platforms and none support Kaldi I/O functions. 
+Switching between platforms and API frustrates users interest in analyzing both speaker diarization and speech recognition simultaneously. 
+We hope that developing a speaker diarization module on top of Kaldi will help others in CRSS with their multi-purpose research. 
+Although CRSSDiar is currently in a working state, as a research platform it is still considered under development and is available for those who are interested in working on speaker diarization. 
+In Sect.~\ref{sec:crssdiar_layout}, a layout of the system and its relationship with Kaldi is presented. 
+A list of our modules and their Input/Output is provided. I also explain how these module interact with Kaldi data types. 
+In Sect.~\ref{sec:segmentation}, the first task of speaker diarization, segmentation, is described. 
+The purpose of segmentation is to split a co-channel signal into smaller chunks that contain only one speaker. 
+Some segments may contain overlapped speech or no speech at all. 
+Therefore, as part of segmentation, speech activity detection (SAD) and overlap detection modules are also described. 
+In Sect.~\ref{sec:clustering}, the clustering (grouping) module is described. 
+A state-of-the-art technique, called integer linear programming (ILP), is used in CRSSDiar to cluster segments obtained from the segmentation component~\cite{diarization_ilp}. 
+Clustered groups represent segments that belong to the same speaker. 
+
+\section{CRSSDiar Layout}
+\label{sec:crssdiar_layout}
+
+
+\section{Segmentation}
+\label{sec:segmentation}
+
+\section{Clustering}
+\label{sec:clustering}
