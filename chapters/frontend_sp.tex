@@ -1,27 +1,40 @@
 
 
-\chapter{FRONT-END SIGNAL PROCESSING}
-
-%\section{Introduction}
-%\label{sec:intro}
+\chapter{OVERLAP DETECTION IN CO-CHANNEL SPEECH}
  
 Overlapped speech constitutes a significant amount of research in co-channel speech. 
-To such an extant that in many cases the terms co-channel and overlapped speech are used interchangeably. 
-This chapter focuses on proposing signal processing techniques to recognize instances of co-channel data where speakers overlap(i.e., overlapped speech detection). 
-Single-channel recordings from meetings or conversations are examples during which speakers may overlap. 
-In fact, we will see in chapter~\ref{chapter:backend} that there is a direct relation between the number of speakers and the possibility of overlap. 
+To such an extant that in many cases the terms co-channel and overlapped speech are used interchangeably. Single-channel recordings from meetings or conversations, which we defined as co-channel speech in Chapter~\ref{chap:intro}, are examples of signals during which speakers may overlap. 
+This chapter focuses on proposing signal processing techniques to recognize instances of co-channel data where speakers overlap (i.e., overlapped speech detection). Therefore, we are interested in identifying a subset of co-channel signals that are overlapped. 
 
-Most studies on overlapped speech have focused on separating the target or suppressing interfering speech~\cite{morgan_cochannel}. 
-Often to de-noise and thereby improve the performance of automatic speech applications~\cite{Quat_Dan_cch_sup,Chazan_93,cooke20101} (primarily speech recognition). 
-However, over the past decade, due to increased interest in recognition systems such as speaker recognition and diarization, a growing trend of detecting overlapped regions has been observed. 
-In speaker recognition], the presence of interfering speech in conversational speech styles not only reduces the effectiveness of trained speaker models but also increases the uncertainty in scoring test files with overlapped regions~\cite{yantorno_report}. 
-Removing overlapped segments increases model reliabilities which consequently improves recognition~\cite{shokouhi2015}.    
+Section~\ref{sec:ch2_secBackground} provides preliminary information required to understand the focus of this chapter. It states the significance of overlap detection over speech enhancement techniques in the context of speaker recognition and diarization problems. 
+Section~\ref{sec:ch2_secSIDinOvl} investigates the impact of overlapped speech on various aspects of speaker recognition. 
+Sections~\ref{sec:ch2_secGSFM}~and~\ref{sec:ch2_secPykno} propose two overlap detection techniques used to identify overlapped from single-speaker speech. 
+Finally, Section~\ref{sec:ch2_secOvlQualityMeasure} uses overlap detection to improve speaker recognition performance by applying overlap detection results as meta-data in a speaker verification framework. 
+
+Chapter contributions include: 
+\begin{itemize}
+	\item a unique perspective of the impact of overlapped speech on speaker recognition.
+	\item two proposed overlap detection algorithms: Gammatone Sub-band Frequency Modulation features, and Pyknogram-based overlap detection.
+\end{itemize}
+\section{Background: Why overlap detection?}
+\label{sec:ch2_secBackground}
+
+In contrast to what overlap detection entails, most studies on overlapped speech have focused on separating speech from the target speaker or suppressing interfering speech~\cite{morgan_cochannel}. 
+Such enhancement techniques are often used to de-noise and thereby improve the performance of automatic speech applications~\cite{Quat_Dan_cch_sup,Chazan_93,cooke20101} (primarily speech recognition). 
+However, due to increased interest in recognition systems such as speaker recognition and diarization, a growing trend of detecting overlapped regions has been observed. 
+In speaker recognition, the presence of interfering speech in conversational speech styles not only reduces the effectiveness of trained speaker models but also increases the uncertainty in scoring test files with overlapped regions~\cite{yantorno_report}. 
+Removing overlapped segments increases model reliabilities to improve recognition performance~\cite{shokouhi2015}.    
 State-of-the-art speaker diarization systems are also currently at a stage where one of the main sources of error is the presence of overlapped speech~\cite{Boakye_icassp_08,zelenak12Trans}. 
 One of the reasons overlaps become a source of confusion in speaker diarization systems is that there is no basis for selecting ground-truth in overlapped regions. 
 This makes evaluating speaker diarization systems more challenging\footnote{Future chapters will describe co-channel speech data in speaker diarization in more detail.}. 
 Fortunately, for speaker recognition and diarization it is rarely necessary to separate the target from interfering speaker in overlapped speech, since speaker identities are considered long-term features and short-term features (phones, words, etc.) are less valuable. 
+
 One can improve system performance by detecting and excluding overlapped segments. 
-In other words, removing a corrupt (in this case overlapped) speech segment usually does more good then harm in such applications. 
+In other words, removing a corrupt (in this case overlapped) speech segment usually does more good then harm in such applications. Replacing interferer suppression and target separation with overlapped speech detection, is sometimes called ``usable speech detection''\footnote{In order to avoid any confusion between this study and the assumptions made in \cite{yantorno_report}, we use the more general term overlapped speech detection.} \cite{yantorno_report}. 
+An overlapped speech detection system can be used in any of the aforementioned tasks as a data purification step or a signal processing front-end. 
+Signal processing front-end solutions in our study focus solely on overlapped speech detection. 
+Figure~\ref{fig:overlap_applications} summarizes incorporating overlap detection in speech processing technology. 
+
 
 \begin{figure*}[h!]
 	\centering
@@ -29,18 +42,10 @@ In other words, removing a corrupt (in this case overlapped) speech segment usua
 	%\textbf{Overlap Detection Applications}\par\medskip    
 	\includegraphics[height = 3in, width=0.9\textwidth]{figures/overlap_detection_applications}
 	\vspace{-3mm}
-	\caption{Applications of overlap detection. 
-		Top: In speaker diarization, removing ignoring overlapped regions provides a more fair assessment of diarization performance. 
-		Middle: Removing overlaps from in speaker recognition increases the reliability of training data.
-		Bottom: Overlap detection results can be used as an initial step to recover overlapped regions.}
-	\label{fig:pykno_blockdiag}
+	\caption{Applications of overlap detection. Top: In speaker diarization, removing ignoring overlapped regions provides a more fair assessment of diarization performance. Middle: Removing overlaps from in speaker recognition increases the reliability of training data. Bottom: Overlap detection results can be used as an initial step to recover overlapped regions.}
+	\label{fig:overlap_applications}
 	\vspace{-3mm}
 \end{figure*}
-
-Replacing interferer suppression and target separation with overlapped speech detection, is sometimes called ``usable speech detection''\footnote{In order to avoid any confusion between this study and the assumptions made in \cite{yantorno_report}, we use the more general term overlapped speech detection.} \cite{yantorno_report}. 
-An overlapped speech detection system can be used in any of the aforementioned tasks as a data purification step or a signal processing front-end. 
-Signal processing front-end solutions in our study focus solely on overlapped speech detection. 
-Figure~\ref{fig:pykno_blockdiag} summarizes incorporating overlap detection in speech processing technology. 
 
 
 Detecting overlapped segments has previously been considered in speaker recognition diarization~\cite{boakye_thesis,yantorno_report}. 
@@ -52,18 +57,29 @@ We begin this chapter by demonstrating the effects of manipulating the amount of
 This will give us an understanding of how much overlaps affect speaker identification. 
 In addition, we will see how introducing overlaps to speaker verification affects train and test data separately. 
 
-\newpage
 
-\section{Overlaps in Speaker Verification}
-\label{SID_in_GRID}
+\section{Overlaps in Speaker Recognition}
+\label{sec:ch2_secSIDinOvl}
 
 In this section, in order to show the detrimental effects of adding overlapped data to speaker verification, we present a case study of speaker recognition on data from the monaural speech separation challenge~\cite{cooke20101}. 
-Our experiments use $12$-dimensional MFCC features ($13$ excluding the $0^{th}$ coefficient) plus $\Delta$ and $\Delta\Delta$, which adds to a total of 36 dimensional features. 
+Our experiments use $12$-dimensional MFCC features ($13$ excluding the $0^{th}$ coefficient) plus $\Delta$ and $\Delta\Delta$, which together result in 36 dimensional features. 
 The experiments use the Gaussian mixture model (GMM) approach where a trained speaker is modeled using a mixture of Gaussians and the maximum likelihood of a given test audio file is computed from the train model. 
 GMM parameters are obtained through maximum a-posterior adaptation of the parameters of a speaker independent GMM (called a universal background model which is trained on a large pool of speakers). 
 We only MAP-adapt GMM means in our experiments. 
 $512$ mixtures were used to form the Universal background model (UBM). 
-This setup requires a model for the train speakers (for whom we have several recording sessions available), but for the test speakers we only use the features to compute the ML probability of the test features belonging to the corresponding train speaker in each trial. 
+
+The next section slightly digresses from overlapped speech and is intended for readers unfamiliar with speaker recognition frameworks. 
+Readers that feel comfortable with the concepts of speaker verification, specifically the use of GMM-UBM setups for speaker for verification, may skip to Sect.~\ref{ssec:ch2_ssecGMMUBM}.
+
+\subsection{Speaker verification in a GMM-UBM setup} 
+\label{ssec:ch2_ssecGMMUBM}
+The speaker verification problem is a manifestation of the more generic problem of speaker recognition in the form of a binary detection problem. 
+Speaker recognition, taken literally, implies sufficient knowledge of all speakers (or at least a large number of speakers) to ``recognize'' a given speaker from his/her voice. 
+Speaker verification, on the other hand, tackles the more manageable problem of determining whether an audio segment was produced by a known speaker. 
+A speaker verification system usually produces a likelihood value for each verification task (aka trial). 
+The collection of trial likelihood values produces two distributions, one of which corresponds to true (aka target) trials and the other to imposter (aka non-target) trials. 
+
+The described framework requires a model for the training speakers (for whom we have several recording sessions available), but for the test speakers we only use the features from a test audio signal to compute the maximum likelihood (ML) probability of the test speaker belonging to the corresponding train speaker in each trial. 
 The figure below summarizes the speaker verification setup. 
 
 \begin{figure*}[h!]
@@ -78,6 +94,7 @@ The figure below summarizes the speaker verification setup.
 
 
 \subsection{Overlap in test data}
+\label{ssec:ch2_OvlinTest}
 As a comparison benchmark, we first evaluate SID performance under clean train and test conditions on the SSC data.
 Gaussian mixture models (GMM) are adapted from a Universal back model (UBM) trained on TIMIT files~\cite{msridentity}.
 For each model speaker, there are 500 utterances in SSC, which are all used in the training process. Test files are available in all SIR conditions.
