@@ -16,7 +16,7 @@ Chapter contributions include:
 	\item a unique perspective of the impact of overlapped speech on speaker recognition.
 	\item two proposed overlap detection algorithms: Gammatone Sub-band Frequency Modulation features, and Pyknogram-based overlap detection.
 \end{itemize}
-\section{Background: Why overlap detection?}
+\section{Why overlap detection?}
 \label{sec:ch2_secBackground}
 
 In contrast to what overlap detection entails, most studies on overlapped speech have focused on separating speech from the target speaker or suppressing interfering speech~\cite{morgan_cochannel}. 
@@ -69,7 +69,14 @@ We only MAP-adapt GMM means in our experiments.
 $512$ mixtures were used to form the Universal background model (UBM). 
 
 The next section slightly digresses from overlapped speech and is intended for readers unfamiliar with speaker recognition frameworks. 
-Readers that feel comfortable with the concepts of speaker verification, specifically the use of GMM-UBM setups for speaker for verification, may skip to Sect.~\ref{ssec:ch2_ssecGMMUBM}.
+Readers that feel comfortable with the concepts of speaker verification, specifically the use of GMM-UBM setups for speaker for verification, may skip Sect.~\ref{ssec:ch2_ssecGMMUBM}.
+
+As mentioned above, trials are generated from train and test sets designed for the speech separation challenge. The amount of clean (i.e., single-speaker) training data for each speaker is approximately $15$ minutes. 
+Test data are provided in six SIR conditions, which are evaluated separately (see Sect.~\ref{ssec:ch2_OvlinTest}). 
+The challenge also provides overlapped training data. 
+Overlapped training data are used in Sect.~\ref{ssec:ch2_OvlinTrain} to train speaker models with the main speaker (i.e., model speaker in each train file) as the primary speaker and interfering speech from another randomly selected speaker. 
+Experiments are gender-dependent, therefore the number of female speakers and male speakers is slightly different. 
+In total over $10000$ trials are used to calculate equal error rates for each SIR condition presented in Sect.~\ref{ssec:ch2_OvlinTest} and Sect.~\ref{ssec:ch2_OvlinTrain} with a target to non-target ratio of $0.001$. 
 
 \subsection{Speaker verification in a GMM-UBM setup} 
 \label{ssec:ch2_ssecGMMUBM}
@@ -80,90 +87,182 @@ A speaker verification system usually produces a likelihood value for each verif
 The collection of trial likelihood values produces two distributions, one of which corresponds to true (aka target) trials and the other to imposter (aka non-target) trials. 
 
 The described framework requires a model for the training speakers (for whom we have several recording sessions available), but for the test speakers we only use the features from a test audio signal to compute the maximum likelihood (ML) probability of the test speaker belonging to the corresponding train speaker in each trial. 
-The figure below summarizes the speaker verification setup. 
+Figure~\ref{fig:speaker_verification} summarizes a speaker verification setup. 
 
 \begin{figure*}[h!]
 	\centering
 	\vspace{0mm}
-	\includegraphics[height = 3in, width=0.5\textwidth]{figures/speaker_verification_setup}
+	\includegraphics[height = 3in, width=0.8\textwidth]{figures/speaker_verification_setup}
 	\vspace{-3mm}
-	\caption{GMM-UBM speaker verification setup.}
-	\label{fig:gmm_ubm_verification}
+	\caption{Speaker verification setup}
+	\label{fig:speaker_verification}
+	\vspace{0mm}
+\end{figure*}
+
+The method through which likelihood ratios are calculated varies depending on the choice of model and system specifics. 
+In the experiments presented in the following section, we use a GMM-UBM system~\cite{reynolds_map}. 
+As mentioned above the task of the verification system is to calculate the likelihood of a test audio belonging to a speaker model. 
+In other words, if the test audio belongs to speaker $i^\prime$ and the model (i.e., training speaker) belongs to speaker $i$, the objective is to calculate the likelihood of $i=i^\prime$. 
+Here, a model is a Gaussian mixture model (GMM) obtained by adapting means of a universal GMM (aka UBM). 
+The UBM is trained on background development data. 
+In the examples provided in Sect.~\ref{ssec:ch2_OvlinTest}~and~\ref{ssec:ch2_OvlinTrain}, the development data is TIMIT. 
+The verification system considers to hypotheses: 1) the probability of the test audio being generated from $GMM_i$, 2) the probability of the test audio generated from the UBM, which in this case represents every other speaker except $i$. 
+The ratio between these two ratios is used to quantify the system decision for a given trial. 
+Figure~\ref{fig:gmm_ubm_sid} illustrates the procedure to determine the likelihood ratio for one trial. 
+
+\begin{figure*}[h!]
+	\centering
+	\vspace{0mm}
+	\includegraphics[height = 3.5in, width=0.9\textwidth]{figures/gmm_ubm_sid_setup}
 	\vspace{-3mm}
+	\caption{Speaker verification setup}
+	\label{fig:gmm_ubm_sid}
+	\vspace{0mm}
+\end{figure*}
+
+Given this introduction, we expect that the reader should now be able to follow the remaining of this section. 
+Useful descriptions of topics on speaker verification and recognition can be found in~\cite{niko_thesis,taufiq_magazine}. 
+
+\newpage
+\subsection{Data: Monaural Speech Separation Challenge}
+\label{ssec:data}
+Before moving forward, a description of the data used in the monaural speech separation challenge is provided. 
+This data is used throughout the chapter in the analysis of overlapped speech. 
+
+The data used in our controlled experiments is from the monaural speech separation and recognition challenge (aka speech separation challenge (SSC))~\cite{cooke20101}. 
+The objective in the SSC was to permit a large-scale comparison of techniques for the overlapped speech problem~\cite{cooke20101}. 
+Participants were asked to identify keywords in sentences spoken by a target talker when mixed into a single channel with a background talker speaking sentences of the same structure but with different content. 
+The data used in SSC was obtained from the larger GRID corpus~\cite{cooke_JASA_SSCD}, which is a multi-talker audio-visual sentence corpus that supports computational-behavioral studies in speech perception. 
+In our study, we only use the audio content which consists of 1000 sentences spoken by each of 34 talkers (18 male, 16 female). The sentences are structured in the following format.
+\\\\
+{\small \bf \textless command\textgreater\textless color\textgreater\textless preposition\textgreater\textless letter\textgreater\textless number\textgreater\textless code\textgreater}
+\\\\
+For example, ``lay white at X six now''.
+
+Seven overlapped sets are available, one clean and the rest composed of sentence pairs artificially summed at 6 signal-to-interference ratios (SIR) (+6, +3, 0, -3, -6, -9 dB). 
+Since file durations are short (typically less than 5 seconds) and the utterances contain negligible pauses, it is reasonable to consider the average SIR values, provided for each file, a fair representation of the amount of overlap. 
+It is also safe to assume that a given file is all speech, therefore removing the need to run speech activity detection to separate speech from silence. 
+This assumption justifies labeling a ``clean'' file (no overlap) as single-speaker. 
+Alternatively, it is also reasonable to consider an entire overlapped signal double-speaker (aka overlap) (see Fig.~\ref{fig:overlap_example}). 
+We have down-sampled all files to 8kHz to match telephone recordings. 
+Note that the experiments conducted in this study do not comply with the objectives of the speech separation challenge described in~\cite{SSC_link}. 
+
+% Figure added because of Reviewer3 and 1's comment:
+\vspace{0mm}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[height =1.8in, width=0.7\textwidth]{figures/GRID_example_overlap-crop}
+	\vspace{-2mm}
+	\caption{
+		Example of the mixing process for a 0dB SIR overlapped signal. As shown on the right, it is fair to assume that overlap occurs throughout the signal.}
+	\label{fig:overlap_example}
+\end{figure}
+
+% Reviewer1's comment:
+The choice of dataset for this study is pertinent to our investigative objective, which is overlap detection. 
+In the past, we have investigated other controlled datasets such as TIMIT~\cite{nav_icassp13} as well as realistic datasets including Prof-life-log~\cite{ziaei2015proflifelog,nav_icassp15}, Switchboard~\cite{shokouhi2015}, and UT-Drive in-vehicle conversations~\cite{sathyanarayana2013beltup}. 
+Unfortunately, none of the aforementioned datasets are designed to contain significant amounts of overlap. 
+One may argue that overlaps exist in conversational speech corpora such as Switchboard or the AMI meeting corpus~\cite{amicorpus}. 
+Although it is true that these corpora contain overlapped segments, the amounts of overlap in ``regular'' (aka non-competitive conversations~\cite{schegloff2000overlapping}) is not sufficient for the requirements of this study. 
+The reason we require control over the amount of overlap in our experiments is to specifically investigate the power of our overlap detection system and not worry about target/non-target imbalances observed in conversational speech. 
+Furthermore, the GRID corpus is isolated from variabilities other than overlapped speech, which makes it useful to study the effects of overlap. 
+To the best of our knowledge, this dataset is the most organized publicly available corpus that contains large and controlled amounts of overlapped speech (note that we are mostly interested in {\it overlapped speech} and not {\it co-channel speech} as defined and distinguished in the introduction). 
+Another advantage of the corpus is the fact that segments are short which makes the definition of a signal-to-interference ratio more appropriate. Had the signals been longer, say a few minutes long, the notion of a signal-to-interference ratio across the entire signal would have been less applicable, due to the non-stationary nature of speech. 
+
+Table~\ref{tab:data_summary} shows some features of the dataset used in this study, including: number of speakers (male and female), average file duration, and overlap conditions. 
+
+\begin{table}[h!]
+	\begin{center}
+		\begin{tabular}{| c | c |}
+			\hline
+			\hline
+			number of speakers	& 18 (male)  \\
+			\hspace{4mm}			&  16 (female) \\
+			\hline
+			average file duration	&   1.9 (sec) \\ 
+			\hline
+			noise				& interfering speakers \\
+			\hspace{4mm}			& clean,$+6$, $+3$, $0$, $-3$, $-6$, $-9$ dB \\
+			\hline
+			sampling rate			& $8$ KHz \\
+			\hline
+			\hline	
+		\end{tabular}
+		\caption{Summary of data used for speaker recognition experiments}
+		\label{tab:data_summary}
+	\end{center}
+\end{table}
+
+
+\subsection{Overlaps in test data}
+\label{ssec:ch2_OvlinTest}
+As a comparison benchmark, we first evaluate performance under clean train and test conditions on the SSC data. 
+Gaussian mixture models (GMM) are adapted from a Universal back model (UBM) trained on TIMIT files~\cite{msridentity}. 
+For each model (training) speaker, there are 500 utterances in SSC, which are all used in the training process. Test files are available in all SIR conditions. 
+As expected, lower SIR values correspond to higher equal error rates. 
+The presence of a secondary speaker, clearly causes confusion in the score distribution, leading to less separability between target and imposter trials. 
+recognition performance under clean test files and those with average SIR ranging in $+6, +3, 0, -3, -6, -9 dB$ are provided in Fig.~\ref{fig:sidingrid_ovlintest_train_a}. 
+
+It is worth mentioning that the authors were tempted to compare these results with stationary noise experiments. 
+However, contrary to our expectations, we observed that performances were better in the overlapped condition when compared to white Gaussian noise and speech-shaped noise interference, even for negative SIR values. 
+We find this to be a misunderstanding caused by comparing stationary and non-stationary noise through the same measurement procedure, which is the SIR (or SNR). 
+For a given target speech file, adding a certain amount of stationary noise will affect all frames, whereas in the case of non-stationary noise (here speech) only a portion of the frames receive non-uniform interference. 
+This leads to incomparable results under presumably similar conditions which we decided to exclude from this study to avoid confusion. 
+
+
+\subsection{Overlap in train data}
+\label{ssec:ch2_OvlinTrain}
+We also examine the effect of adding overlapped speech to train files (Fig.~\ref{fig:sidingrid_ovlintest_train_b}). 
+Figures~\ref{fig:sidingrid_ovlintrainvstest_male} and \ref{fig:sidingrid_ovlintrainvstest_female} compares the effects of adding overlapped speech in train and test files. 
+
+An interesting observation is the higher rate with which the EER increases when the SIR drops for the test condition. 
+We believe this is due to the fact that in train conditions, the training of Gaussian mixture models tends to cancel out the effect of the interfering speech. 
+For each speaker, the GMM is trained on a set of features, some of which are influenced by the desired speaker and the rest influenced by the interfering speakers. 
+Since multiple training files are used to model each speaker (different training files have different interfering speakers), the GMM tends to converge to a common locale in the feature space, which belongs to the speaker for whom the models are being trained. 
+We call this effect averaging out (or cancelling out) of the interfering speakers. 
+This to some extent slows the growth in EER as the data becomes noisier in train files. 
+Such cancellation, however, does not exist across test files.
+
+
+
+\begin{figure*}[t!]
+	\centering
+	\includegraphics[height = 3.43in, width=0.9\textwidth]{figures/sidingrid_ovlintest}
+	\vspace{-1mm}
+	\caption{The rise in EER values as we increase the effect of overlapped speech (via decreasing the SIR). Starting from clean (i.e. single-speaker speech) to lower SIR values. a) Shows the case where train files are clean, but test files contain overlaps. }
+	\label{fig:sidingrid_ovlintest_train_a}
+\end{figure*}
+\begin{figure*}[t]%{0.5\textwidth}
+	\centering
+	\includegraphics[height = 3.43in, width=0.9\textwidth]{figures/sidingrid_ovlintrain}
+	\vspace{-1mm}
+	\caption{b) clean test files but train files contain overlaps.}
+	\label{fig:sidingrid_ovlintest_train_b}
 \end{figure*}
 
 
-\subsection{Overlap in test data}
-\label{ssec:ch2_OvlinTest}
-As a comparison benchmark, we first evaluate SID performance under clean train and test conditions on the SSC data.
-Gaussian mixture models (GMM) are adapted from a Universal back model (UBM) trained on TIMIT files~\cite{msridentity}.
-For each model speaker, there are 500 utterances in SSC, which are all used in the training process. Test files are available in all SIR conditions.
-As expected, lower SIR values correspond to higher equal error rates.
-The presence of a secondary speaker, clearly causes confusion in the score distribution, leading to less separability between target and imposter trials.
-SID performance under clean test files and those with average SIR ranging in $+6, +3, 0, -3
-, -6, -9 dB$ are provided in Fig.~\ref{fig:sidingrid_ovlintest_train_a}.
 
-It is worth mentioning that the authors were tempted to compare these results with stationa
-ry noise experiments.
-However, contrary to our expectations, we observed that performances were better in the ove
-rlapped condition when compared to white Gaussian noise and speech-shaped noise interferenc
-e, even for negative SIR values.
-We find this to be a misunderstanding caused by comparing stationary and non-stationary noi
-se through the same measurement procedure, which is the SIR (or SNR).
-For a given target speech file, adding a certain amount of stationary noise will affect all frames, whereas in the case of non-stationary noise (here speech) only a portion of the frames receive non-uniform interference.
-This leads to incomparable results under presumably similar conditions which we decided to exclude from this study to avoid confusion.
+\begin{figure*}[t!]
+	\includegraphics[height = 3.43in, width=0.9\textwidth]{figures/sidingrid_ovlintrainvstest_male_rev1}
+	\caption{Comparing the impact of increasing overlap (OVL) in train vs. test data by decreasing SIR values. Experiments for male speakers (a). Lower SIR drops the performance more rapidly when applied to test data.}
+	\label{fig:sidingrid_ovlintrainvstest_male}
+\end{figure*}
 
-%\begin{figure*}[t!]
-%	\centering
-%	\begin{subfigure}[t]{0.5\textwidth}
-%		\includegraphics[width=\textwidth]{figures/sidingrid_ovlintest}
-%		\vspace{-1mm}
-%		\caption{~}
-%		\label{fig:sidingrid_ovlintest_train_a}
-%	\end{subfigure}%
-%	~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
-%	%(or a blank line to force the subfigure onto a new line)
-%	\begin{subfigure}[t]{0.5\textwidth}
-%		\includegraphics[width=\textwidth]{figures/sidingrid_ovlintrain}
-%		\vspace{-1mm}
-%		\caption{~}        \label{fig:sidingrid_ovlintest_train_b}    \end{subfigure}    \vspace{-3.6mm}
-%	\caption{The rise in EER values as we increase the effect of overlapped speech (via decreasing the SIR). Starting from clean (i.e. single-speaker speech) to lower SIR values. a) Shows the case where train files are clean, but test files contain overlaps.  b) clean test files but train files contain overlaps.}
-%	\vspace{-1.2mm}
-%\end{figure*}
-%
-%\begin{figure}[!t]
-%	\vspace{2mm}
-%	%\centering
-%	\begin{subfigure}[b]{0.3\textwidth}
-%		\includegraphics[height = 2.43in, width=1.6\textwidth]{figures/sidingrid_ovlintrainvstest_male_rev1}
-%		\caption{male}
-%		\label{fig:sidingrid_ovlintrainvstest_male}
-%	\end{subfigure}
-%	\begin{subfigure}[b]{0.3\textwidth}
-%		\hspace{0.7\textwidth}
-%		\includegraphics[height = 2.43in, width=1.6\textwidth]{figures/sidingrid_ovlintrainvstest_female_rev1}
-%		\caption{female}
-%		\label{fig:sidingrid_ovlintrainvstest_female}
-%	\end{subfigure}
-%	\caption{Comparing the impact of increasing overlap (OVL) in train vs. test data by decreasing SIR values. Experiments for male (a) and female (b) speakers. Lower SIR drops the performance more rapidly when applied to test data.}
-%	
-%	\vspace{2mm}
-%\end{figure}
+\begin{figure*}[h!]
+	\includegraphics[height = 3.43in, width=0.9\textwidth]{figures/sidingrid_ovlintrainvstest_female_rev1}
+	\caption{b) female}
+	\label{fig:sidingrid_ovlintrainvstest_female}
+\end{figure*}
 
-\subsection{Overlap in train data}
-We also examine the effect of adding overlapped speech to train files.
-Figures~\ref{fig:sidingrid_ovlintrainvstest_male} and \ref{fig:sidingrid_ovlintrainvstest_female} compares the effects of adding overlapped speech in train and test files.
 
-An interesting observation is the higher rate with which the EER increases when the SIR drops for the test condition.
-We believe this is due to the fact that in train conditions, the training of Gaussian mixture models tends to cancel out the effect of the interfering speech.
-For each speaker, the GMM is trained on a set of features, some of which are influenced by the desired speaker and the rest influenced by the interfering speakers.
-Since multiple training files are used to model each speaker (different training files have different interfering speakers), the GMM tends to converge to a common locale in the feature space, which belongs to the speaker for whom the models are being trained.
-We call this effect averaging out (or cancelling out) of the interfering speakers.
-This to some extent slows the growth in EER as the data becomes noisier in train files.
-Such cancellation, however, does not exist across test files.
+The results provided in Sect.~\ref{ssec:ch2_OvlinTest}~and~\ref{ssec:ch2_OvlinTrain} were provided to focus explicitly on the impact of overlaps on speaker verification. 
+This is believed to be novel from two perspectives: 
+1) The data used here is actually overlapped, meaning that files contain two speakers speaking at the same time, and not the generic case of co-channel. Therefore, the results provide greater motivation and direction as we move on to the next sections, which focus on overlap detection. 
+2) The comparison made between adding overlap to test vs. training data provides insight in determining which (train or test) to prioritize for to remove overlap. Bare in mind that simply removing everything that is assumed to be overlapped does not necessarily yield optimal performance, since losing data lowers model reliability and the number of test features used to calculate likelihood values. 
 
-\section{Background}
-\label{sp:background}
+\newpage
+\section{Overlap detection methods: Background}
+\label{sec:ch2_methods}
 
 Traditionally, studies have used spectral harmonicity as a key factor in detecting overlapped speech~\cite{nav_icassp13,smolenski_tut}. 
 This approach is motivated by the fact that two fundamental frequencies exist in most instances of overlapped speech which disarranges the harmonic structure observed in single-speaker speech. 
@@ -172,25 +271,27 @@ As a side-note here, we point out that most focus in overlapped speech has been 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[height = 2.5in, width=0.5\textwidth]{figures/morgan_v_uv_table}
-	\label{fig:morgan_v_uv_table}
 	\caption{Classification of different segments in a co-channel file. In overlap detection we are interected in 
 		the voiced-voiced (shaded) region.}
+	\label{fig:morgan_v_uv_table}
 \end{figure}
 
 Most of our focus will be on the voiced-voiced cell. 
 Merely because detecting other regions becomes far more difficult. 
-A more detailed classification of overlapped regions is presented in~\cite{fig:nav_icassp13}, where a grid containing all phones is used to rank-order overlapped segments in terms of difficulty. 
-The analysis in~\cite{fig:nav_icasssp13} expands Fig.~\ref{fig:morgan_v_uv_table} as shown in Fig.~\ref{fig:nav_v_uv_table}. 
+A more detailed classification of overlapped regions is presented in~\cite{nav_icassp13}, where a grid containing all phones is used to rank-order overlapped segments in terms of difficulty. 
+The analysis in~\cite{nav_icassp13} expands Fig.~\ref{fig:morgan_v_uv_table} as shown in Fig.~\ref{fig:nav_v_uv_table}. 
 General consensus is to focus on detecting voiced-voiced overlap detection, which from now on we will refer to as overlap detection. 
 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[height = 3.1in, width=0.5\textwidth]{figures/nav_v_uv_table}	
-	\label{fig:nav_v_uv_table}
 	\caption{phone-based expansion of overlapped segments in Fig.~\ref{fig:morgan_v_uv_table}.}
+	\label{fig:nav_v_uv_table}
 \end{figure}
 
-Concentrating on voiced speech allows us to use more discriminating harmonic structures to detect overlaps. 
+Concentrating on voiced speech yields more discriminating harmonic structures, which are useful to detect overlaps. 
+Essentially, the defining factor here is that single-speaker voiced spectra are represented as harmonics of a single fundamental frequency. 
+The presence of overlapping voiced speech introduces harmonics of a second fundamental frequency, which are unlikely to be exactly aligned with the first speaker. 
 In~\cite{sapvr_2000}, the peak-to-valley ratios in frame-based spectral autocorrelations are introduced as a discriminating feature for overlapped speech detection through the same assumption. 
 Spectral flatness measure, the ratio of geometric to arithmetic means calculated from spectral bins in a speech frame, has also been used as a measure to capture harmonicity and has been used to detect the presence of overlapped speech~\cite{nav_icassp13}. 
 Another related characteristic is observed when monitoring fundamental frequencies along time. 
@@ -221,50 +322,78 @@ Similar multicomponent signal decomposition techniques have been addressed using
 Our goal is to incorporate sub-band analysis to design a technique suitable for {\bf overlapped speech detection}. 
 Two algorithms are proposed that incorporate sub-band analysis for overlap detection. 
 \begin{itemize}
-	\item using TEO methods on narrow-band components to detect speech harmonics. 
 	\item apply cosine functions across sub-band outputs to magnify the presence of multiple harmonics. 
+	\item using Teager-Kaiser energy operator (TEO) methods on narrow-band components to detect speech harmonics. 
 \end{itemize}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Pyknograms}
+\subsubsection{Baseline features}
+Bellow, a collection of overlap detection features are presented that have previously been used to detect overlapped regions~\cite{nav_icassp13,boakye_thesis,sapvr_2000}. 
+%We note that all features were implemented based on the information provided in the publications, which are cited in each case. %adapted from other centers based on the information provided in publications. Although we tried to eliminate any chance of bias in the experiments, chances are that the results would have been different had the original authors implemented their methods for these experiments. 
+To the best of our knowledge, overlap detection results on this database have not been reported for any of the following features, therefore we rely on our own implementations. %The out-of-house features used in this study are:
+
+\label{ssec:baseline}
+\begin{itemize}
+	\item {\it Speech kurtosis}: Kurtosis has been reported as an effective measure to detect the presence of multiple speakers in overlapped signals by several studies~\cite{Wrigley_05,boakye_thesis,temple_kurtosis}. 
+	It has been shown that overlapped speech exhibits lower kurtosis compared to single-speaker speech~\cite{leblanc_deleon98}. The kurtosis of a zero-mean random variable $x$ is defined as:
+	
+	\begin{equation}
+	\label{eq:kurtosis}
+	k_x = \frac{E\{x^4\}}{(E\{x^2\})^2}
+	\end{equation}
+	\vspace{1mm}
+	In this case $x$ refers to speech samples in a given frame. 
+	\item {\it Spectral flatness measure (SFM)}: The ratio of geometric to arithmetic means of spectral magnitudes across frequency within each frame~\cite{nav_icassp13}. For the $i^{th}$ frame:
+	\begin{equation}
+	\label{eq:kurtosis}
+	sfm_i = \frac{\frac{1}{N}\sum_{n=1}^{N}{X(f_n)}}{^N\sqrt{\prod_{n=1}^{N}{X(f_n)}}}
+	\end{equation}
+	\vspace{1mm}
+	where $X(f_n)$ corresponds to the magnitude spectrum at frequency $f_n$ and {N} is the total number of frequency bins. 
+	\item {\it Spectral autocorrelation peak-valley ratio (SAPVR)}: described briefly in Sec.~\ref{sec:intro}, this feature uses the dominance of peaks in the spectral autocorrelation in each frame as a measure to detect overlaps~\cite{sapvr_2000}. 
+\end{itemize}
+
+
+\section{Pyknogram-based overlap detection}
 \label{sec:ovldet}
 
 We propose a novel approach for overlapped speech detection based on an enhanced spectrogram. 
 These spectrograms, called Pyknograms, were first introduced by Potamianos and Maragos in~\cite{potamianos_maragos_icassp95,potamianos_maragos_jasa96} and are calculated by applying multi-band demodulation in the AM-FM speech model framework~\cite{maragos_kaiser_quatieri}{\footnote{The authors in~\cite{potamianos_maragos_jasa96} used the term ``Pyknogram'' which stems from the Greek word ``pykno'' meaning dense. Pyknograms represent highly resonating regions in time-frequency plots as populated scatter plots, hence the term density.}. 
 Pyknograms provide a more prominent representation of harmonic trajectories, which we propose to use as a means to detect the presence of interfering speech.
 
+Pyknogram extraction can be considered a 2 step process of obtaining a binary mask of time-frequency units for the amplitude spectrogram. 
+\begin{enumerate}
+	\item Frequency estimation: Computes resonant frequencies in time-frequency units.  
+	\begin{itemize}
+		\item apply a gammatone fiterbank to the speech signal
+		\item estimate instantaneous amplitude and frequencies using TEO
+		\item block the per sub-band outputs into time frames
+	\end{itemize}
+	\item Frequency selection: Prunes the estimated frequencies to find the most reliable units.
+\end{enumerate}
 
-\subsection{Energy Operators and the AM-FM speech model}
-
+\subsection{Pyknogram Extraction - Frequency estimation}
+\label{ssec:pykno_estimate}
 In Pyknograms~\cite{potamianos_maragos_jasa96}, the harmonic structure of speech is enhanced by decomposing spectral sub-bands into amplitude and frequency components. 
-This multi-band analysis uses the AM-FM speech model~\cite{maragos_kaiser_quatieri} to decompose sub-bands and thereby calculate corresponding instantaneous frequencies and bandwidths: (\ref{eq:instamp}),~(\ref{eq:instfreq}). 
-Pyknogram extraction locates dominant peaks in the spectrogram from instantaneous frequencies. 
+This sub-band analysis uses the AM-FM speech model~\cite{maragos_kaiser_quatieri} to decompose speech sub-bands and thereby calculate corresponding instantaneous frequencies and bandwidths. 
 To extract Pyknograms, the speech signal is initially passed through a filter-bank (we have modified the algorithm to use logarithmically spaced Gamma-tone filters, while~\cite{potamianos_maragos_jasa96} uses linearly-spaced Gabor filters). 
-Filter-bank outputs are then decomposed into amplitude and frequency components using the discrete energy separation algorithm (DESA-1)~\cite{maragos_kaiser_quatieri}, where the frequency and amplitude components of a given sub-band, $x(n)$, are calculated using the discrete energy operator,
- 
+Filter-bank outputs ($x_i(n)$, in which $i$ represents filter indexes) are then decomposed into amplitude and frequency components using the discrete energy separation algorithm (DESA-1)~\cite{maragos_kaiser_quatieri}, where the per sample frequency, $f_i(n)$, and amplitude, $a_i(n)$. Frequency and amplitude estimates for the $i^{th} $sub-band, $x_i(n)$, are:
 
 \begin{equation}
-\Psi [x(n)] = x^2(n)-x(n-1)x(n+1),
+	\label{eq:instfreq}
+	f_i(n) = \frac{1}{2\pi}\arccos \Big (1-\frac{\Psi[x_i(n)-x_i(n-1)]}{2\Psi[x_i(n)]}\Big),
 \end{equation}
-$\Psi [x(n)]$ is energy operator used to estimate amplitudes and instantaneous frequencies, as shown in Fig.~\ref{fig:desa1}. 
-
-
+	
+	
 \begin{equation}
-\label{eq:instfreq}
-f(n) = \frac{1}{2\pi}\arccos \Big (1-\frac{\Psi[x(n)-x(n-1)]}{2\Psi[x(n)]}\Big),
+	\label{eq:instamp}
+	|a_i(n)| = \sqrt{\frac{\Psi[x_i(n)]}{\sin^2(2\pi f_i(n))}} , \hspace{10mm}i=1,2,...,N_s
 \end{equation}
- 
- 
+where $n$ is the time sample. $N_s$ is the number of sub-bands in the filter-bank and $\Psi(.)$ is the discrete energy operator, defined for any given signal, $x(n)$, as:
 \begin{equation}
-\label{eq:instamp}
-|a(n)| = \sqrt{\frac{\Psi[x(n)]}{\sin^2(2\pi f(n))}}.
+	\Psi [x(n)] = x^2(n)-x(n-1)x(n+1).
 \end{equation}
-
 
 
 \begin{figure}[b]{3.5in}
@@ -286,34 +415,32 @@ f(n) = \frac{1}{2\pi}\arccos \Big (1-\frac{\Psi[x(n)-x(n-1)]}{2\Psi[x(n)]}\Big),
 	\caption{Outputs of DESA-1: Signal frequency component estimated using TEO,  Eq.~(\ref{eq:instfreq}).}
 \end{figure}
 
-\subsection{Pyknogram Extraction}
-\label{ssec:pyknogram_extraction}
-
-Pyknograms are estimated from DESA-1 outputs. The weighted average of instantaneous frequency components (see~(\ref{eq:weighted_f})) is used to derive a short-time estimate of the dominant frequency in each sub-band over time-frame units (typically 25 msec)~\cite{cohenlee90}. 
-Frequencies are weighted using the estimated signal power ($|a(n)|^2$). 
-The average frequency computed for each frame/sub-band (time-frequency unit) can be viewed as the $1^{st}$-order moment of instantaneous frequencies.  
+A weighted average of the instantaneous frequencies, $F_w$, is estimated over $25msec$ windows (aka frames), indexed by $t$. 
+Together sub-band analysis and time framing results in time-frequency units $(t,i)$, where $i$ corresponds to the frequency sub-band index and $t$ corresponds to frames~\cite{cohenlee90}.
+Instantaneous frequencies are weighted using the estimated signal power ($|a_i(n)|^2$). 
+The average frequency computed for each time-frequency unit can be viewed as the $1^{st}$-order moment of instantaneous frequencies.  
 
 
 \begin{equation}
 \label{eq:weighted_f}
-F_w(t) = \frac{\sum_{t}^{t+T}f(n)a^2(n)}{\sum_{t}^{t+T}a^2(n)},
+F_w(t,i) = \frac{\sum_{n_t}^{n_t+T - 1}f_i(n)a_i^2(n)}{\sum_{n_t}^{n_t+T - 1}a_i^2(n)},
 \end{equation}
-The algorithm also provides a means to estimate weighted bandwidths for each resonance, (\ref{eq:weighted_bw}). 
+$T$ is the number of samples per frame, from $n = n_t$ to $n = n_t+T - 1$, in which $n_t$ is the beginning sample of frame $t$. 
+The algorithm also provides a way to estimate weighted bandwidths for the frequency component, (\ref{eq:weighted_bw}). 
 What we refer to here as bandwidths are essentially $2^{nd}$-order frequency moments. 
 
 \begin{equation}
 \label{eq:weighted_bw}
-B_w(t) = \sqrt{\frac{\sum_{t}^{t+T}(\overset{\boldsymbol .}{a}(n) /2\pi)^2+(f(n)-F_w)^2a^2(n)}{\sum_{t}^{t+T}a^2(n)}},
+B_w(t,i) = \sqrt{\frac{\sum_{n_t}^{n_t+T-1}(\overset{\boldsymbol .}{a_i}(n) /2\pi)^2+(f_i(n)-F_w(t,i))^2a_i^2(n)}{\sum_{n_t}^{n_t+T-1}a_i^2(n)}},
 \end{equation}
-where $f(n)$ and $a(n)$ are instantaneous frequency and amplitude values from (\ref{eq:instfreq}) and (\ref{eq:instamp}). 
+where $f_i(n)$ and $a_i(n)$ are instantaneous frequency and amplitude values from (\ref{eq:instfreq}) and (\ref{eq:instamp}). 
 In (\ref{eq:weighted_f}), the instantaneous frequencies are averaged over the $t^{th}$ frame using squared instantaneous amplitudes as weights. 
-$T$ in (\ref{eq:instfreq}) is the number of samples per frame, from $n = t$ to $n = t+T$. 
 $\overset{\boldsymbol .}{a}(n)$ is the first difference of $a(n)$ (i.e., $a(n) - a(n-1)$). 
 The per-frame values of $F_w$ provide initial estimates of spectrogram peaks. 
-This results in a time-frequency {$t$-$f$} representation of the overall signal, where time units correspond to frames and frequency units to filter-bank sub-band indexes. 
+This results in a time-frequency, {$t$-$f$}, representation of the overall signal. 
 
 
-In~\cite{potamianos_maragos_jasa96}, the bandwidth values defined in (\ref{eq:weighted_bw}) are used for analysis purposes. 
+In~\cite{potamianos_maragos_jasa96}, the bandwidths, $B_w$, defined in (\ref{eq:weighted_bw}) are used for analysis purposes. 
 Here, we use them in overlap detection systems to determine the reliabilitiy of $t-f$ units. 
 Our assumption is that large Pyknogram bandwidths correspond to higher uncertainty in frequency estimates. 
 We investigate this in following sections by adding an uncertainty term to our frequency estimate proportional to the estimated bandwidth:
@@ -322,34 +449,38 @@ We investigate this in following sections by adding an uncertainty term to our f
 
 \begin{equation}
 \label{eq:jitter_f}
-\tilde F_w(t) = F_w(t) + \epsilon_t,
+\tilde F_w(t,i) = F_w(t,i) + \epsilon_t,
 \end{equation}
 where
 \begin{equation}
 \label{eq:jitter_pdf}
-\epsilon_t \sim\ \mathcal{N}(0,B_w(t)).
+\epsilon^i_t \sim\ \mathcal{N}(0,B_w(t,i)).
 \end{equation}
 
-As a final step, dominant harmonic peaks are selected by comparing the average frequency estimates with filter-bank center frequencies. 
+\subsection{Pyknogram Extraction - Frequency selection}
+\label{sssec:pykno_select}
+In the second step of Pyknogram extraction, dominant harmonic peaks are selected by comparing the average frequency estimates with filter-bank center frequencies. 
 According to~\cite{potamianos_maragos_jasa96}, points at which filter-bank center frequencies coincide with the weighted frequency estimates from (\ref{eq:weighted_f}) are more reliable in estimating spectrogram peaks. 
-The assumption being that frequency estimates are more accurate when aligned with a filter in the filter-bank. 
+In Sect.~\ref{sssec:pykno_estimate}, we showed how resonant frequencies are estimated using Teager energy operators. 
+A considerable number of these frequencies can be omitted from the list of candidate frequencies. 
+The assumption being that frequency estimates are more accurate when resonances align with a filter in the filter-bank. 
 This defines the condition through which initial $F_w$ values are tested to detect whether they correspond to prominent peaks. At frame $t$: 
 \vspace{0mm}
 \begin{equation}
 \label{eq:RF1}
-F_w(c) = c  \quad \iff \quad \{c \in peaks\}
+F_w(t,i) = F_c(i)  \quad \iff \quad \{i \in peaks\}
 \vspace{1mm}
 \end{equation}
-where $c$ are the filter-bank center frequencies. 
+where $F_c(i)$ is the center frequency of the $i^{th}$ filter in the gammatone filter-bank. 
 Note that center frequencies are distributed in a logarithmic scale. 
 Another peak selection condition (as shown in Fig.~\ref{fig:pykno_blockdiag}) is to limit the relative variance of selected frequencies with respect to center frequencies. 
 
 \begin{equation}
-\label{eq:RF1}
-\frac{\partial F_w(c)}{\partial c} < thr
+\label{eq:RF2}
+\Big|\frac{\partial F_w(t,i)}{\partial i} \Big| \approx \Big|\frac{F_w(t,i+1) - F_w(t,i)}{(i+1) - i}\Big| < thr, 
 \vspace{1mm}
 \end{equation}
-This condition limits non-harmonic anomalies that break the patterns in regular speech trajectories. 
+This condition limits non-harmonic anomalies that break the patterns in regular speech harmonics. 
 Since such patterns are frequently observed in overlapped data, we omit this restriction from the peak-picking step.  
 
 \begin{figure*}[t!]
@@ -368,28 +499,118 @@ This allows the mapping of all signals onto a unified space defined by the filte
 
 Using an energy operator based approach helps avoid assumptions on the number of speakers in the signal. 
 AM-FM decomposition is suitable since it relies on signal resonances and does not restrict signals to a specific structure or number of speakers (as opposed to models such as linear prediction). 
-The final time-frequency representation is called a Pyknogram and is denoted $S_{pyk}(t,f)$ as a function of time ($t$) and frequency ($f$). 
-Using Pyknograms, we would like to investigate overlap detection methods.
+The final time-frequency representation is called a Pyknogram, $S_{pyk}(t,i)$, which is a function of time ($t$) and frequency index ($i$). 
+$S_{pyk}(t,i)$ is obtained by applying a binary mask to the gammatone time-frequency amplitudes estimated, $A(t,i)$, from (\ref{eq:instamp}) in the following manner:
+\begin{equation}
+\label{eq:amplitude_spectrum}
+A(t,i) = \frac{1}{T}\sum_{n_t}^{n_t+T - 1}a_i^2(n),
+\end{equation}
+The binary mask that results in $S_{pyk}(t,i)$ uses only amplitude values that are selected from (8) and (9). 
 
-%\subsection{Detecting overlapped segments from Pyknograms}
-Discontinuities in the Pyknogram layout is an indication of interfering speech. 
-An analogy for speech harmonic patterns are skiing tracks left behind on a snowy surface. 
-In the single-speaker case, the patterns leave parallel tracks that progress relatively slowly over time and correspond to fundamental frequency harmonic tracks. 
-In the presence of an interfering speaker, these patterns are distorted by similar but intersecting tracks, which adds sudden jumps along the time axis (as shown in Fig.~\ref{fig:pyknograms_for_overlaps}). 
-Since the majority of speakers are only capable of producing one fundamental frequency at each time instance, it is expected that the harmonic tracks should be consistent across time. 
-This keeps harmonics parallel over short time intervals.   
-The presence of a second speaker creates harmonic tracks that in general do not follow the same patterns, hence discontinuities are observed along time in Pyknograms. We use variations across adjacent frames as our measure of overlapped speech.
+
+\begin{equation}
+S_{pyk}(t,i)=\begin{cases}
+A(t,i), & \text{if $F_w(t,i)$ satisifies (\ref{eq:RF1})\&(\ref{eq:RF2})}.\\
+0, & \text{otherwise}.
+\end{cases}
+\end{equation}
+Figure~\ref{fig:pyknograms} shows the binary mask and underlying gammatone amplitude estimates for a given speech sample. 
 
 \begin{figure}[h!]
 	\centering
 	\vspace{4mm}
 	\textbf{Pyknogram}\par\medskip
-	\includegraphics[height =3.in, width=0.8\textwidth]{figures/pyknogram_vs_spectrogram}
+	\includegraphics[height =2.in, width=0.5\textwidth]{figures/pyknogram_vs_spectrogram}
 	\vspace{-1mm}
 	\caption{Pyknogram for a given speech signal. The spectrogram is plotted in the background for comparison. Pyknogram markers have been scaled by the amplitudes of corresponding $t$-$f$ units. Frequencies are scaled to equivalent rectangular bandwidth (ERB) rate.}
 	\vspace{-1mm}
 	\label{fig:pyknograms}
 \end{figure}
+
+Using Pyknograms, we would like to investigate overlap detection methods.
+Discontinuities in the Pyknogram layout is an indication of interfering speech. 
+An analogy for speech harmonic patterns are skiing tracks left behind on a snowy surface. 
+In the single-speaker case, the patterns leave parallel tracks that progress relatively slowly over time and correspond to fundamental frequency harmonic tracks. 
+In the presence of an interfering speaker, these patterns are distorted by similar but intersecting tracks, which adds sudden jumps along the time axis (as shown in Fig.~\ref{fig:pyknograms_for_overlaps} describing Pyknogram extraction). 
+Since speakers are only capable of producing one fundamental frequency at each time instance, it is expected that the harmonic tracks should be consistent across time. 
+This keeps harmonics parallel over short time intervals.   
+The presence of a second speaker creates harmonic tracks that in general do not follow the same patterns, hence discontinuities are observed along time in Pyknograms. We use variations across adjacent frames as our measure of overlapped speech.
+
+\begin{figure}[h!]
+	\centering
+	\vspace{1mm}
+	\textbf{Pyknogram close-up}\par\medskip
+	\vspace{-1mm}
+	\includegraphics[height =2.0in, width=0.4\textwidth]{figures/co-channel_pyknogram-crop}
+	\vspace{-1mm}
+	\caption{A closer look on Pyknograms for overlapped speech. The enclosed patches show discontinuities that occur in the presence of an interfering speaker.}
+	\vspace{-1mm}
+	\label{fig:pyknograms_for_overlaps}
+\end{figure}
+
+\newpage
+\subsection{Unsupervised overlap detection using Pyknograms}
+\label{sssec:unsupervised_ovl_det_pykno}
+The average Euclidean distance between consecutive frames across all frequencies can be used to detect sudden jumps in Pyknograms along time. 
+Much like the technique used for spectral flux estimation~\cite{Rossignol_spectralflux}. 
+The distance function, $D_{ovl}$, at frame $t$ is computed as the $2$-$norm$ distance between consecutive Pyknogram frames, $S_{pyk}(t,i)$ and $S_{pyk}(t-1,i)$. 
+
+\begin{equation}
+\label{eq:ovl_det_score}
+D_{ovl}(t) = \sqrt{\sum_i\Big(\big(S_{pyk}(t,i)-S_{pyk}(t-1,i)\big)^2\Big)}
+\end{equation}
+which results in a frame-based value for overlap distances. 
+Further in this study, we will investigate using longer time windows by averaging $D_{ovl}$ of adjacent frames. 
+
+
+Overlapped segments are expected to have higher $D_{ovl}$ values as compared to single-speaker speech. 
+Figure~\ref{fig:pyknograms_for_overlaps} shows instances where sudden jumps are observed in the pyknogram of an overlapped signal. 
+The average value of these distances for all frames in a speech segment corresponds to the amount of overlapped regions (higher values are associated with greater overlap). 
+
+
+We evaluate the performance of our proposed detection metric on overlapped speech on the GRID database~\cite{SSC_link} (see Sect.\ref{sec:exp} for more details on GRID). 
+A key factor that determines the difficulty of detecting the presence of overlapped speech is the signal-to-interference (SIR) value. 
+SIR is formally defined as the average energy of the foreground speaker to the energy of the background speaker, in dB. 
+Of course, in the case of overlap detection, we do not favor one speaker as foreground over the other. 
+Therefore absolute SIR values are used in this study for overlap detection. 
+Greater absolute SIR corresponds to regions where one of the speakers has lower impact on the signal energy. 
+Therefore it is more difficult to detect the occurrence of overlap in signals as the absolute SIR increases from zero.  
+From here on after, when we use SIR, we imply its absolute value. 
+
+Another important factor in detecting overlap is that the SIR value will change across different frames within a single file, which is due to the non-stationary nature of speech. 
+This poses major restrictions on the effectiveness of overlap detection evaluation, since providing frame-based ground-truth becomes unrealistically difficult. 
+One must therefore rely on ensemble measurements over complete speech files for which the average SIR is known. 
+We therefore introduce the segment-based $D_{ovl}$ value which is the ensemble average of all frames within $M$ second intervals. 
+\begin{equation}
+\label{eq:seg_dovl}
+^{M}D_{ovl}(t) = \sum_{t = t}^{t+\lfloor \frac{M}{T_s} \rfloor} D_{ovl}(t)
+\end{equation}
+where $T_s$ is the length of frame shift (in seconds), used here to determine the number of frames in an $M$ second interval. 
+This notion is illustrated in Fig.~\ref{fig:compare_perframe_and_perfile_ovldethist}, where $D_{ovl}$ distributions (histograms) extracted on a per-frame basis are compared with ensemble $D_{ovl}$ distributions associated with longer durations ($2$ seconds). 
+$D_{ovl}$ for $2$ second samples is calculated by averaging per-frame values. 
+The ``scores'' ($D_{ovl}$ values) in Fig.~\ref{fig:compare_perframe_and_perfile_ovldethist} are pyknogram distances calculated using (\ref{eq:ovl_det_score}). 
+The top figure (Fig.~\ref{fig:compare_perframe_and_perfile_ovldethist}-a), shows the distribution of scores per {\it frame} (i.e. $25$msec intervals) for overlapped (target) and clean (non-target/single-speaker) data.  
+Figure~\ref{fig:compare_perframe_and_perfile_ovldethist}-b shows the ensemble score distributions (average score over all frames in $2$ second segments). 
+The task in overlap detection is to separate the two classes in each plot (dark blue from light blue). 
+As observed in these distributions, the per-frame classes are almost indistinguishable (Fig.~\ref{fig:compare_perframe_and_perfile_ovldethist}-a), while in Fig.~\ref{fig:compare_perframe_and_perfile_ovldethist}-b the classes show much better separation. 
+
+
+\begin{figure}[h!]
+	\centering
+	\vspace{0mm}
+	\textbf{Ensemble vs. frame-based decisioning}\par\medskip	
+	\includegraphics[height = 3in, width=0.4\textwidth]{figures/compare_pframe_pseg_hists}
+	\vspace{-1mm}
+	\caption{The effect of ensemble decisioning on distinguishability of overlapped regions. a) shows score per frame histograms and b) shows the histogram of ensemble scores. Using multiple frames to make a decision helps separate the distributions of clean and overlapped segments.}
+	\vspace{-2mm}
+	\label{fig:compare_perframe_and_perfile_ovldethist}
+\end{figure}
+
+The observation in Fig.~\ref{fig:compare_perframe_and_perfile_ovldethist} a characteristic of all non-stationary interferences, that frame-level detection is significantly less reliable compared to ensemble decisions. 
+Therefore, longer durations should be used to detect the presence of overlap. 
+Section~\ref{sssec:ovl_frame_vs_seg} will investigate the relation between segment lengths (in other words, number of frames) and detection performance. 
+%\subsection{HMM-based harmonic tracking for overlap detection}
+%A more elaborate setup to track harmonic trajectories involves using a hidden Markov model (HMM) to model Pyknogram patterns. This allows for a supervised classification of speech segments into overlap and single-speaker speech. To do so, we propose using an initial segmentation of a given audio stream based on the Bayesian Information Criterion (BIC segmentation)~\cite{BIC}. The shorter segments are then compared against two pre-trained HMMs, one for overlapped and the other for single-speaker speech. The initial BIC segmentation is to allow for detection on shorter segments, since overlapped speech is considerably less frequent in a conversation compared to the total amount of speech. The combination of BIC segmentation and HMM-based classification allows for a practical overlap detection mechanism that fits well with analyzing conversations recorded in real conditions (as opposed to artificial datasets with simulated overlaps). Among other benefits of this framework is its compatibility with speaker diarization tools in which overlapped speech is considered a nuisance (see Sect.~\ref{sec:intro}). 
 
 
 \subsection{Pyknogram Analysis in Overlap}
@@ -399,7 +620,7 @@ A reasonable way to approach this would be to have a close-up look at Pyknograms
 This is accomplished by calculating Pyknograms of segmented phones overlapping each other. 
 The outcome of this analysis will provide insight in developing an overlap detection strategy. 
 
-\subsubsection{Pyknograms in Voiced Phonemes}
+\subsection{Pyknograms in Voiced Phonemes}
 
 The most important group of overlapped pairs are voiced-voiced combinations. 
 Phonemes in which foreground and background speech contains harmonic structures.
@@ -427,75 +648,10 @@ Nasals have been separated from the list above due to their significant role in 
 Such behavior is also observed in the autocorrelation spectra~\cite{sapvr_paper}. 
 
  
-
-
-
-
-\subsection{Unsupervised overlap detection Pyknograms}
-
-The average Euclidean distance between consecutive frames across all frequencies can be used to detect sudden jumps in Pyknograms along time. 
-Similar to the technique used for spectral flux estimation~\cite{Rossignol_spectralflux}. 
-The distance function, $D_{ovl}$, at frame $t$ is computed as the $2$-$norm$ distance between consecutive Pyknogram frames, $S_{pyk}(t,f)$ and $S_{pyk}(t-1,f)$. 
-
-\begin{equation}
-\label{eq:ovl_det_score}
-D_{ovl}(t) = \sqrt{\sum_f\Big(\big(S_{pyk}(t,f)-S_{pyk}(t-1,f)\big)^2\Big)}
-\end{equation}
-where $t$ and $f$ respectively correspond to the frame index (time) and filterbank bin (frequency). 
-
-Overlapped segments are expected to have higher $D_{ovl}$ values as compared to single-speaker speech. 
-Figure~\ref{fig:pyknograms_for_overlaps} shows instances where sudden jumps are observed in the Pyknogram of an overlapped signal. 
-The average value of these distances for all frames in a speech segment corresponds to the amount of overlapped regions (higher values are associated with greater overlap). 
-
-\begin{figure}[h!]
-\centering
-\vspace{1mm}
-    \textbf{Pyknogram close-up}\par\medskip
-\vspace{-1mm}
-\includegraphics[height =2.0in, width=0.4\textwidth]{figures/co-channel_pyknogram-crop}
-\vspace{-1mm}
-\caption{A closer look on Pyknograms for overlapped speech. The enclosed patches show discontinuities that occur in the presence of an interfering speaker.}
-\vspace{-1mm}
-\label{fig:pyknograms_for_overlaps}
-\end{figure}
-
-
-We evaluate the performance of our proposed detection metric on overlapped speech from the GRID database~\cite{SSC_link}(see Sect.\ref{sec:exp} for more details on GRID). 
-A key factor that determines the difficulty of detecting the presence of overlapped speech is the signal to interference(SIR) value. 
-Greater absolute SIR values correspond to regions where one of the speakers has lower impact on the signal energy. 
-Therefore it is more difficult to detect the occurrence of overlap in signals as the SIR moves away from $0dB$. 
-Notice we use absolute SIR, since in overlap {\it detection} there is no difference between target and interfering speakers. 
-
-Another important factor in detecting overlap is that the SIR value will change across different frames within a single file, which is due to the non-stationary nature of speech. 
-This poses major restrictions on the effectiveness of overlap detection evaluation, since providing frame-based ground-truth becomes unrealistically difficult. 
-One must therefore rely on ensemble measurements over complete speech files for which the average SIR is known. 
-This notion is illustrated in Fig.~\ref{fig:compare_perframe_and_perfile_ovldethist}, where $D_{ovl}$ distributions (histograms) extracted on a per-frame basis are compared with ensemble $D_{ovl}$ distributions associated with each file. 
-The ``scores'' ($D_{ovl}$ values) in Fig.~\ref{fig:compare_perframe_and_perfile_ovldethist} are pyknogram distances calculated using (\ref{eq:ovl_det_score}). 
-The top figure (Fig.~\ref{fig:compare_perframe_and_perfile_ovldethist}-a), shows the distribution of scores per {\it frame} (i.e. $25$msec intervals) for overlapped (target) and clean (non-target/single-speaker) {\it files}.  
-Figure~\ref{fig:compare_perframe_and_perfile_ovldethist}-b shows the ensemble score distributions (average score over all frames in a file, which are typically $2$ seconds long). 
-The task in overlap detection is to separate the two classes in each plot (dark blue from light blue). 
-As observed in these distributions, the per-frame classes are almost indistinguishable (Fig.~\ref{fig:compare_perframe_and_perfile_ovldethist}-a), while in Fig.~\ref{fig:compare_perframe_and_perfile_ovldethist}-b the classes show much better separation. 
-
-
-\begin{figure}[h!]
-	\centering
-	\vspace{0mm}
-    \textbf{Ensemble vs. frame-based decisioning}\par\medskip	
-	\includegraphics[height = 4in, width=0.5\textwidth]{figures/compare_pframe_pfile_hists}
-	\vspace{-1mm}
-	\caption{The effect of ensemble decisioning on distinguishability of overlapped regions. a) shows score per frame histograms and b) shows the histogram of ensemble scores. Using multiple frames to make a decision helps separate the distributions of clean and overlapped segments.}
-	\vspace{-2mm}
-	\label{fig:compare_perframe_and_perfile_ovldethist}
-\end{figure}
-
-
-%\subsection{HMM-based harmonic tracking for overlap detection}
-%A more elaborate setup to track harmonic trajectories involves using a hidden Markov model (HMM) to model Pyknogram patterns. This allows for a supervised classification of speech segments into overlap and single-speaker speech. To do so, we propose using an initial segmentation of a given audio stream based on the Bayesian Information Criterion (BIC segmentation)~\cite{BIC}. The shorter segments are then compared against two pre-trained HMMs, one for overlapped and the other for single-speaker speech. The initial BIC segmentation is to allow for detection on shorter segments, since overlapped speech is considerably less frequent in a conversation compared to the total amount of speech. The combination of BIC segmentation and HMM-based classification allows for a practical overlap detection mechanism that fits well with analyzing conversations recorded in real conditions (as opposed to artificial datasets with simulated overlaps). Among other benefits of this framework is its compatibility with speaker diarization tools in which overlapped speech is considered a nuisance (see Sect.~\ref{sec:intro}). 
-
 \newpage
 
 \subsection{Evaluation}
-\label{sec:exp}
+\label{ssec:exp_pykno}
 
 This section evaluates our proposed pyknogram-based overlap detection system in terms of {\it accuracy, robustness,} and {\it precision}. 
 Evaluation tasks for each SIR category are in the form of standard binary classification problems, where target examples are from a collection of files with fixed SIR values and non-target files are clean (single-speaker) files. 
@@ -505,100 +661,10 @@ The expectation is that the detection algorithm should be consistent across a ra
 As for precision, we are interested to know how short signals can be before overlap detection performance significantly drops (noting the observation in Fig.~\ref{fig:compare_perframe_and_perfile_ovldethist}). 
 
 
-Bellow, a collection of overlap detection features are presented that have previously been used to detect overlapped regions~\cite{nav_icassp13,boakye_thesis,sapvr_2000}. 
-%We note that all features were implemented based on the information provided in the publications, which are cited in each case. %adapted from other centers based on the information provided in publications. Although we tried to eliminate any chance of bias in the experiments, chances are that the results would have been different had the original authors implemented their methods for these experiments. 
-To the best of our knowledge, overlap detection results on this database have not been reported for any of the following features, therefore we rely on our own implementations. %The out-of-house features used in this study are:
-
-
-\subsubsection{Baseline features}
-
-\label{ssec:baseline}
-\begin{itemize}
-  \item {\it Speech kurtosis}: Kurtosis has been reported as an effective measure to detect the presence of multiple speakers in overlapped signals by several studies~\cite{Wrigley_05,boakye_thesis,temple_kurtosis}. 
-  It has been shown that overlapped speech exhibits lower kurtosis compared to single-speaker speech~\cite{leblanc_deleon98}. The kurtosis of a zero-mean random variable $x$ is defined as:
-
-\begin{equation}
-\label{eq:kurtosis}
-k_x = \frac{E\{x^4\}}{(E\{x^2\})^2}
-\end{equation}
-\vspace{1mm}
-In this case $x$ refers to speech samples in a given frame. 
-  \item {\it Spectral flatness measure (SFM)}: The ratio of geometric to arithmetic means of spectral magnitudes across frequency within each frame~\cite{nav_icassp13}. For the $i^{th}$ frame:
-\begin{equation}
-\label{eq:kurtosis}
-sfm_i = \frac{\frac{1}{N}\sum_{n=1}^{N}{X(f_n)}}{^N\sqrt{\prod_{n=1}^{N}{X(f_n)}}}
-\end{equation}
-\vspace{1mm}
-where $X(f_n)$ corresponds to the magnitude spectrum at frequency $f_n$ and {N} is the total number of frequency bins. 
-  \item {\it Spectral autocorrelation peak-valley ratio (SAPVR)}: described briefly in Sec.~\ref{sec:intro}, this feature uses the dominance of peaks in the spectral autocorrelation in each frame as a measure to detect overlaps~\cite{sapvr_2000}. 
-\end{itemize}
-
-\subsubsection{Data: Monaural Speech Separation Challenge}
-
-The data used in our controlled experiments is from the monaural speech separation and recognition challenge (a.k.a speech separation challenge (SSC))~\cite{cooke20101}. 
-The objective there was to permit a large-scale comparison of techniques for the overlapped speech problem~\cite{cooke20101}. 
-Participants were asked to identify keywords in sentences spoken by a target talker when mixed into a single channel with a background talker speaking sentences of the same structure but with different content. 
-The data used in SSC was obtained from the larger GRID corpus~\cite{cooke_JASA_SSCD}, which is a multi-talker audio-visual sentence corpus that supports computational-behavioral studies in speech perception. 
-In our study, we only use the audio content which consists of 1000 sentences spoken by each of 34 talkers (18 male, 16 female). The sentences are structured in the following format.
-\\\\
-{\small \bf \textless command\textgreater\textless color\textgreater\textless preposition\textgreater\textless letter\textgreater\textless number\textgreater\textless code\textgreater}
-\\\\
-For example, ``lay white at X six now''.
-
-The test and training set contain the same set of talkers. Seven overlapped sets are available, one clean and the rest composed of sentence pairs artificially summed at 6 signal-to-interference ratios (SIR) (+6, +3, 0, −3, −6, −9 dB). 
-Since file durations are short (typically less than 5 seconds) and the utterances contain negligible pauses, it is reasonable to consider the average SIR values, provided for each file, a fair representation of the amount of overlap. 
-This also allows the assumption that the entire signal is overlapped (see Fig.~\ref{fig:overlap_example}). 
-We have down-sampled all files to 8kHz to match telephone recordings. 
-Note that the experiments conducted in this study do not comply with the objectives of the speech separation challenge described in~\cite{SSC_link}. 
-
-% Figure added because of Reviewer3 and 1's comment:
-\vspace{0mm}
-\begin{figure}[h!]
-	\centering
-	\includegraphics[height =1.8in, width=0.7\textwidth]{figures/GRID_example_overlap-crop}
-	\vspace{-2mm}
-	\caption{
-		Example of the mixing process for a 0dB SIR overlapped signal. As shown on the right, it is fair to assume that overlap occurs throughout the signal.}
-	\label{fig:overlap_example}
-\end{figure}
-
-% Reviewer1's comment:
-This corpus is isolated from variabilities other than overlapped speech, which makes it useful to study the effects of overlap. 
-To the best of our knowledge, this dataset is the most organized publicly available corpus that contains large, as well controlled, amounts of overlapped speech (note that we are mostly interested in {\it overlapped speech} and not {\it co-channel speech} as defined and distinguished in the introduction). 
-Among the corpus' other advantages is the fact that segments are short which makes the definition of a signal-to-interference ratio more appropriate. Had the signals been longer, say a few minutes long, the notion of a signal-to-interference ratio across the entire signal would have been less applicable, due to the non-stationary nature of speech. 
-
-\begin{table}[h!]
-	\begin{center}
-		\label{tab:data_summary}
-		\begin{tabular}{| c | c |}
-			\hline
-			\hline
-			number of speakers	& 18 (male)  \\
-			\hspace{4mm}			&  16 (female) \\
-			\hline
-			average file duration	&   1.9 (sec) \\ 
-			\hline
-			noise				& interfering speakers \\
-			\hspace{4mm}			& clean,$+6$, $+3$, $0$, $-3$, $-6$, $-9$ dB \\
-			\hline
-			sampling rate			& $8$ KHz \\
-			\hline
-			\hline	
-		\end{tabular}
-		\caption{Summary of data used for SID experiments}
-	\end{center}
-\end{table}
-
-
 \vspace{3mm}
-\subsubsection{Overlapped speech detection vs. SIR (Robustness \& Accuracy)}
-Here the performance of pyknogram-based overlap detection is compared with the three baseline algorithms across different SIR values. 
-The goal is to monitor the chances in EER as SIR values increase. 
-The target/non-target files used in this binary classification task are obtained from a pool of overlapped and clean files. 
-In each task, overlapped files with the same SIR are used as target examples and the overlap detection score (or feature value) assigned to them is compared against the scores estimated for clean files to compute the binary classification EER. 
-Figure~\ref{fig:ovl_det} compares performances for the proposed and baseline systems across SIR values of $0, 3, 6$ and $9dB$.
-
-\begin{figure}[h!]
+\subsection{Overlapped speech detection vs. SIR (Robustness \& Accuracy)}
+\label{sssec:ovl_frame_vs_sir}
+\begin{figure}[b!]
 	\centering
 	\hspace{-1mm}
 	\textbf{Overlap Detection vs. SIR}\par\medskip
@@ -608,19 +674,40 @@ Figure~\ref{fig:ovl_det} compares performances for the proposed and baseline sys
 	\vspace{0mm}
 	\label{fig:ovl_det}
 \end{figure}
+Here the performance of pyknogram-based overlap detection is compared with the three baseline algorithms across different SIR values. 
+The goal is to monitor the chances in EER as SIR values increase. 
+The experiments are designed to compare features in terms of how much separation they can create between single-speaker from overlapped speech. 
+Overlapped files are defined as target and single-speaker (i.e., clean) are defined as non-target files. 
+The task is to perform binary classification using feature values as scores. 
+The target/non-target files used in this binary classification task are obtained from a pool of overlapped and single-speaker files. 
+This task is repeated for each SIR condition separately to monitor the impact of SIR. 
+In each task, overlapped files with the same SIR are used as target examples and the overlap detection score (or feature value) assigned to them is compared against the scores estimated for clean files to compute the binary classification EER. 
+Figure~\ref{fig:ovl_det} compares performances for the proposed and baseline systems across SIR values of $0, 3, 6$ and $9dB$.
 
+
+%\begin{figure*}[!t]
+%\centering
+%\hspace{-1mm}
+%\includegraphics[height = 3.5
+%in, width=1\textwidth]{figures/sid_ovl_scatterplots}
+%\vspace{-3mm}
+%\caption{2-dimensional score-space with SID scores on the y-axis and overlap detection scores on the x-axis. Each plot is with respect to one of the overlap scores. Blue circles ($\bigcirc$) represent target and red crosses ($\times$) represent imposter trials. (b) shows log-kurtosis for better visualization.}
+%\vspace{-3mm}
+%\label{fig:q_stack_scores}
+%\end{figure*}
 
 
 \newpage
-\subsubsection{Overlapped speech detection vs. segment length}
+\subsection{Overlapped speech detection vs. segment length}
+\label{sssec:ovl_frame_vs_seg}
+
 A main concern in dealing with overlapped regions is that overlap decisions are less reliable as segment lengths become shorter. 
 This restricts algorithm precision in terms of the ability to detect overlap in a frame-based framework. 
-Precision is most valuable in tasks such as speaker diarization in conversational speech, where overlap mostly occurs at speaker transitions in turn-takings. 
-The goal of this phase is to evaluate system precision and compare pyknogram-based detection with baseline features. 
-In other words, how short can overlap segments get before observing a significant drop in system performance. 
-Once again, overlap detection performance is measured through the detection EER. 
-Figure~\ref{fig:ovl_det_precision} shows the change in system performance as shorter duration segments are used to obtain overlap decisions. 
+We recall from Sect.~\ref{ssec:unsupervised_ovl_det}, that using multiple adjacent frames in the form of average $D_{ovl}$ (i.e., $^MD_{ovl}$) increases separability between single-speaker and overlapped speech distributions. 
+The same averaging defined in (\ref{eq:seg_dovl}) can be applied to our baseline features. 
 
+This method of treating non-stationary signals can help define the ``precision'' of our proposed overlap detection algorithms. 
+In other words, what is the least number of frames required to maintain stable detection accuracy? 
 
 \begin{figure}[h!]
 	\centering
@@ -634,6 +721,229 @@ Figure~\ref{fig:ovl_det_precision} shows the change in system performance as sho
 \end{figure}
 
 
+Precision is most valuable in tasks such as speaker diarization in conversational speech, where overlap mostly occurs at speaker transitions in turn-takings. 
+The goal of this analysis is to evaluate system precision and compare pyknogram-based detection with baseline features. 
+In other words, how short can overlap segments get before observing a significant drop in system performance. 
+Once again, overlap detection performance is measured through the detection EER. 
+Figure~\ref{fig:ovl_det_precision} shows the change in system performance as shorter duration segments are used to obtain overlap decisions. 
+It is shown that regardless of the feature used to detect overlaps, performance drops as fewer frames (shorter time segments) are used to make decisions. 
+Furthermore, we see that performance stabilizes for all features for segments 2 seconds and longer. 
+
+
+
+
 \section{Gammatone Sub-band Frequency Modulation Spectra}
 \label{sec:GSFM}
 
+The theory and motivation behind the second proposed feature extraction procedure are described in this section. 
+
+We begin with a brief analysis of frequency modulated (FM) sinusoids and their spectral characteristics[19]. 
+Modulating the frequency of a sinusoid results in a signal with more frequency components than the original sinusoid. 
+For example, the spectrum of a single-tone frequency modulated carrier contains frequency components that depend both on the amplitude and frequency of the modulating signal, both of which contribute to the modulation index, $\beta$ [19]. 
+Fig.\ref{fig:tone_fm_spectra}-a shows the spectrum of a single-tone FM signal. 
+This signal is typically simplified and defined as, 
+
+\begin{equation}
+\label{eq:1sin_fm}
+x_c(t) = A_ccos(2\pi f_ct+(\beta sin(2\pi f_mt))),
+\end{equation}
+where $f_m$ is the frequency of the modulating sinusoid and $A_c$ and $f_c$ are the carrier amplitude and frequency, respectively. 
+In Fig.\ref{fig:tone_fm_spectra}-a, the amplitude of the $n^{th}$ frequency component of $x_c(t)$, considering $f_c$ as the origin, is the $n^{th}$ order Bessel coefficients at $\beta$ (i.e., $J_n(\beta)$). 
+
+Since overlapped speech consists of two speech signals, a closer analogy to the problem of overlapped speech is observed in the case where the modulating signal has more than one sinusoid [20], as seen in (\ref{eq:2sin_fm}). 
+Fig.\ref{fig:tone_fm_spectra}-b\&c compare the spectra of double-tone FM signals in two scenarios. 
+In Fig.\ref{fig:tone_fm_spectra}-b, the two tones are harmonically related (one is an integer multiple of the other), while in Fig.\ref{fig:tone_fm_spectra}-c, the frequencies of the modulating tones do not share a common integer factor. 
+Consequently, the spectrum in Fig. 1(c) is more disperse than that in Fig.\ref{fig:tone_fm_spectra}-b. 
+The same conclusion can be made from \ref{eq:2sin_fm_bessel} where the number of frequency components of the Fourier transform of xc(t) is greater when $f_1$ and $f_2$ are not harmonically related. 
+An FM signal for a double-tone modulating signal with frequencies $f_1$ and $f_2$ can be represented as,
+\begin{equation}
+\label{eq:2sin_fm}
+x_c(t) = A_ccos(2\pi f_ct+[\beta_1 sin(2\pi f_1t) + \beta_2 sin(2\pi f_2t)]).
+\end{equation}
+
+Defining $J_n(.)$ as the nth order Bessel function, the Fourier series expansion of (\ref{eq:2sin_fm}) can be compactly defined as follows [19], 
+\begin{equation}
+\label{eq:2sin_fm_bessel}
+x_c(t) = A_c\sum\limits_n\sum\limits_m J_n(\beta_1)J_m(\beta_2)cos(2\pi (f_c+nf_1+mf_2)t).
+\end{equation}
+
+This observation is particularly interesting, since in overlapped speech segments one of the major confusions is in distinguishing related harmonics (i.e. those that belong to the same speaker) versus non-related harmonics. 
+Here, \ref{eq:2sin_fm_bessel} suggests that the number of frequency components of $x_c(t)$ in a given range is greater when caused by non-harmonically related frequencies. 
+On the other hand, if $f_1$ and $f_2$ are harmonically related, \ref{eq:2sin_fm_bessel} can be simplified as, 
+\begin{equation}
+\label{eq:2sin_fm_bessel_simplified}
+x_c(t) = A_c\sum\limits_{n^\prime} K_{n^\prime}cos(2\pi (f_c + n^\prime f_1)t),
+\end{equation}
+where $n^\prime$ is defined such that for each $m$ and $n$ pair,
+\begin{equation}
+\label{eq:knprime}
+K_{n^\prime} = J_n(\beta_1)J_m(\beta_2). 
+\end{equation}
+
+\begin{figure}[h!]
+	\centering
+	\hspace{-1mm}
+	\textbf{single and dual tone FM spectra}\par\medskip
+	\includegraphics[height = 3.1in, width=0.8\textwidth]{figures/tone_FM_spectra}
+	\vspace{-1mm}
+	\caption{Comparing the dispersity of different FM signals.
+		From top to bottom. 
+		a) Single-tone FM Spectral Magnitude $f_1$ = 10. 
+		b) Harmonically related double-tone FM Spectral Magnitude $f_1$=10, $f_2$=20. 
+		c) Not harmonically related double-tone FM Spectral Magnitude f1=10, f2=25}
+	\vspace{0mm}
+	\label{fig:tone_fm_spectra}
+\end{figure}
+
+Despite analyses on sinusoidal signals, a substantial difference between the spectral characteristics in multi-tone and single-tone FM signals versus speech is that in speech the spectrum consists of multiple harmonic components across its bandwidth. 
+In order to interact with only a few sinusoidal components, a natural solution is to decompose the signals into multiple sub-bands by means of a filter-bank. 
+As was the case for Pyknograms in Sect.~\ref{ssec:pykno_estimate}, a gammatone filter-bank is used for sub-band analysis\footnote{The gammatone filter-bank has been widely used in computational auditory scene analysis (CASA) literature to simulate the auditory periphery processing [21][22].}. 
+Sub-band outputs are used to modulate the instantaneous frequency of a sinusoidal carrier. 
+Detecting overlapped speech with the use of multiple sub-bands results in multiple decisions for each speech segment. 
+If a specific channel does not have the sufficient information to distinguish overlapped speech from single-speaker speech, the lack of information can be compensated by other sub-bands. 
+This framework results in a more consistent detection compared to a scenario where the system only relies on a single decision per frame. 
+The feature extraction procedure is summarized in Fig.~\ref{fig:gsfm_block_diagram}:
+
+\begin{enumerate}
+	\item apply a gammatone fiterbank to the speech signal
+	\item demodulate each sub-band to base-band (since the output for each channel is a band-pass signal and located around the center frequency of each sub-band). 
+	This is done by	multiplying a sinusoid tuned at the center frequency of	the gammatone sub-band followed by low-pass filtering.
+	\item Block the output signals into frames. 
+	\item Compute the frequency modulated signal for each time-frequency unit by using the output of the previous step as the modulating signal. 
+	\item Use the spectral magnitude of the modulated signal as the output.
+\end{enumerate}
+
+\begin{figure}[h!]
+	\centering
+	\hspace{-1mm}
+	\includegraphics[height = 2.5in, width=1\textwidth]{figures/gsfm_block_diagram}
+	\vspace{-1mm}
+	\caption{GSFM block diagram.}
+	\vspace{0mm}
+	\label{fig:tone_fm_spectra}
+\end{figure}
+
+Given the output gammatone sub-band frequency modulated (GSFM) spectra, many operations could be used to quantify the amount of dispersion. 
+A technique similar to that proposed in [7] is to use the relative peak amplitudes in GSFM spectra. 
+As shown in Fig.~\ref{fig:tone_fm_spectra}, the amplitudes of Bessel components drop
+more rapidly for harmonically related tones and even more so for single tones. 
+The relative peak amplitude ratios can be used represent spectral roll-off in the FM spectra for each time-frequency unit. 
+
+\begin{figure}[h!]
+	\centering
+	\hspace{-1mm}
+	\textbf{GSFM roll-off}\par\medskip
+	\includegraphics[height = 2.8in, width=0.6\textwidth]{figures/gsfm_rolloff}
+	\vspace{-1mm}
+	\caption{Comparison of GSFM spectra for overlapped speech and single-speaker speech. a) The GSFM of an overlapped speech segment at the 13th gammatone sub-band with center frequency 428 Hz. b) The GSFM of single-speaker speech at the same sub-band.}
+	\vspace{0mm}
+	\label{fig:gsfm_rolloff}
+\end{figure}
+
+Figure~\ref{fig:gsfm_rolloff} shows the difference in GSFM spectra for a typical time-frequency unit, $(t,i)$, in overlapped and single-speaker speech. 
+GSFM roll-offs are defined as: 
+\begin{equation}
+\label{eq:gsfm_rolloff}
+R(t,i) = \sum\limits_{k=2}^{N} \frac{P_1(t,i)}{P_k(t,i)}
+\end{equation}
+where $t$ and $i$ respectively denote the frame and sub-band indexes. 
+$P_k(t, i)$ corresponds to the $k^{th}$ peak in the GSFM spectrum with respect to the center peak (i.e., $P_1(t,i)$) that lies on the carrier frequency and is equal to the 0th Bessel coefficient (see Fig.~\ref{fig:gsfm_rolloff}). 
+We call $R(t, i)$ the GSFM roll-off factor computed at T-F unit $(t, i)$. 
+The collection of GSFM roll-off factors are used as a time-frequency representation for any given speech segment. 
+
+
+\subsection{Unsupervised overlap detection using GSFM roll-off}
+\label{sssec:unsupervised_ovl_det_gsfm}
+The feature used to detect overlapped speech uses a combination of the information obtained from all sub-bands, since each band can provide a local decision as to whether a frame contains speech from more than one speaker. 
+We use the overall count of highly disperse time-frequency units (i.e., units with higher GSFM roll-off) per time unit as a decision score for the amount of overlapped speech in a given speech segment. 
+Highly disperse roll-off values are obtained by applying a 2 class K-means clustering. 
+K-means results in a threshold of the roll-off values, $R_{thr}$. 
+By applying the threshold to the GSFM roll-off values (i.e. $R(t, i)$) for a given speech segment, one can estimate the decision score for overlapped-speech detection. 
+The decision score is calculated using the following equation:
+\begin{equation}
+\label{eq:gsfm_features}
+S = \frac{1}{T}\sum\limits_{\forall (t,i)} I\{R(t,i) > R_{thr}\}
+\end{equation}
+where
+\begin{equation}
+I\{x\}=\begin{cases}
+1, & \text{if x is true}.\\
+0, & \text{otherwise}.
+\end{cases}
+\end{equation}
+
+Here, T is the signal length in time units and $R_{thr}$ is the GSFM threshold obtained from clustering GSFM roll-off values into two sets, corresponding to higher and lower values. 
+The more the number of high roll-off values per unit time, the higher the likelihood of overlapped speech. 
+
+\subsection{Evaluation}
+\label{ssec:exp_gsfm}
+Overlap detection experiments for GSFM are conducted in a manner similar to what was presented in Sect.~\ref{ssec:exp_pykno}. 
+Once again, it is useful to investigate features in terms of accuracy, robustness, and precision. 
+
+\vspace{3mm}
+\subsection{Overlapped speech detection vs. SIR (Robustness \& Accuracy)}
+\label{sssec:ovl_frame_vs_sir_gsfm}
+\begin{figure}[b!]
+	\centering
+	\hspace{-1mm}
+	\textbf{Overlap Detection vs. SIR}\par\medskip
+	\includegraphics[height = 3.1in, width=0.7\textwidth]{figures/ovl_det_vs_sir_gsfm}
+	\vspace{-1mm}
+	\caption{Overlap detection EER for different SIR values. The higher the SIR, the more difficult it is to detect the presence of interfering speakers.}
+	\vspace{0mm}
+	\label{fig:ovl_det_gsfm}
+\end{figure}
+
+A explained before a main challenge in overlap detection is addressing a large range of interference ratios, even within a single recording. 
+Ideally, an overlapped-speech detection system should perform consistently well in any SIR. 
+However, this is neither feasible nor necessary. 
+As mentioned earlier, the database used in this study consists of 4 different absolute SIR conditions. 
+Figure~\ref{fig:ovl_det_gsfm} compares the performance of the proposed GSFM spectral roll-off feature with Pyknogram-based and baseline features.
+
+\subsection{Overlapped speech detection vs. segment length}
+\label{sssec:ovl_frame_vs_seg_gsfm}
+All overlap detection algorithms presented in this study use the collective knowledge obtained from multiple adjacent time frames from a given speech segment to estimate a score that represents the likelihood of overlapped speech. 
+The precision of the overlap detection system tells us how short a segment could be before we observe a substantial drop in performance. 
+We estimate the EER across different signal time lengths in 0dB average SIR (Fig. 5). It is observed in both Fig.~\ref{fig:ovl_det_precision} and Fig.~\ref{fig:ovl_det_precision_gsfm} that the EER varies most in kurtosis for different signal durations. 
+This is expected, since kurtosis is calculated from $3^{rd}$ and $4^{th}$ order moments, which are less accurately estimated with insufficient data. 
+From Fig.~\ref{fig:ovl_det_precision}, we also conclude that the breaking point for all systems is at approximately 2 seconds, which implies that overlap detection performance drops dramatically for segments less than 2 seconds long. 
+The performance drop is more severe for GSFM features, since it uses the distribution of roll-off values in calculating the final score (\ref{eq:gsfm_features}). 
+
+\begin{figure}[h!]
+	\centering
+	\hspace{-1mm}
+	\textbf{Precision of Overlap Detection methods}\par\medskip
+	\includegraphics[height = 3.1in, width=0.5\textwidth]{figures/eer_vs_time_gsfm}
+	\vspace{-1mm}
+	\caption{Overlap detection EER as a function of segment length. }
+	\vspace{0mm}
+	\label{fig:ovl_det_precision}
+\end{figure}
+
+
+\section{Pyknogram vs. GSFM} 
+Typical overlap detection systems are designed to detect overlapped speech segments in data that are generally clean of any environment noise, which makes them less reliable for data collected in real meeting and conversation scenarios. 
+This section investigates the scenario in which overlap detection takes place in noisy conditions. 
+In other words, in addition to speaker interference, environment noise is also present in the data. 
+For consistent performance in overlap detection, we use overlapped files with average signal-to-interference (SIR) of $0dB$, which means that the two utterances are mixed with the same average energy. 
+So far, the SIR value has been key component in overlapped speech detection performance (Sect.~\ref{sssec:ovl_frame_vs_sir}~\&\ref{sssec:ovl_frame_vs_sir_gsfm}).
+Alternatively, this section keeps SIR constant and varies additive environment noise signal-to-noise ratio (SNR).
+To measure performance under noise, files are mixed with noise samples extracted from Prof-life-log\cite{ziaei2013prof} recordings with SNR values ranging from clean($100dB$) to $-10dB$. 
+It is important in this context that the difference between SIR and SNR be clear to the reader. 
+SNR specifies the amount of noise added to the files (overlapped or not) and SIR determines the relative energy of the two utterances in overlapped files. 
+Figure~\ref{fig:ovl_detect_eer_noise} shows overlap detection EER values for different SNR values and compares the performance of Pyknogram-based features with GSFM features. 
+As seen in the figure, GSFM performance drops dramatically even for the most trivial noisy condition ($20dB$). 
+It is worth mentioning that in Sect.~\ref{sssec:ovl_frame_vs_sir_gsfm} it was shown that GSFM outperforms Pyknogram features as well as all baseline features. 
+
+\begin{figure}[t!]
+	\centering
+	\vspace{-1mm}
+	\includegraphics[height = 2.8in, width=0.8\textwidth]{figures/pykno_vs_GSFM}
+	\vspace{-8mm}
+	\caption{A comparison of overlap detection equal error rates (EER) for pyknogram (proposed) and GSFM-based systems for different amounts of added noise. It is clear that GSFM is vulnerable even to the slightest amount of noise (high SNR).}
+	\vspace{-1mm}
+	\label{fig:ovl_detect_eer}
+\end{figure}
+
+
+Performances from other overlap detection algorithms were not included here, since to the best of our knowledge none of the existing algorithms claim robustness in noisy conditions. 
