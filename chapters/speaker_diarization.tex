@@ -361,7 +361,7 @@ Figure~\ref{fig:ilp_clustering} summarizes the process of generating the GLPK in
 \begin{figure}[h!]
 	\centering
 	\includegraphics[height = 1.8in, width=1\textwidth]{figures/ilp_clustering_summary}
-	\caption{\it \small Summary of ILP clustering using CRSSDiar. The binary executables used for each step is shown in the figure. }
+	\caption{\it \small Summary of ILP clustering using CRSSDiar. The binary executables used for each step are shown in the figure. }
 	\label{fig:diarization_der}
 	\vspace{-3mm}
 \end{figure}
@@ -392,8 +392,33 @@ Section~\ref{sec:other_distances_ilp}
 
 \section{Other distance measures}
 \label{sec:other_distances_ilp}
-In addition to PLDA, three other 
+In addition to PLDA, three other distance measures are implemented for the clustering procedure in CRSSDiar. 
 
+The first is cosine distance, which uses the normalized dot product of i-vector pairs to define similarity. The cosine distance between two i-vectors ${\bf v_i}$ and ${\bf v_j}$ is: 
+\begin{equation}
+\label{eq:cosine_distance}
+dist_{cos}(i,j) = \frac{<{\bf v_i} , {\bf v_j} >}{|| {\bf v_i} ||||{\bf v_j}|| }
+\end{equation}
+Cosine distance in its raw format defined in (\ref{eq:cosine_distance}) is slightly incompatible with the distance metric required in (\ref{eq:ilp_minimization_1}). 
+The problem is that higher cosine distance is associated with closer vectors. Also, $dist_{cos}$ allows negative values. 
+ILP minimization, on the other hand, considers lower distance values (starting from $0$) as close vectors and higher values (always positive) as distant. 
+Therefore, the cosine metric used in CRSSDiar is $1 - dist_cos(i,j)$ from (\ref{eq:cosine_distance}). 
+
+The second distance metric is Euclidean distance, defined as the norm-2 distance between ${\bf v_i}$ and ${\bf v_j}$. Similarly, a Mahalanobis distance, which is a weighted Euclidean distance is also applicable. The weight for Mahalanobis distance is calculated from the covariance estimate of all the i-vectors obtained from segments$, \Sigma$. 
+\begin{equation}
+dist_{mah}(i,j) = \sqrt{({\bf v_i} - {\bf v_j})^T{\bf \Sigma}^{-1}({\bf v_i} - {\bf v_j})}
+\end{equation}
+For Euclidean distance ${\bf \Sigma} = {\bf I}$. 
+
+The last distance measure is conditional Bayes. This distance was suggested by Rouvier and Meignier~\cite{rouvier2012ilp}} as a substitute for Mahalanobis distance. 
+Instead of calculating $\Sigma$ from the segment i-vectors, labeled developments i-vectors are used from an external dataset. 
+This measure computes a Mahalanobis distance using the within-class covariance corresponding to development speakers. 
+The development data contains i-vectors groups of i-vectors from different speakers, for which speaker labels are available. 
+The within-class covariance is calculated by averaging the covariance obtained from the i-vectors of each development speaker. 
+The implied assumption here is that all speaker classes have a similar within-class covariance. 
+The goal of conditional Bayes is to remove channel-dependent variabilities from the i-vectors. 
+
+ 
 \section{Evaluation}
 \label{sec:chDrz_evaluation}
 This section compares preliminary results from CRSSDiar, with existing results published by other diarization tool-kits. 
@@ -458,5 +483,4 @@ CRSSDiar contains labelToRTTM and glpkToRTTM binaries that convert Kaldi vectors
 In addition, the output of GLPK clustering module can be converted into RTTM using glpkToRTTM. 
 
  
-
- 
+\subsection{Comparing distance measures}
