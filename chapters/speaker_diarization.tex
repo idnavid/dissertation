@@ -424,23 +424,24 @@ The goal of conditional Bayes is to remove channel-dependent variabilities from 
 This section compares preliminary results from CRSSDiar, with existing results published by other diarization tool-kits. 
 The experiments are conducted on the AMI meeting corpus, briefly described in Chapter~\ref{chapter:backend}. 
 AMI consists of audio recordings from meetings, typically $30 min$ sessions. 
-The corpus provides background additional information alongside the co-channel recordings, including individual speakers speech recorded from head-set and lapel microphones. 
+The corpus also provides additional background information, including individual speakers' speech recorded from head-set and lapel microphones. 
 In addition to audio files, the corpus contains segmentation ground-truth for speaker diarization. 
 CRSSDiar uses this information to calculate diarization error rates for each session separately. 
-The way CRSSDiar deals with different datasets is very similar to Kaldi. In that CRSSDiar binaries are independent of the data-set, but users can create recipe scripts that are specific to a particular corpus structure. 
+The way CRSSDiar deals with different datasets is very similar to Kaldi. 
+In that CRSSDiar binaries are independent of the data-set, but users can create recipe scripts that are specific to a particular corpus design. 
 
 \subsection{Diarization Error Rates}
 \label{ssec:der}
 The most popular error rate proposed for speaker diarization is diarization error rate (DER)~\cite{anguera2012DRZreview}. 
-This error rate is a combination of three types of errors that can be made by a speaker diarization system: 
+This error rate is a combination of three types of errors made by a speaker diarization system. The errors include:  
 \begin{itemize}
-	\item false alarm errors: segments that are falsely detected as speech segments. 
-	\item miss errors: segments that contain speech from one of the speakers, but are missed (flagged non-speech) by the diarization system. 
-	\item speaker error: the clustering error, which incorrectly labels segments. 
+	\item false alarm errors -- segments that are falsely detected as speech segments,
+	\item miss errors -- segments that contain speech from one of the speakers, but are missed (flagged non-speech) by the diarization system, 
+	\item speaker error -- clustering error, which incorrectly labels segments, 
 \end{itemize}
 
-The last type of error is the most difficult to verify, since the diarization system has no prior knowledge of the speakers and therefore assigns its own labels to segments. 
-So the labeling produced by the diarization system does not correspond to labels from ground-truth. The figure below shows an example this problem where the diarization system performs perfectly, but the labels it generates are different from ground-truth. 
+The last type of error is the most difficult to verify, since the diarization system has no prior knowledge of speakers and therefore assigns its own labels to segments. 
+So the labeling produced by the diarization system does not correspond to labels from ground-truth. The figure below shows an example problem. It shows all three types of error in a diarization system (false alarm, miss, and incorrect labeling of speakers). 
 Figure~\ref{fig:diarization_der} highlights the types of error that are made during diarization. 
 
 \begin{figure}[h!]
@@ -454,7 +455,7 @@ Figure~\ref{fig:diarization_der} highlights the types of error that are made dur
 \end{figure}
 
 It is also shown that the labels assigned by the speaker diarization system ($A, B$) are different from ground-truth labels ($1, 2$). 
-It is up to the diarization error rate calculator to make decide that $A:1$ and $B:1$. 
+It is up to the diarization error rate calculator to recognize the correct label correspondence, $A:1$ and $B:1$. 
 This is done by considering all possibilities, in this case $(A:1,B:2)$ and $(A:2,B:2)$, and returning the assignment that results in minimum labeling error. 
 
 
@@ -478,9 +479,45 @@ $N_{correct}(s)$ is the number of speakers correctly matched by the diarization 
 Finally, $T_{score}$ is the total scoring time. 
 
 CRSSDiar uses an evaluation Perl script provided by NIST that calculates DER alongside the individual errors described above. 
-This script requires a certain input format for the labels, called RTTM. 
-CRSSDiar contains labelToRTTM and glpkToRTTM binaries that convert Kaldi vectors to RTTM. 
+This script requires a certain input format for the labels, called rich transcription time marks (RTTM). 
+CRSSDiar contains labelToRTTM and glpkToRTTM binaries that convert Kaldi vectors to RTTM format. 
 In addition, the output of GLPK clustering module can be converted into RTTM using glpkToRTTM. 
 
- 
 \subsection{Comparing distance measures}
+This section briefly compares CRSSDiar performance under the various distance measures described in Sect.~\ref{sec:plda_ilp}~and~\ref{sec:other_distances_ilp}. 
+Experiments are conducted on AMI meeting data. 
+Each meeting recording, referred to as a {\it session}, contains a minimum of 4 speakers. 
+Other than the session audio file, no additional information is provided to the diarization system. 
+However, as mentioned before some of the distance metrics, PLDA and conditional Bayers, require external data (i.e., development data). 
+Development data is provided in the form of i-vectors from NIST SRE challenges. 
+For the purposes of these experiments i-vectors were extracted for over 600 NIST SRE04,05,06 speakers. 
+Multiple i-vectors from different recordings were used for each speaker to provide sufficient channel variability. 
+The PLDA model used here does not perform dimension reduction on the original 400-dimensional i-vectors. 
+
+\begin{figure}[h!]
+	\vspace{2mm}
+	\centering
+	\textbf{DER for different distance measures in CRSSDiar}\par\medskip
+	\includegraphics[height = 4.5in, width=1\textwidth]{figures/crssdiar_distances_der}
+	\caption{\it \small Comparison of diarization error rates calculated for different distance measures implemented in CRSSDiar. DER is calculated for 11 AMI meetings (IS1009a-IS1001). Although absolute DER values have considerable room for improvement, it is clear that PLDA scoring significantly outperforms other distance measures.}
+	\label{fig:compare_crssdiar_distances}
+\end{figure}
+
+Readers are advised not to examine Fig.~\ref{fig:compare_crssdiar_distances} based on absolute DER values. 
+The purpose of this figure is to compare the performance of different distance measures presented in this chapter. 
+The novel approach of using PLDA-based scores in ILP clustering significantly outperforms other distance measures. 
+Figure~\ref{fig:compare_crssdiar_distances} also shows that conditional Bayes only slightly outperforms Mahalanobis distance. 
+This observation is reasonable, since Mahalanobis and conditional Bayes essentially follow the same form and the difference is in the choice of covariance matrix. 
+
+\section{Future Work}
+\label{sec:chDiar_future}
+As mentioned throughout this chapter, CRSSDiar is a promising new research platform for speaker diarization. 
+Every few weeks we, the developers, receive requests for collaboration and questions about the state of the project from researchers around the globe. 
+This chapter provided an outline of CRSSDiar modules implemented so far. 
+But as mentioned before, CRSSDiar is a work in progress, both as a research platform and a means of achieving state-of-the-art speaker diarization performance. 
+It was pointed out that speech activity detection and overlap detection modules are integrated into CRSSDiar. 
+A major advancement would be to re-implement these components using Kaldi APIs, instead of using existing code in a plug-and-play manner. 
+Finally, in addition to the two main components of speaker diarization, segmentation and clustering, some minor additions can help significantly improve performance. 
+These additions include: alternative clustering algorithms, Viterbi resegmentation, and GMM-based speaker modeling. 
+Considering the current state of CRSSDiar and the reported error rates, provided sufficient time and effort, state-of-the-art diarization performance is well within our reach.
+
