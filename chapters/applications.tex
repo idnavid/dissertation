@@ -1,19 +1,19 @@
 \chapter{APPLICATIONS}
 \label{chap:applications}
 
-Previous chapters focused more on various technical aspects of co-channel speech and less on integrating the developed techniques with other applications. 
-This chapter highlights collaborative studies that address co-channel speech analysis in two problems: word-count estimation\footnote{Word-count estimation in co-channel speech is a collaboration with Ali Ziaei, Abhijheet Sangwan, and Prof. John Hansen, a research professor in CRSS. At the time of the study, Ali Ziaei was a fellow graduate student at CRSS, Abhijeet Sangwan was and currently remains a research professor in the department of Electrical Engineering at UT-Dallas.} and in-vehicle speech analysis for driver safety systems\footnote{In-vehicle speech analysis studies were a collaboration with Amardeep Sathyanarayanan, Omid Sadjadi, and Prof. John Hansen. Amardeep and Omid were both PhD students at CRSS during the time these studies were conducted.}. 
+Previous chapters focused more on various technical aspects of co-channel speech and less on integrating the proposed techniques with other applications. 
+This chapter highlights collaborative studies that address co-channel speech analysis in two problems: word-count estimation\footnote{Word-count estimation in co-channel speech is a collaboration between myself, Ali Ziaei, Abhijheet Sangwan, and my advisor Prof. John Hansen. At the time of the study, Ali Ziaei was a fellow PhD student at CRSS, Abhijeet Sangwan was (and currently still remains) a research professor in the department of Electrical Engineering at UT-Dallas.} and in-vehicle speech analysis for driver safety systems\footnote{In-vehicle speech analysis studies are a collaboration with Amardeep Sathyanarayanan, Omid Sadjadi, and Prof. John Hansen. Amardeep and Omid were both PhD students at CRSS during the time of these studies.}. 
 I consider these studies a driving force during my work as a PhD students, since research without outside stimulus can sometimes be mundane and out of touch. 
 Collaborative studies, on the other hand, open room for discussion and often lead to constructive feedback. 
-Each of the studies presented in this chapter have lead to major advancement in developing this dissertation. 
+Each of the studies presented in this chapter have lead to major advancement in this dissertation. 
 
 Prior to the study on word-count-estimation, the main overlap detection algorithm developed for this dissertation was Gammatone sub-band frequency modulation (GSFM; see Sect.~\ref{sec:GSFM} in Chapter~\ref{chapter:front-end}). As we have learned, GSFM is highly susceptible to noisy conditions. 
-This observation was made when we tried to investigate overlapped speech in Prof-life-log data, a dataset with various types and amounts of noise~\cite{prof-life-log}. 
-Pyknograms were the solution to a long-lasting effort of developing a robust overlap detection method for noisy conditions (see Section~\ref{sec:pyknograms} in Chapter~\ref{chap:front-end}). 
+This observation was made while evaluating overlapped speech detection in Prof-life-log data, a dataset with various types and amounts of noise~\cite{ziaei2013prof}. 
+Pyknograms were the solution to a long-lasting effort of developing a robust overlap detection method for noisy conditions (see Section~\ref{sec:ovldet} in Chapter~\ref{chapter:front-end}). 
 
-In-vehicle speech analysis also contributed to a significant change in perspective in addressing co-channel speech vs. overlap. 
+In-vehicle speech analysis contributed to a significant novelty in this dissertation's perspective in addressing co-channel speech (in terms of distinguishing co-channel speech from overlap). 
 The approach of this dissertation prior to the collaborative study on in-vehicle speech, which focuses on conversations between the driver and passengers while driving, was to solely focus on overlapped speech. 
-It was during this project that the importance of other conversational traits, such as urn-takings and speaker response time, became more visible and prompted further investigation. 
+It was during this project that the importance of other conversational traits, such as turn-takings and speaker response time, became more visible and prompted further investigation. 
 
 The remainder of this chapter provides a brief description of word-count estimation, Sect.~\ref{sec:wce_cch}, and in-vehicle driver safety systems, Sect.~\ref{sec:invehicle}. 
 
@@ -24,12 +24,12 @@ The ability to estimate the number of words spoken by an individual over a certa
 Word-count values are also useful in the analysis of massive audio data, such as the Prof-life-log corpus~\cite{ziaei2013prof}. 
 Prof-life-log is a speech corpus that contains long durations of audio recordings. In this collection, the primary speaker wears a portable LENA recording device~\cite{lena_device} throughout a work day. 
 Although the primary speaker is always the same individual, the people he interacts with vary frequently. 
-An estimate of the primary speaker's speech activity (i.e. word-count) facilitates analyses that predict the level of productivity and helps determine areas in the recording that are more ''valuable'' for further processing. 
+An estimate of the primary speaker's speech activity (i.e. word-count) facilitates analyses that predict the level of productivity and helps determine areas in the recording that are more ``valuable'' for further processing. 
 The proposed word-count estimator in this study is tested on long duration files from the Prof-Life-Log corpus. 
 
 Establishing a robust automatic framework to achieve high accuracy is non-trivial in realistic scenarios due to various factors such as different conversation styles or types of noise that appear in audio recordings, especially in multi-party conversations (i.e., co-channel speech). 
 This section proposes to use overlap detection to estimate the likelihood of overlapping speech in a given audio file in the presence of environment noise. 
-The resulting overlap information is embedded into a word-count estimator, which uses a linear minimum mean square estimator (LMMSE) to predict the number of words from the syllable rate. 
+The resulting overlap information is embedded into a word-count estimator, which uses a linear minimum mean square estimator (LMMSE) to predict the number of words from syllable rates, which are easier to detect using only acoustic information. 
 Figure~\ref{fig:wce_system_overview} shows an overview of the proposed word-count estimator. 
 The overlap detection system acts as an augmented module in the system, similar to how speech activity detection is used to remove silence. 
 
@@ -56,20 +56,19 @@ It is shown in~\cite{IS14_wce} that with the help of a linear minimum mean squar
 where $W_r(.)$ and $S_r(.)$ are the word-count and syllable rates at any given time, respectively. 
 $n$ indicates the index of a given time segment and $N$ is the total number of segments used to train the linear transformation parameter, ${\tilde {\bf a}}$. 
 The transformation parameter, ${\tilde {\bf a}}$, is a vector parameter comprised of a bias factor and a linear coefficient. 
-In cases where the bias factor is used, $S_r(n)$ is replaced by $\big[S_r(n) \hspace{2mm} 1\big]^T$
-
-The linear transformation parameter(s) can be trained using background conversational data that include transcriptions, so that the target word-counts are also available. 
-For this study, we rely on a subset of Prof-Life-Log data that has been manually transcribed for word-counts. 
+In cases where the bias factor is non-zero, $S_r(n)$ is replaced by $\big[S_r(n) \hspace{2mm} 1\big]^T$. 
+The linear transformation parameter(s) can be trained using manually transcribed background conversational data. 
+For this study, we rely on a subset of Prof-Life-Log data that has been transcribed for word-counts. 
 
 In~\cite{IS14_wce}, higher accuracy is obtained by introducing speech activity detection (SAD)~\cite{sadjadi2013unsupervised} and spectral subtraction to the front-end of the WCE. 
-SAD reduces false alarms by omitting non-speech regions, which helps avoid detection errors by the syllable detector. 
-Spectral subtraction enhances speech regions~\cite{boll1979spectralSubtraction}, allowing the syllable detector to detect voiced regions more accurately. 
+SAD reduces false-alarms by omitting non-speech regions, which helps avoid detection errors made by the syllable detector. 
+Spectral subtraction enhances speech regions~\cite{boll1979spectralSubtraction}, allowing the syllable detector to identify voiced regions more accurately. 
 None of these techniques, however, are able to address the issue of overlapped speech. 
 Therefore, the novelty in this study is to use overlap detection as an additional layer of data pruning to reduce false alarms. 
 
 An estimation of the location and amount of overlapped speech in a given speech segment can be combined with SAD labels to supply an additional layer of data pruning before syllable detection. 
-Figure \ref{fig:wce_system_overview}, shows the proposed WCE system configuration. 
-Initially, SAD is performed on the raw data to detect speech locations. 
+Overlap detection is fed to the syllable detector as additional information (see Fig.~\ref{fig:wce_system_overview}).  
+First, SAD is performed on the raw data to detect speech locations. 
 From SAD labels, non-speech regions are used to estimate the noise level in each short segment and submitted to the spectral subtraction algorithm. 
 Speech-only segments are passed to the syllable detector after applying spectral subtraction. 
 Finally, syllable rates (calculated by dividing the number of syllables by the segment length) are transformed into word-count rates using LMMSE coefficients. 
@@ -102,9 +101,10 @@ The sampling frequency from the LENA device is $44.1kHz$, which we have down-sam
 	\vspace{-1mm}
 \end{table}
 
+\newpage
 
 \section{In-vehicle Conversation Analysis}
-\label{sec:iv_beltup}
+\label{sec:invehicle}
 Many in-vehicle conversations are beneficial in keeping drivers alert and active, however there are also instances where a competitive conversation may adversely influence driving performance. 
 Identifying such scenarios can improve vehicle safety systems by fusing the knowledge obtained from conversational speech analysis and vehicle dynamic signals. 
 This section briefly describes how smart portable devices can be incorporated to create a unified platform and record in-vehicular conversations as well as vehicle dynamic signals required to evaluate driving performance. 
