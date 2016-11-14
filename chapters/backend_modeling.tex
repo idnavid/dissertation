@@ -61,7 +61,7 @@ Currently, the most common form of modeling speaker-dependent features are i-vec
 I-vectors are latent parameters that model the covariance of speaker/session-dependent Gaussian mixture models (GMM) with respect to a generic GMM (aka Universal background model -- UBM).  
 The UBM is ideally both session- and speaker-independent.
 The use of i-vectors, has become a standard way of modeling speaker specific traits for speaker recognition. 
-In many cases i-vector extraction is considered a preprocessing step in performing speaker recognition\footnote{See Appendix~\ref{apndx:spkr_id}}. 
+In many cases i-vector extraction is considered a preprocessing step in performing speaker recognition\footnote{See Appendix~\ref{apndx:ivector_plda_spkr_id}}. 
 Therefore, it is both reasonable and desirable to concentrate on post i-vector analysis to deal with co-channel speech interference~\cite{ivector_challenge}. 
 The goal of this study is to build upon the latent variable perspective, popularized by i-vectors~\cite{dehak2011front} and its predecessors~\cite{kenny2010bayesian}, to improve speaker recognition in co-channel signals. 
 Working in the latent variable subspace provides the luxury of short-circuiting speaker diarization, a computationally intensive and potentially error-prone solution. 
@@ -87,7 +87,7 @@ We state how channel compensation is performed through these methods~\cite{princ
 The two-covariance interpretation of PLDA~\cite{ioffePLDA2006} is also presented in Sect.~\ref{sec:background}, this interpretation motivates our proposed {\it co-channel aware PLDA model}. 
 Section~\ref{sec:background} also investigates treating co-channel interference in a manner similar to how PLDA addresses channel mismatch, using a background data preparation scheme we call {\it mixed PLDA}. 
 Section~\ref{sec:cch_plda} proposes {\it co-channel aware PLDA}, which is used to remove speaker interference from PLDA's speaker-dependent latent variable subspace. 
-Section~\ref{sec:exp} describes our experimental framework and presents results co-channel PLDA results. 
+%Section~\ref{sec:exp} describes our experimental framework and presents results co-channel PLDA results. 
 
 \section{Effect of Co-channel in Speaker Verification}
 \label{sec:cochannl_in_sid}
@@ -507,7 +507,7 @@ Our suggested structure for $ \mathcal{F} (.,.)$ is a linear combination of the 
 \end{equation}
 where $\alpha_w$ and $\alpha_b$ are functions of the signal-to-interference ratio between the foreground and background speaker. 
 
-We will visit different possibilities of $(\alpha_w, \alpha_b)$ in Sect.~\ref{sec:exp}. But first, we find it useful to focus on a special case, which is to assume session variability should be of the exact same type as speaker variability in the case of co-channel i-vectors. 
+Sections~\ref{ssec:alpha_w_0}~and~\ref{ssec:caplda_exp} visits different possibilities of $(\alpha_w, \alpha_b)$. But first, we find it useful to focus on a special case, which is to assume session variability should be of the exact same type as speaker variability in the case of co-channel i-vectors. 
 This special case assumes equal within- and between-speaker covariances. 
 
 \subsection{Equal within- and between-speaker covariances ($\alpha_w = 0$)}

@@ -7,9 +7,9 @@ I consider these studies a driving force during my work as a PhD students, since
 Collaborative studies, on the other hand, open room for discussion and often lead to constructive feedback. 
 Each of the studies presented in this chapter have lead to major advancement in this dissertation. 
 
-Prior to the study on word-count-estimation, the main overlap detection algorithm developed for this dissertation was Gammatone sub-band frequency modulation (GSFM; see Sect.~\ref{sec:GSFM} in Chapter~\ref{chapter:front-end}). As we have learned, GSFM is highly susceptible to noisy conditions. 
+Prior to the study on word-count-estimation, the main overlap detection algorithm developed for this dissertation was Gammatone sub-band frequency modulation (GSFM; see Sect.~\ref{sec:ch2_GSFM} in Chapter~\ref{chapter:front-end}). As we have learned, GSFM is highly susceptible to noisy conditions. 
 This observation was made while evaluating overlapped speech detection in Prof-life-log data, a dataset with various types and amounts of noise~\cite{ziaei2013prof}. 
-Pyknograms were the solution to a long-lasting effort of developing a robust overlap detection method for noisy conditions (see Section~\ref{sec:ovldet} in Chapter~\ref{chapter:front-end}). 
+Pyknograms were the solution to a long-lasting effort of developing a robust overlap detection method for noisy conditions (see Sect.~\ref{sec:ch2_Pykno}~and~\ref{sec:ch2_Pykno_vs_GSFM} in Chapter~\ref{chapter:front-end}). 
 
 In-vehicle speech analysis contributed to a significant novelty in this dissertation's perspective in addressing co-channel speech (in terms of distinguishing co-channel speech from overlap). 
 The approach of this dissertation prior to the collaborative study on in-vehicle speech, which focuses on conversations between the driver and passengers while driving, was to solely focus on overlapped speech. 
@@ -143,7 +143,7 @@ Monitoring driving performance continues and any secondary tasks performed by th
 The uniqueness of this system is the ability to identify driving performance variations and isolate the source of distraction. 
 
 The technical of the driving performance evaluation system falls beyond the scope of this dissertation. 
-For the curious reader, it suffices to know that performance is measured by statistically modeling driving maneuvers using vehicle dynamic signals (e.g., steering wheel angle, speed, acceleration)~\cite{iv2013amar}. 
+For the curious reader, it suffices to know that performance is measured by statistically modeling driving maneuvers using vehicle dynamic signals (e.g., steering wheel angle, speed, acceleration)~\cite{sathyanarayana2013belt}. 
 Maneuvers form the basic building blocks of driving routes, hence analyzing them can be employed as a key component in understanding driving performance. 
 Variations in driving performance can be recorded by observing how each maneuver is executed and comparing the characteristics of maneuvers that fall under the same category. 
 
@@ -167,14 +167,14 @@ Since this definition for turn taking may not always imply that both speakers ar
 \section{Data Description}
 \label{sec:data_description}
 Since this study focuses on understanding the influence of in-vehicle speech on the driver, care should be taken to minimize influence from other modalities on the driver.  
-An experimental setup was conducted that allowed drivers operate the UTDrive vehicle under real-traffic conditions~\cite{utdrive}. 
+An experimental setup was conducted that allowed drivers operate the UTDrive vehicle under real-traffic conditions~\cite{pongtep2007utdrive}. 
 The data was collected under similar weather and traffic conditions for all drivers and the route consisted of residential areas and highways and took place in an average of twenty minutes per session. 
 In the past few years, the research community has shown an increasing interest in using portable devices (sensor loaded smartphones and tablets) to instrument a vehicle and use it as a pseudo-data collection platform. 
-It has also been shown that using sensor data from these portable devices yields to comparable results in maneuver recognition CAN-bus signals obtained from instrumented vehicles~\cite{ITSC, SAE}. 
-In this study, data was collected in the UTDrive instrumented vehicle (UTDrive) along with the portable device mounted in the car \cite{ITSC} (See Figure~\ref{fig:our_pic}). However, only the sensor information from the portable device has been used for the entire analysis.
-Using a 10.1" Samsung Galaxy Tablet and an Android OS as the portable device platform, an Android application has been developed to collect all the available sensor information on the device synchronously~\cite{ITSC}. 
+It has also been shown that using sensor data from these portable devices yields to comparable results in maneuver recognition CAN-bus signals obtained from instrumented vehicles~\cite{sathyanarayanaITSC2012,sathyanarayanaSAE2013}. 
+In this study, data was collected in the UTDrive instrumented vehicle (UTDrive) along with the portable device mounted in the car \cite{sathyanarayanaITSC2012}. However, only the sensor information from the portable device has been used for the entire analysis.
+Using a 10.1" Samsung Galaxy Tablet and an Android OS as the portable device platform, an Android application has been developed to collect all the available sensor information on the device synchronously. 
 The available sensors and derived information include a camera, microphone, accelerometer, gyroscope, magnetometer, orientation, compass and GPS signals. 
-A detailed description of the UTDrive App for portable device and the sensor information can be found in\cite{ITSC}. 
+A detailed description of the UTDrive App for portable device and the sensor information can be found in\cite{sathyanarayanaITSC2012}. 
 
 
 Data were designed with the intention to create competitive behavior in the driver. 
@@ -209,12 +209,12 @@ The tasks are described below:
 
 
 \subsection{Experimental results}
-An advantage of this experimental setup over previous studies~\cite{ITSC, SAE,ESPA} is that both the in-vehicle speech data and the data required for maneuver recognition are recorded by the portable device. 
+An advantage of this experimental setup over previous studies~\cite{sathyanarayanaITSC2012, sathyanarayanaSAE2013,ESPA} is that both the in-vehicle speech data and the data required for maneuver recognition are recorded by the portable device. 
 This results in a more concise and cost effective data acquisition platform.
 
 Statistical information from the inertial measurement sensors such as accelerometer and gyroscope of the portable device were extracted on a per frame basis (once per second). 
-Statistical information such as maximum lateral acceleration, mean of the vehicle speed, variance of yaw-gyroscope (refer to \cite{ITSC} for a detailed list) form the dominant feature space used in training the maneuver specific models. 
-Using Support Vector Machines (SVM), the maneuver segments are recognized and classified with a high average accuracy of over 90\%. 
+Statistical information such as maximum lateral acceleration, mean of the vehicle speed, variance of yaw-gyroscope (refer to \cite{sathyanarayanaITSC2012} for a detailed list) form the dominant feature space used in training the maneuver specific models. 
+Using Support Vector Machines (SVM), the maneuver segments are recognized and classified with a high average accuracy of over $90\%$. 
 Once classified, driving performance is evaluated for each maneuver according to its class. 
 Thresholds are appropriately set in the feature space to identify any abnormal or risky driving patters. 
 Examples of the driving performance evaluation is shown in Figure~\ref{fig:driving_performance}. 

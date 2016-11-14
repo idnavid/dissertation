@@ -1,5 +1,5 @@
 
-\chapter{INTRODUCTION}
+\chapter{BACKGROUND}
 \label{chap:intro}
  
 The presence of speech interference is an important artifact for all automatic speech processing systems. 
@@ -122,10 +122,10 @@ The term signal level is in respect to co-channel speech, since it is removed fr
 Alternately, a novel approach is presented in this study with the intention of bypassing the use of speaker diarization in the aforementioned scenario while preserving speaker recognition performance. 
 This approach is to remove unwanted speaker-dependent information from latent variable subspaces generated from audio files~\cite{dehak2011front,kenny2010bayesian}. 
 We refer to such solutions as ``subspace level''. 
-Therefore, chapters III and IV each propose a different approach to remove interfering speakers from co-channel data. 
+Therefore, Chapters~\ref{chapter:backend}~and~\ref{chap:spkr_diar} each propose a different approach to remove interfering speakers from co-channel data. 
 \begin{enumerate}
-\item Remove interfering speakers in the feature subspace level: i-vector subspace factorization (Chapter III).
-\item Remove interfering speakers in the signal level: speaker diarization (Chapter IV).
+\item Remove interfering speakers in the feature subspace level: i-vector subspace factorization.
+\item Remove interfering speakers in the signal level: speaker diarization.
 \end{enumerate}
 
 Speaker diarization, will attempt to recognize and group speech that belongs to the same speaker in a co-channel audio stream. 
@@ -134,3 +134,40 @@ Once again it should be pointed out that the main theme of this study is to addr
 Which makes speaker diarization an inseparable part of our approach. 
 
 
+\section{Outline}
+\label{sec:intro_outline}
+This dissertation is organized in the following manner. 
+Thesis contributions are split into two main categories: 1) signal processing approaches, 2) probabilistic modeling. 
+Chapter~\ref{chapter:front-end}, overlap detection in co-channel speech, presents signal processing techniques used for overlap detection. 
+Chapter~\ref{chapter:backend}, speaker recognition in co-channel speech, focuses on probabilistic modeling techniques to improve speaker recognition in co-channel. 
+In addition to the two primary contributions, this thesis also covers practical aspects of co-channel speech processing. 
+These aspects are covered in two frameworks. 
+The first is the description of CRSS-SpkrDiar (Chapter~\ref{chap:spkr_diar}), which is an end-to-end speaker diarization system. 
+The second aspect is in the form of an exhibition of interdisciplinary applications of co-channel speech (Chapter~\ref{chap:applications}). 
+
+\section{Thesis Contributions}
+\label{sec:contributions}
+This dissertation investigates various aspects of co-channel speech and is novel in a number of ways. 
+The most important contribution is:
+\begin{itemize}
+	\item separate overlapped speech from co-channel.
+\end{itemize}
+The significance of this contribution is in its different perspective compared to existing studies. 
+Solely focusing on overlap instead of co-channel (or vise versa) limits the applicability of methods and makes it difficult to compare studies, since different studies refer to different phenomena as co-channel. 
+The second contribution is in the signal processing perspective, which is to
+\begin{itemize}
+	\item propose features to detect overlap speech from single-speaker speech (overlap speech detection).
+\end{itemize}
+This is important, since overlap detection constitutes a significant portion of co-channel research. 
+Being able to detect overlapped segments is also useful in other problems related to co-channel analysis. 
+One of the applications of overlap detection in co-channel speech is used in speaker diarization systems, which is the third contribution. 
+The contribution in regards to speaker diarization is to:
+\begin{itemize}
+	\item provide a detailed description of CRSS-SpkrDiar, a speaker diarization tool-kit. 
+\end{itemize}
+The last contribution of this study focuses on latent space analysis, which is to:
+\begin{itemize}
+	\item develop and analyze modified probabilistic linear discriminant analysis to suppress interfering speech to improve speaker recognition performance. 
+\end{itemize}
+The theme in all of the aforementioned contributions is speaker recognition. 
+Therefore, all of the techniques and analyses provided in the next chapters are in accordance with speaker recognition frameworks and are intended to improve speaker recognition performance. 

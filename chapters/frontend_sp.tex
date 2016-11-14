@@ -4,20 +4,22 @@
 \label{chapter:front-end}
 Overlapped speech constitutes a significant amount of research in co-channel speech. 
 To such an extant that in many cases the terms co-channel and overlapped speech are used interchangeably. Single-channel recordings from meetings or conversations, which we defined as co-channel speech in Chapter~\ref{chap:intro}, are examples of signals during which speakers may overlap. 
-This chapter focuses on proposing signal processing techniques to recognize instances of co-channel data where speakers overlap (i.e., overlapped speech detection). Therefore, we are interested in identifying a subset of co-channel signals that are overlapped. 
+This chapter focuses on proposing signal processing techniques to recognize instances of co-channel data where speakers overlap (i.e., overlapped speech detection). Therefore, we are interested in identifying only those portions of co-channel speech that are overlapped. 
 
-Section~\ref{sec:ch2_secBackground} provides preliminary information required to understand the focus of this chapter. It states the significance of overlap detection over speech enhancement techniques in the context of speaker recognition and diarization problems. 
-Section~\ref{sec:ch2_secSIDinOvl} investigates the impact of overlapped speech on various aspects of speaker recognition. 
-Sections~\ref{sec:ch2_secGSFM}~and~\ref{sec:ch2_secPykno} propose two overlap detection techniques used to identify overlapped from single-speaker speech. 
-Finally, Section~\ref{sec:ch2_secOvlQualityMeasure} uses overlap detection to improve speaker recognition performance by applying overlap detection results as meta-data in a speaker verification framework. 
+Section~\ref{sec:ch2_Background} provides preliminary information required to understand the focus of this chapter. It states the significance of overlap detection over speech enhancement techniques in the context of speaker recognition and diarization problems. 
+Section~\ref{sec:ch2_SIDinOvl} investigates the impact of overlapped speech on various aspects of speaker recognition. 
+Sections~\ref{sec:ch2_Pykno}~and~\ref{sec:ch2_GSFM} propose two overlap detection techniques used to identify overlapped from single-speaker speech. 
+Section~\ref{sec:ch2_Pykno_vs_GSFM} points out a significant drawback on GSFM in real-noise conditions and shows how Pyknograms are superior in that regard. 
+Finally, Section~\ref{sec:ch2_OvlQualityMeasure} uses overlap detection to improve speaker recognition performance by applying overlap detection results as meta-data in a speaker verification framework. 
 
 Chapter contributions include: 
 \begin{itemize}
 	\item a unique perspective of the impact of overlapped speech on speaker recognition.
 	\item two proposed overlap detection algorithms: Gammatone Sub-band Frequency Modulation features, and Pyknogram-based overlap detection.
 \end{itemize}
+
 \section{Why overlap detection?}
-\label{sec:ch2_secBackground}
+\label{sec:ch2_Background}
 
 In contrast to what overlap detection entails, most studies on overlapped speech have focused on separating speech from the target speaker or suppressing interfering speech~\cite{morgan_cochannel}. 
 Such enhancement techniques are often used to de-noise and thereby improve the performance of automatic speech applications~\cite{Quat_Dan_cch_sup,Chazan_93,cooke20101} (primarily speech recognition). 
@@ -42,7 +44,7 @@ Figure~\ref{fig:overlap_applications} summarizes incorporating overlap detection
 	%\textbf{Overlap Detection Applications}\par\medskip    
 	\includegraphics[height = 3in, width=0.9\textwidth]{figures/overlap_detection_applications}
 	\vspace{-3mm}
-	\caption{Applications of overlap detection. Top: In speaker diarization, removing ignoring overlapped regions provides a more fair assessment of diarization performance. Middle: Removing overlaps from in speaker recognition increases the reliability of training data. Bottom: Overlap detection results can be used as an initial step to recover overlapped regions.}
+	\caption{\it Applications of overlap detection. Top: In speaker diarization, removing ignoring overlapped regions provides a more fair assessment of diarization performance. Middle: Removing overlaps from in speaker recognition increases the reliability of training data. Bottom: Overlap detection results can be used as an initial step to recover overlapped regions.}
 	\label{fig:overlap_applications}
 	\vspace{-3mm}
 \end{figure}
@@ -59,7 +61,7 @@ In addition, we will see how introducing overlaps to speaker verification affect
 
 
 \section{Overlaps in Speaker Recognition}
-\label{sec:ch2_secSIDinOvl}
+\label{sec:ch2_SIDinOvl}
 
 In this section, in order to show the detrimental effects of adding overlapped data to speaker verification, we present a case study of speaker recognition on data from the monaural speech separation challenge~\cite{cooke20101}. 
 Our experiments use $12$-dimensional MFCC features ($13$ excluding the $0^{th}$ coefficient) plus $\Delta$ and $\Delta\Delta$, which together result in 36 dimensional features. 
@@ -69,7 +71,7 @@ We only MAP-adapt GMM means in our experiments.
 $512$ mixtures were used to form the Universal background model (UBM). 
 
 The next section slightly digresses from overlapped speech and is intended for readers unfamiliar with speaker recognition frameworks. 
-Readers that feel comfortable with the concepts of speaker verification, specifically the use of GMM-UBM setups for speaker for verification, may skip Sect.~\ref{ssec:ch2_ssecGMMUBM}.
+Readers that feel comfortable with the concepts of speaker verification, specifically the use of GMM-UBM setups for speaker for verification, may skip Sect.~\ref{ssec:ch2_GMMUBM}.
 
 As mentioned above, trials are generated from train and test sets designed for the speech separation challenge. The amount of clean (i.e., single-speaker) training data for each speaker is approximately $15$ minutes. 
 Test data are provided in six SIR conditions, which are evaluated separately (see Sect.~\ref{ssec:ch2_OvlinTest}). 
@@ -79,7 +81,7 @@ Experiments are gender-dependent, therefore the number of female speakers and ma
 In total over $10000$ trials are used to calculate equal error rates for each SIR condition presented in Sect.~\ref{ssec:ch2_OvlinTest} and Sect.~\ref{ssec:ch2_OvlinTrain} with a target to non-target ratio of $0.001$. 
 
 \subsection{Speaker verification in a GMM-UBM setup} 
-\label{ssec:ch2_ssecGMMUBM}
+\label{ssec:ch2_GMMUBM}
 The speaker verification problem is a manifestation of the more generic problem of speaker recognition in the form of a binary detection problem. 
 Speaker recognition, taken literally, implies sufficient knowledge of all speakers (or at least a large number of speakers) to ``recognize'' a given speaker from his/her voice. 
 Speaker verification, on the other hand, tackles the more manageable problem of determining whether an audio segment was produced by a known speaker. 
@@ -94,7 +96,7 @@ Figure~\ref{fig:speaker_verification} summarizes a speaker verification setup.
 	\vspace{0mm}
 	\includegraphics[height = 3in, width=0.8\textwidth]{figures/speaker_verification_setup}
 	\vspace{-3mm}
-	\caption{Speaker verification setup}
+	\caption{\it Speaker verification setup}
 	\label{fig:speaker_verification}
 	\vspace{0mm}
 \end{figure}
@@ -115,13 +117,13 @@ Figure~\ref{fig:gmm_ubm_sid} illustrates the procedure to determine the likeliho
 	\vspace{0mm}
 	\includegraphics[height = 3.5in, width=0.9\textwidth]{figures/gmm_ubm_sid_setup}
 	\vspace{-3mm}
-	\caption{Speaker verification setup}
+	\caption{\it Speaker verification setup}
 	\label{fig:gmm_ubm_sid}
 	\vspace{0mm}
 \end{figure}
 
 Given this introduction, we expect that the reader should now be able to follow the remaining of this section. 
-Useful descriptions of topics on speaker verification and recognition can be found in~\cite{niko_thesis,taufiq_magazine}. 
+Useful descriptions of topics on speaker verification and recognition can be found in~\cite{hansen2015SIDmagazine}. 
 
 \newpage
 \subsection{Data: Monaural Speech Separation Challenge}
@@ -153,14 +155,14 @@ Note that the experiments conducted in this study do not comply with the objecti
 	\centering
 	\includegraphics[height =1.8in, width=0.7\textwidth]{figures/GRID_example_overlap-crop}
 	\vspace{-2mm}
-	\caption{
+	\caption{\it 
 		Example of the mixing process for a 0dB SIR overlapped signal. As shown on the right, it is fair to assume that overlap occurs throughout the signal.}
 	\label{fig:overlap_example}
 \end{figure}
 
 % Reviewer1's comment:
 The choice of dataset for this study is pertinent to our investigative objective, which is overlap detection. 
-In the past, we have investigated other controlled datasets such as TIMIT~\cite{nav_icassp13} as well as realistic datasets including Prof-life-log~\cite{ziaei2015proflifelog,nav_icassp15}, Switchboard~\cite{shokouhi2015}, and UT-Drive in-vehicle conversations~\cite{sathyanarayana2013beltup}. 
+In the past, we have investigated other controlled datasets such as TIMIT~\cite{nav_icassp13} as well as realistic datasets including Prof-life-log~\cite{ziaei2013prof,nav_icassp15}, Switchboard~\cite{shokouhi2015}, and UT-Drive in-vehicle conversations~\cite{sathyanarayana2013belt}. 
 Unfortunately, none of the aforementioned datasets are designed to contain significant amounts of overlap. 
 One may argue that overlaps exist in conversational speech corpora such as Switchboard or the AMI meeting corpus~\cite{amicorpus}. 
 Although it is true that these corpora contain overlapped segments, the amounts of overlap in ``regular'' (aka non-competitive conversations~\cite{schegloff2000overlapping}) is not sufficient for the requirements of this study. 
@@ -188,7 +190,7 @@ Table~\ref{tab:data_summary} shows some features of the dataset used in this stu
 			\hline
 			\hline	
 		\end{tabular}
-		\caption{Summary of data used for speaker recognition experiments}
+		\caption{\it Summary of data used for speaker recognition experiments}
 		\label{tab:data_summary}
 	\end{center}
 \end{table}
@@ -229,14 +231,14 @@ Such cancellation, however, does not exist across test files.
 	\centering
 	\includegraphics[height = 3.43in, width=0.9\textwidth]{figures/sidingrid_ovlintest}
 	\vspace{-1mm}
-	\caption{The rise in EER values as we increase the effect of overlapped speech (via decreasing the SIR). Starting from clean (i.e. single-speaker speech) to lower SIR values. a) Shows the case where train files are clean, but test files contain overlaps. }
+	\caption{\it The rise in EER values as we increase the effect of overlapped speech (via decreasing the SIR). Starting from clean (i.e. single-speaker speech) to lower SIR values. a) Shows the case where train files are clean, but test files contain overlaps. }
 	\label{fig:sidingrid_ovlintest_train_a}
 \end{figure}
 \begin{figure}[h!]%{0.5\textwidth}
 	\centering
 	\includegraphics[height = 3.43in, width=0.9\textwidth]{figures/sidingrid_ovlintrain}
 	\vspace{-1mm}
-	\caption{b) clean test files but train files contain overlaps.}
+	\caption{\it b) clean test files but train files contain overlaps.}
 	\label{fig:sidingrid_ovlintest_train_b}
 \end{figure}
 
@@ -244,13 +246,13 @@ Such cancellation, however, does not exist across test files.
 
 \begin{figure}[h!]
 	\includegraphics[height = 3.43in, width=0.9\textwidth]{figures/sidingrid_ovlintrainvstest_male_rev1}
-	\caption{Comparing the impact of increasing overlap (OVL) in train vs. test data by decreasing SIR values. Experiments for male speakers (a). Lower SIR drops the performance more rapidly when applied to test data.}
+	\caption{\it Comparing the impact of increasing overlap (OVL) in train vs. test data by decreasing SIR values. Experiments for male speakers (a). Lower SIR drops the performance more rapidly when applied to test data.}
 	\label{fig:sidingrid_ovlintrainvstest_male}
 \end{figure}
 
 \begin{figure}[h!]
 	\includegraphics[height = 3.43in, width=0.9\textwidth]{figures/sidingrid_ovlintrainvstest_female_rev1}
-	\caption{b) female}
+	\caption{\it b) female}
 	\label{fig:sidingrid_ovlintrainvstest_female}
 \end{figure}
 
@@ -271,7 +273,7 @@ As a side-note here, we point out that most focus in overlapped speech has been 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[height = 2.5in, width=0.5\textwidth]{figures/morgan_v_uv_table}
-	\caption{Classification of different segments in a co-channel file. In overlap detection we are interected in 
+	\caption{\it Classification of different segments in a co-channel file. In overlap detection we are interected in 
 		the voiced-voiced (shaded) region.}
 	\label{fig:morgan_v_uv_table}
 \end{figure}
@@ -284,8 +286,8 @@ General consensus is to focus on detecting voiced-voiced overlap detection, whic
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[height = 3.1in, width=0.5\textwidth]{figures/nav_v_uv_table}	
-	\caption{phone-based expansion of overlapped segments in Fig.~\ref{fig:morgan_v_uv_table}.}
+	\includegraphics[height = 4in, width=0.7\textwidth]{figures/nav_v_uv_table}	
+	\caption{\it phone-based expansion of overlapped segments in Fig.~\ref{fig:morgan_v_uv_table}.}
 	\label{fig:nav_v_uv_table}
 \end{figure}
 
@@ -356,7 +358,7 @@ To the best of our knowledge, overlap detection results on this database have no
 
 
 \section{Pyknogram-based overlap detection}
-\label{sec:ovldet}
+\label{sec:ch2_Pykno}
 
 We propose a novel approach for overlapped speech detection based on an enhanced spectrogram. 
 These spectrograms, called Pyknograms, were first introduced by Potamianos and Maragos in~\cite{potamianos_maragos_icassp95,potamianos_maragos_jasa96} and are calculated by applying multi-band demodulation in the AM-FM speech model framework~\cite{maragos_kaiser_quatieri}{\footnote{The authors in~\cite{potamianos_maragos_jasa96} used the term ``Pyknogram'' which stems from the Greek word ``pykno'' meaning dense. Pyknograms represent highly resonating regions in time-frequency plots as populated scatter plots, hence the term density.}. 
@@ -396,23 +398,23 @@ where $n$ is the time sample. $N_s$ is the number of sub-bands in the filter-ban
 \end{equation}
 
 
-\begin{figure}[h!]{3.5in}
+\begin{figure}[h!]
 	\centering
-	\includegraphics[height=1.5in, width=4in]{figures/teo_signal}
-	\caption{Input signal.}
+	\includegraphics[height=2in, width=1\textwidth]{figures/teo_signal}
+	\caption{\it Input signal.}
 \end{figure}
 	
 \vspace{1.0mm}
-\begin{figure}[h!]{3.5in}
+\begin{figure}[h!]
 	\centering
-	\includegraphics[height=1.5in, width=4in]{figures/teo_amp}
-	\caption{Outputs of DESA-1: Signal amplitude component estimated using TEO, Eq.~(\ref{eq:instamp}).}
+	\includegraphics[height=2in, width=1\textwidth]{figures/teo_amp}
+	\caption{\it Outputs of DESA-1: Signal amplitude component estimated using TEO, Eq.~(\ref{eq:instamp}).}
 \end{figure}
 
-\begin{figure}[h!]{3.5in}
+\begin{figure}[h!]
 	\centering
-	\includegraphics[height=1.5in, width=4in]{figures/teo_freq}
-	\caption{Outputs of DESA-1: Signal frequency component estimated using TEO,  Eq.~(\ref{eq:instfreq}).}
+	\includegraphics[height=2in, width=1\textwidth]{figures/teo_freq}
+	\caption{\it Outputs of DESA-1: Signal frequency component estimated using TEO,  Eq.~(\ref{eq:instfreq}).}
 \end{figure}
 
 A weighted average of the instantaneous frequencies, $F_w$, is estimated over $25msec$ windows (aka frames), indexed by $t$. 
@@ -461,7 +463,7 @@ where
 \label{sssec:pykno_select}
 In the second step of Pyknogram extraction, dominant harmonic peaks are selected by comparing the average frequency estimates with filter-bank center frequencies. 
 According to~\cite{potamianos_maragos_jasa96}, points at which filter-bank center frequencies coincide with the weighted frequency estimates from (\ref{eq:weighted_f}) are more reliable in estimating spectrogram peaks. 
-In Sect.~\ref{sssec:pykno_estimate}, we showed how resonant frequencies are estimated using Teager energy operators. 
+In Sect.~\ref{ssec:pykno_estimate}, we showed how resonant frequencies are estimated using Teager energy operators. 
 A considerable number of these frequencies can be omitted from the list of candidate frequencies. 
 The assumption being that frequency estimates are more accurate when resonances align with a filter in the filter-bank. 
 This defines the condition through which initial $F_w$ values are tested to detect whether they correspond to prominent peaks. At frame $t$: 
@@ -488,7 +490,7 @@ Since such patterns are frequently observed in overlapped data, we omit this res
 	\vspace{0mm}
 	\includegraphics[height = 2.5in, width=1\textwidth]{figures/pyknogram_blockdiagram}
 	\vspace{-3mm}
-	\caption{Pyknogram extraction block-diagram.}
+	\caption{\it Pyknogram extraction block-diagram.}
 	\label{fig:pykno_blockdiag}
 	\vspace{-3mm}
 \end{figure}
@@ -522,7 +524,7 @@ Figure~\ref{fig:pyknograms} shows the binary mask and underlying gammatone ampli
 	\textbf{Pyknogram}\par\medskip
 	\includegraphics[height =2.in, width=0.5\textwidth]{figures/pyknogram_vs_spectrogram}
 	\vspace{-1mm}
-	\caption{Pyknogram for a given speech signal. The spectrogram is plotted in the background for comparison. Pyknogram markers have been scaled by the amplitudes of corresponding $t$-$f$ units. Frequencies are scaled to equivalent rectangular bandwidth (ERB) rate.}
+	\caption{\it Pyknogram for a given speech signal. The spectrogram is plotted in the background for comparison. Pyknogram markers have been scaled by the amplitudes of corresponding $t$-$f$ units. Frequencies are scaled to equivalent rectangular bandwidth (ERB) rate.}
 	\vspace{-1mm}
 	\label{fig:pyknograms}
 \end{figure}
@@ -543,14 +545,14 @@ The presence of a second speaker creates harmonic tracks that in general do not 
 	\vspace{-1mm}
 	\includegraphics[height =2.0in, width=0.4\textwidth]{figures/co-channel_pyknogram-crop}
 	\vspace{-1mm}
-	\caption{A closer look on Pyknograms for overlapped speech. The enclosed patches show discontinuities that occur in the presence of an interfering speaker.}
+	\caption{\it A closer look on Pyknograms for overlapped speech. The enclosed patches show discontinuities that occur in the presence of an interfering speaker.}
 	\vspace{-1mm}
 	\label{fig:pyknograms_for_overlaps}
 \end{figure}
 
 \newpage
 \subsection{Unsupervised overlap detection using Pyknograms}
-\label{sssec:unsupervised_ovl_det_pykno}
+\label{ssec:unsupervised_ovl_det_pykno}
 The average Euclidean distance between consecutive frames across all frequencies can be used to detect sudden jumps in Pyknograms along time. 
 Much like the technique used for spectral flux estimation~\cite{Rossignol_spectralflux}. 
 The distance function, $D_{ovl}$, at frame $t$ is computed as the $2$-$norm$ distance between consecutive Pyknogram frames, $S_{pyk}(t,i)$ and $S_{pyk}(t-1,i)$. 
@@ -568,7 +570,7 @@ Figure~\ref{fig:pyknograms_for_overlaps} shows instances where sudden jumps are 
 The average value of these distances for all frames in a speech segment corresponds to the amount of overlapped regions (higher values are associated with greater overlap). 
 
 
-We evaluate the performance of our proposed detection metric on overlapped speech on the GRID database~\cite{SSC_link} (see Sect.\ref{sec:exp} for more details on GRID). 
+We evaluate the performance of our proposed detection metric on overlapped speech on the GRID database~\cite{SSC_link} (see Sect.\ref{ssec:exp_pykno} for more details on GRID). 
 A key factor that determines the difficulty of detecting the presence of overlapped speech is the signal-to-interference (SIR) value. 
 SIR is formally defined as the average energy of the foreground speaker to the energy of the background speaker, in dB. 
 Of course, in the case of overlap detection, we do not favor one speaker as foreground over the other. 
@@ -601,7 +603,7 @@ As observed in these distributions, the per-frame classes are almost indistingui
 	\textbf{Ensemble vs. frame-based decisioning}\par\medskip	
 	\includegraphics[height = 3in, width=0.4\textwidth]{figures/compare_pframe_pseg_hists}
 	\vspace{-1mm}
-	\caption{The effect of ensemble decisioning on distinguishability of overlapped regions. a) shows score per frame histograms and b) shows the histogram of ensemble scores. Using multiple frames to make a decision helps separate the distributions of clean and overlapped segments.}
+	\caption{\it The effect of ensemble decisioning on distinguishability of overlapped regions. a) shows score per frame histograms and b) shows the histogram of ensemble scores. Using multiple frames to make a decision helps separate the distributions of clean and overlapped segments.}
 	\vspace{-2mm}
 	\label{fig:compare_perframe_and_perfile_ovldethist}
 \end{figure}
@@ -613,38 +615,38 @@ Section~\ref{sssec:ovl_frame_vs_seg} will investigate the relation between segme
 %A more elaborate setup to track harmonic trajectories involves using a hidden Markov model (HMM) to model Pyknogram patterns. This allows for a supervised classification of speech segments into overlap and single-speaker speech. To do so, we propose using an initial segmentation of a given audio stream based on the Bayesian Information Criterion (BIC segmentation)~\cite{BIC}. The shorter segments are then compared against two pre-trained HMMs, one for overlapped and the other for single-speaker speech. The initial BIC segmentation is to allow for detection on shorter segments, since overlapped speech is considerably less frequent in a conversation compared to the total amount of speech. The combination of BIC segmentation and HMM-based classification allows for a practical overlap detection mechanism that fits well with analyzing conversations recorded in real conditions (as opposed to artificial datasets with simulated overlaps). Among other benefits of this framework is its compatibility with speaker diarization tools in which overlapped speech is considered a nuisance (see Sect.~\ref{sec:intro}). 
 
 
-\subsection{Pyknogram Analysis in Overlap}
-
-Now that we have chosen a representation for our signal, we would like to analyze its behavior at overlapped regions. 
-A reasonable way to approach this would be to have a close-up look at Pyknograms to confirm whether they follow the same trend mentioned in Sec.~\ref{sssec:pykno_select}. 
-This is accomplished by calculating Pyknograms of segmented phones overlapping each other. 
-The outcome of this analysis will provide insight in developing an overlap detection strategy. 
-
-\subsection{Pyknograms in Voiced Phonemes}
-
-The most important group of overlapped pairs are voiced-voiced combinations, phonemes in which foreground and background speech contains harmonic structures.
-From a practical point of view, voiced speech is more likely to demonstrate distinguishable patterns during overlaps. 
-In addition, vowels and in general voiced speech contain more useful spectral content for speaker recognition~\cite{hansen2015SIDmagazine}, which is one of the pinnacles of this study. 
-To compare the behavior of Pyknograms at single-speaker and overlapped speech segments, a series of artificial overlapped segments are created from TIMIT data. 
-These segments are overlapped by phones from different speakers. 
-To investigate the effect of energy levels, a range of signal-to-interference (SIR) values from $0dB$ (most overlapped) to $100dB$ (single-speaker) is used. 
-
-Take the phone /\textscripta/, for example. By creating all the combinations of overlaps with this phone, we  see how the Pyknogram spectra are affected (Fig.~\ref{fig:overlapped_pykno_aa}).
-
-The comparison will be between single-speaker /\textscripta/ (spoken by male speakers), compared with /\textscripta/ overlapped by three groups of phonemes (also from male speakers). 
-The overlapping phones are: 
-\begin{itemize}
-	\item Front-Vowels (/i\textlengthmark/,/\textsci/,/e/,/\ae/)
-	\item Mid-Vowels (/\textscripta/,/\textrhookrevepsilon/,/\textturnv/,/\textopeno/)
-	\item Back-Vowels (/u/,/\textscu/,/o/)
-	\item Diphthongs (/\textscripta\textsci/,/\textopeno\textsci/,/\textscripta\textscu/,/e\textsci/,/o\textscu/,/ju/)
-	\item Semivowels (/w/,/l/,/r/,/y/)
-	\item Nasal Consonants (/m/,/n/,/$\eta$/)
-	\item Other Consonants (except nasals)
-\end{itemize}
-
-Nasals have been separated from the list above due to their significant role in speaker identification. Figure~\ref{fig:overlapped_pykno_aa} shows that cross-frequency dimension of Pyknograms tends to become more flat as overlapped framed are introduced. 
-Such behavior is also observed in the autocorrelation spectra~\cite{sapvr_paper}. 
+%\subsection{Pyknogram Analysis in Overlap}
+%
+%Now that we have chosen a representation for our signal, we would like to analyze its behavior at overlapped regions. 
+%A reasonable way to approach this would be to have a close-up look at Pyknograms to confirm whether they follow the same trend mentioned in Sec.~\ref{sssec:pykno_select}. 
+%This is accomplished by calculating Pyknograms of segmented phones overlapping each other. 
+%The outcome of this analysis will provide insight in developing an overlap detection strategy. 
+%
+%\subsection{Pyknograms in Voiced Phonemes}
+%
+%The most important group of overlapped pairs are voiced-voiced combinations, phonemes in which foreground and background speech contains harmonic structures.
+%From a practical point of view, voiced speech is more likely to demonstrate distinguishable patterns during overlaps. 
+%In addition, vowels and in general voiced speech contain more useful spectral content for speaker recognition~\cite{hansen2015SIDmagazine}, which is one of the pinnacles of this study. 
+%To compare the behavior of Pyknograms at single-speaker and overlapped speech segments, a series of artificial overlapped segments are created from TIMIT data. 
+%These segments are overlapped by phones from different speakers. 
+%To investigate the effect of energy levels, a range of signal-to-interference (SIR) values from $0dB$ (most overlapped) to $100dB$ (single-speaker) is used. 
+%
+%Take the phone /\textscripta/, for example. By creating all the combinations of overlaps with this phone, we  see how the Pyknogram spectra are affected (Fig.~\ref{fig:overlapped_pykno_aa}).
+%
+%The comparison will be between single-speaker /\textscripta/ (spoken by male speakers), compared with /\textscripta/ overlapped by three groups of phonemes (also from male speakers). 
+%The overlapping phones are: 
+%\begin{itemize}
+%	\item Front-Vowels (/i\textlengthmark/,/\textsci/,/e/,/\ae/)
+%	\item Mid-Vowels (/\textscripta/,/\textrhookrevepsilon/,/\textturnv/,/\textopeno/)
+%	\item Back-Vowels (/u/,/\textscu/,/o/)
+%	\item Diphthongs (/\textscripta\textsci/,/\textopeno\textsci/,/\textscripta\textscu/,/e\textsci/,/o\textscu/,/ju/)
+%	\item Semivowels (/w/,/l/,/r/,/y/)
+%	\item Nasal Consonants (/m/,/n/,/$\eta$/)
+%	\item Other Consonants (except nasals)
+%\end{itemize}
+%
+%Nasals have been separated from the list above due to their significant role in speaker identification. Figure~\ref{fig:overlapped_pykno_aa} shows that cross-frequency dimension of Pyknograms tends to become more flat as overlapped framed are introduced. 
+%Such behavior is also observed in the autocorrelation spectra~\cite{sapvr_paper}. 
 
 \newpage
 
@@ -668,7 +670,7 @@ As for precision, we are interested to know how short signals can be before over
 	\textbf{Overlap Detection vs. SIR}\par\medskip
 	\includegraphics[height = 3.1in, width=0.7\textwidth]{figures/ovldet_vs_sir}
 	\vspace{-1mm}
-	\caption{Overlap detection EER for different SIR values. The higher the SIR, the more difficult it is to detect the presence of interfering speakers.}
+	\caption{\it Overlap detection EER for different SIR values. The higher the SIR, the more difficult it is to detect the presence of interfering speakers.}
 	\vspace{0mm}
 	\label{fig:ovl_det}
 \end{figure}
@@ -689,7 +691,7 @@ Figure~\ref{fig:ovl_det} compares performances for the proposed and baseline sys
 %\includegraphics[height = 3.5
 %in, width=1\textwidth]{figures/sid_ovl_scatterplots}
 %\vspace{-3mm}
-%\caption{2-dimensional score-space with SID scores on the y-axis and overlap detection scores on the x-axis. Each plot is with respect to one of the overlap scores. Blue circles ($\bigcirc$) represent target and red crosses ($\times$) represent imposter trials. (b) shows log-kurtosis for better visualization.}
+%\caption{\it 2-dimensional score-space with SID scores on the y-axis and overlap detection scores on the x-axis. Each plot is with respect to one of the overlap scores. Blue circles ($\bigcirc$) represent target and red crosses ($\times$) represent imposter trials. (b) shows log-kurtosis for better visualization.}
 %\vspace{-3mm}
 %\label{fig:q_stack_scores}
 %\end{figure}
@@ -701,7 +703,7 @@ Figure~\ref{fig:ovl_det} compares performances for the proposed and baseline sys
 
 A main concern in dealing with overlapped regions is that overlap decisions are less reliable as segment lengths become shorter. 
 This restricts algorithm precision in terms of the ability to detect overlap in a frame-based framework. 
-We recall from Sect.~\ref{ssec:unsupervised_ovl_det}, that using multiple adjacent frames in the form of average $D_{ovl}$ (i.e., $^MD_{ovl}$) increases separability between single-speaker and overlapped speech distributions. 
+It was shown in Sect.~\ref{ssec:unsupervised_ovl_det_pykno} that using multiple adjacent frames in the form of average $D_{ovl}$ (i.e., $^MD_{ovl}$) increases separability between single-speaker and overlapped speech distributions. 
 The same averaging defined in (\ref{eq:seg_dovl}) can be applied to our baseline features. 
 
 This method of treating non-stationary signals can help define the ``precision'' of our proposed overlap detection algorithms. 
@@ -713,7 +715,7 @@ In other words, what is the least number of frames required to maintain stable d
 	\textbf{Precision of Overlap Detection methods}\par\medskip
 	\includegraphics[height = 3.1in, width=0.5\textwidth]{figures/eer_vs_time}
 	\vspace{-1mm}
-	\caption{Overlap detection EER as a function of segment length. The plot shows that signal lengths should be at least $2$ seconds for the algorithms to start reaching their best performance.}
+	\caption{\it Overlap detection EER as a function of segment length. The plot shows that signal lengths should be at least $2$ seconds for the algorithms to start reaching their best performance.}
 	\vspace{0mm}
 	\label{fig:ovl_det_precision}
 \end{figure}
@@ -728,10 +730,71 @@ It is shown that regardless of the feature used to detect overlaps, performance 
 Furthermore, we see that performance stabilizes for all features for segments 2 seconds and longer. 
 
 
+\subsection{Overlap detection as meta-data for speaker recognition}
+\label{sec:ch2_OvlQualityMeasure} 
+Using meta-data to yield more accurate decisions is a common practice in speaker verification evaluations~\cite{bosaris,qual_sid_13}. 
+Incorporating quality measures such as speech activity detection (SAD) and effective file durations can significantly improve verification performance~\cite{qual_sid_13,CRSSSRE12} regardless of system architecture (be it i-vector, GMM-UBM, or any other system). 
+Quality measure refers to additional information (i.e. meta-data) used alongside speaker verification likelihood ratios (aka speaker verification scores) to quantify the test and train conditions in trials. 
+Meta-data provides lower-level scores that help increase distinguishability between target/imposter trials. 
+For speaker verification in overlapped speech, the primary source of confusion is caused by the presence of interfering speakers. 
+This section proposes to use scores from overlap detection algorithm(s) as secondary information to improve overall speaker verification performance. 
 
+There are several approaches through which quality measures can be applied in a binary classification scenario~\cite{bosaris,ietqstack,kelly2013}. 
+Here, we use a stacking approach, called Q-stack, in which the quality measures (here overlap decisions) are concatenated (i.e., ``stacked'') with speaker verification decisions~\cite{ietqstack}. 
+The resulting vector is a high-dimensional score vector which allows more separability due to the additional information provided by the stacked dimensions. 
+The stacked score vectors are then processed with a support vector machine (SVM) classifier. 
+SVM parameters are trained using a development set extracted from a separate subset of the data. 
+In experiments, the development set consists of $10,000+$ trials, a quarter of which are clean trials and the remaining $7,500+$ trials contain overlapped test files with $0,3,6dB$ SIR levels. 
+The target to imposter ratio in speaker verification trials is $0.001$. 
+An evaluation set of size $18,000$ trials with similar specifics and target-imposter ratio is used to test overall system performance.
+
+
+Table~\ref{tab:sid_stack_results} shows the improvements obtained by using the overlap detection scores individually and combined. 
+Kurtosis and SFM show less correlation, however they provide significant complementary information when combined and used alongside SAPVR and pyknogram features. 
+The best result is obtained when all four features are concatenated, since each overlap detection system may yield better performance in certain scenarios.  
+
+
+\begin{table}[t]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|}
+		\hline
+		raw GMM/UBM scores & pykno & kurtosis & SFM & SAPVR & $\textit{\textbf{EER (\%)}}$ \\ \hline
+		\cellcolor[HTML]{C0C0C0}{\color[HTML]{343434} } \checkmark &  &  &  &  & 11.36\\ \hline \hline
+		\cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark &  &  &  & 10.19 \\ \hline
+		\cellcolor[HTML]{C0C0C0} \checkmark &  & \cellcolor[HTML]{C0C0C0} \checkmark &  &  & 13.51 \\ \hline
+		\cellcolor[HTML]{C0C0C0}{\color[HTML]{343434} } \checkmark &  &  & \cellcolor[HTML]{C0C0C0}{\color[HTML]{343434} } \checkmark &  & 28.35 \\ \hline
+		\cellcolor[HTML]{C0C0C0} \checkmark &  &  &  & \cellcolor[HTML]{C0C0C0} \checkmark & 9.48 \\ \hline \hline
+		\cellcolor[HTML]{C0C0C0}{\color[HTML]{343434} } \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0}{\color[HTML]{343434} } \checkmark &  &  & 10.20 \\ \hline
+		\cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark &  & \cellcolor[HTML]{C0C0C0} \checkmark &  & 10.47 \\ \hline
+		\cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark &  &  & \cellcolor[HTML]{C0C0C0} \checkmark & 9.57 \\ \hline \hline
+		\cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark &  & 10.31 \\ \hline
+		\cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{FFFFFF} & \cellcolor[HTML]{C0C0C0} \checkmark & 9.18 \\ \hline
+		\cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & {\bf 9.10}\\ \hline
+	\end{tabular}
+	\caption{\it Speaker verification performance (EER) with and without overlap detection scores as meta-data. Grey cells highlight the features used in each experiment. The relative change in EER is presented in the last column.}
+	\label{tab:sid_stack_results}
+	\vspace{-5mm}
+\end{table}
+
+\vspace{0mm}
+
+% The following paragraph was added after reviewer1's comments (and also reviewer 3):
+Better individual performances from SAPVR and SFM is because they are superior in distinguishing harmonic structures. 
+Since speaker identities are mostly influenced by voiced speech, this assists the speaker recognition task in quantifying the amount of reliable voiced segments. 
+Pyknogram-based detection is designed to locate harmonic discontinuities as opposed to the presence of harmonics. 
+
+Experiments show that the best performance is obtained using an SVM with a radial basis function (RBF) kernel. 
+The SVM parameter(s) (here $\gamma$) are determined through cross-validation on the development set. 
+Class weights (i.e., target/imposter weights for the SVM classifier) and the cost (aka slack) parameter are selected according to the detection cost function (DCF) parameters ($C_{fa}$, $C_{miss}$, and $prior$) used throughout experiments~\cite{bosaris}. %Table~\ref{tab:sid_stack_results}  The highest relative improvement is obtained when all features are concatenated. 
+
+An additional experiment is also conducted using ideal overlap labels (labels from ground-truth) in the Q-stack paradigm which results in an lower bound in error rates.
+The EER for this lower bound is $8.74\%$ ($23\%$ relative improvement). 
+In the Q-stack algorithm, the relative drop in EER from using all overlap features is approximately $20\%$, which is not far off from when ground-truth labels are used. 
+This confirms the effectiveness of the selected overlap detection features/scores.  
+Using the proposed Pyknogram-based overlap detection system and baseline features the relative improvement is $20\%$, a mere $3\%$ lower than the best achievable performance provided by the lower bound.
 
 \section{Gammatone Sub-band Frequency Modulation Spectra}
-\label{sec:GSFM}
+\label{sec:ch2_GSFM}
 
 The theory and motivation behind the second proposed feature extraction procedure are described in this section. 
 
@@ -748,26 +811,26 @@ x_c(t) = A_ccos(2\pi f_ct+(\beta sin(2\pi f_mt))),
 where $f_m$ is the frequency of the modulating sinusoid and $A_c$ and $f_c$ are the carrier amplitude and frequency, respectively. 
 In Fig.\ref{fig:tone_fm_spectra}-a, the amplitude of the $n^{th}$ frequency component of $x_c(t)$, considering $f_c$ as the origin, is the $n^{th}$ order Bessel coefficients at $\beta$ (i.e., $J_n(\beta)$). 
 
-Since overlapped speech consists of two speech signals, a closer analogy to the problem of overlapped speech is observed in the case where the modulating signal has more than one sinusoid [20], as seen in (\ref{eq:2sin_fm}). 
+Since overlapped speech consists of two speech signals, a closer analogy to the problem of overlapped speech is observed in the case where the modulating signal has more than one sinusoid (as seen in Eq.(\ref{eq:2sin_fm})). 
 Fig.\ref{fig:tone_fm_spectra}-b\&c compare the spectra of double-tone FM signals in two scenarios. 
 In Fig.\ref{fig:tone_fm_spectra}-b, the two tones are harmonically related (one is an integer multiple of the other), while in Fig.\ref{fig:tone_fm_spectra}-c, the frequencies of the modulating tones do not share a common integer factor. 
-Consequently, the spectrum in Fig. 1(c) is more disperse than that in Fig.\ref{fig:tone_fm_spectra}-b. 
-The same conclusion can be made from \ref{eq:2sin_fm_bessel} where the number of frequency components of the Fourier transform of xc(t) is greater when $f_1$ and $f_2$ are not harmonically related. 
+Consequently, the spectrum in Fig. \ref{fig:tone_fm_spectra}(c) is more disperse than that in Fig.\ref{fig:tone_fm_spectra}-b. 
+The same conclusion can be made from Eq.(\ref{eq:2sin_fm_bessel}) where the number of frequency components of the Fourier transform of $x_c(t)$ is greater when $f_1$ and $f_2$ are not harmonically related. 
 An FM signal for a double-tone modulating signal with frequencies $f_1$ and $f_2$ can be represented as,
 \begin{equation}
 \label{eq:2sin_fm}
 x_c(t) = A_ccos(2\pi f_ct+[\beta_1 sin(2\pi f_1t) + \beta_2 sin(2\pi f_2t)]).
 \end{equation}
 
-Defining $J_n(.)$ as the nth order Bessel function, the Fourier series expansion of (\ref{eq:2sin_fm}) can be compactly defined as follows [19], 
+Defining $J_n(.)$ as the nth order Bessel function, the Fourier series expansion of Eq.(\ref{eq:2sin_fm}) can be compactly defined as follows, 
 \begin{equation}
 \label{eq:2sin_fm_bessel}
 x_c(t) = A_c\sum\limits_n\sum\limits_m J_n(\beta_1)J_m(\beta_2)cos(2\pi (f_c+nf_1+mf_2)t).
 \end{equation}
 
 This observation is particularly interesting, since in overlapped speech segments one of the major confusions is in distinguishing related harmonics (i.e. those that belong to the same speaker) versus non-related harmonics. 
-Here, \ref{eq:2sin_fm_bessel} suggests that the number of frequency components of $x_c(t)$ in a given range is greater when caused by non-harmonically related frequencies. 
-On the other hand, if $f_1$ and $f_2$ are harmonically related, \ref{eq:2sin_fm_bessel} can be simplified as, 
+Here, Eq.(\ref{eq:2sin_fm_bessel}) suggests that the number of frequency components of $x_c(t)$ in a given range is greater when caused by non-harmonically related frequencies. 
+On the other hand, if $f_1$ and $f_2$ are harmonically related, (\ref{eq:2sin_fm_bessel}) can be simplified as, 
 \begin{equation}
 \label{eq:2sin_fm_bessel_simplified}
 x_c(t) = A_c\sum\limits_{n^\prime} K_{n^\prime}cos(2\pi (f_c + n^\prime f_1)t),
@@ -784,7 +847,7 @@ K_{n^\prime} = J_n(\beta_1)J_m(\beta_2).
 	\textbf{single and dual tone FM spectra}\par\medskip
 	\includegraphics[height = 3.1in, width=0.8\textwidth]{figures/tone_FM_spectra}
 	\vspace{-1mm}
-	\caption{Comparing the dispersity of different FM signals.
+	\caption{\it Comparing the dispersity of different FM signals.
 		From top to bottom. 
 		a) Single-tone FM Spectral Magnitude $f_1$ = 10. 
 		b) Harmonically related double-tone FM Spectral Magnitude $f_1$=10, $f_2$=20. 
@@ -795,7 +858,7 @@ K_{n^\prime} = J_n(\beta_1)J_m(\beta_2).
 
 Despite analyses on sinusoidal signals, a substantial difference between the spectral characteristics in multi-tone and single-tone FM signals versus speech is that in speech the spectrum consists of multiple harmonic components across its bandwidth. 
 In order to interact with only a few sinusoidal components, a natural solution is to decompose the signals into multiple sub-bands by means of a filter-bank. 
-As was the case for Pyknograms in Sect.~\ref{ssec:pykno_estimate}, a gammatone filter-bank is used for sub-band analysis\footnote{The gammatone filter-bank has been widely used in computational auditory scene analysis (CASA) literature to simulate the auditory periphery processing [21][22].}. 
+As was the case for Pyknograms in Sect.~\ref{ssec:pykno_estimate}, a gammatone filter-bank is used for sub-band analysis\footnote{The gammatone filter-bank has been widely used in computational auditory scene analysis (CASA) literature to simulate the auditory periphery processing.}. 
 Sub-band outputs are used to modulate the instantaneous frequency of a sinusoidal carrier. 
 Detecting overlapped speech with the use of multiple sub-bands results in multiple decisions for each speech segment. 
 If a specific channel does not have the sufficient information to distinguish overlapped speech from single-speaker speech, the lack of information can be compensated by other sub-bands. 
@@ -816,9 +879,9 @@ The feature extraction procedure is summarized in Fig.~\ref{fig:gsfm_block_diagr
 	\hspace{-1mm}
 	\includegraphics[height = 2.5in, width=1\textwidth]{figures/gsfm_block_diagram}
 	\vspace{-1mm}
-	\caption{GSFM block diagram.}
+	\caption{\it GSFM block diagram.}
 	\vspace{0mm}
-	\label{fig:tone_fm_spectra}
+	\label{fig:gsfm_block_diagram}
 \end{figure}
 
 Given the output gammatone sub-band frequency modulated (GSFM) spectra, many operations could be used to quantify the amount of dispersion. 
@@ -833,7 +896,7 @@ The relative peak amplitude ratios can be used represent spectral roll-off in th
 	\textbf{GSFM roll-off}\par\medskip
 	\includegraphics[height = 2.8in, width=0.6\textwidth]{figures/gsfm_rolloff}
 	\vspace{-1mm}
-	\caption{Comparison of GSFM spectra for overlapped speech and single-speaker speech. a) The GSFM of an overlapped speech segment at the 13th gammatone sub-band with center frequency 428 Hz. b) The GSFM of single-speaker speech at the same sub-band.}
+	\caption{\it Comparison of GSFM spectra for overlapped speech and single-speaker speech. a) The GSFM of an overlapped speech segment at the 13th gammatone sub-band with center frequency 428 Hz. b) The GSFM of single-speaker speech at the same sub-band.}
 	\vspace{0mm}
 	\label{fig:gsfm_rolloff}
 \end{figure}
@@ -887,7 +950,7 @@ Once again, it is useful to investigate features in terms of accuracy, robustnes
 	\textbf{Overlap Detection vs. SIR}\par\medskip
 	\includegraphics[height = 3.1in, width=0.7\textwidth]{figures/ovl_det_vs_sir_gsfm}
 	\vspace{-1mm}
-	\caption{Overlap detection EER for different SIR values. The higher the SIR, the more difficult it is to detect the presence of interfering speakers.}
+	\caption{\it Overlap detection EER for different SIR values. The higher the SIR, the more difficult it is to detect the presence of interfering speakers.}
 	\vspace{0mm}
 	\label{fig:ovl_det_gsfm}
 \end{figure}
@@ -902,9 +965,10 @@ Figure~\ref{fig:ovl_det_gsfm} compares the performance of the proposed GSFM spec
 \label{sssec:ovl_frame_vs_seg_gsfm}
 All overlap detection algorithms presented in this study use the collective knowledge obtained from multiple adjacent time frames from a given speech segment to estimate a score that represents the likelihood of overlapped speech. 
 The precision of the overlap detection system tells us how short a segment could be before we observe a substantial drop in performance. 
-We estimate the EER across different signal time lengths in 0dB average SIR (Fig. 5). It is observed in both Fig.~\ref{fig:ovl_det_precision} and Fig.~\ref{fig:ovl_det_precision_gsfm} that the EER varies most in kurtosis for different signal durations. 
+In Fig.~\ref{fig:ovl_det_precision_gsfm}, EER across different signal time lengths in 0dB average SIR. 
+It is observed in Fig.~\ref{fig:ovl_det_precision} that the EER varies most in kurtosis for different signal durations. 
 This is expected, since kurtosis is calculated from $3^{rd}$ and $4^{th}$ order moments, which are less accurately estimated with insufficient data. 
-From Fig.~\ref{fig:ovl_det_precision}, we also conclude that the breaking point for all systems is at approximately 2 seconds, which implies that overlap detection performance drops dramatically for segments less than 2 seconds long. 
+From Fig.~\ref{fig:ovl_det_precision_gsfm}, we also conclude that the breaking point for all systems is at approximately 2 seconds, which implies that overlap detection performance drops dramatically for segments less than 2 seconds long. 
 The performance drop is more severe for GSFM features, since it uses the distribution of roll-off values in calculating the final score (\ref{eq:gsfm_features}). 
 
 \begin{figure}[h!]
@@ -913,18 +977,19 @@ The performance drop is more severe for GSFM features, since it uses the distrib
 	\textbf{Precision of Overlap Detection methods}\par\medskip
 	\includegraphics[height = 3.1in, width=0.5\textwidth]{figures/eer_vs_time_gsfm}
 	\vspace{-1mm}
-	\caption{Overlap detection EER as a function of segment length. }
+	\caption{\it Overlap detection EER as a function of segment length. }
 	\vspace{0mm}
-	\label{fig:ovl_det_precision}
+	\label{fig:ovl_det_precision_gsfm}
 \end{figure}
 
 
-\section{Pyknogram vs. GSFM} 
+\section{Pyknogram vs. GSFM}
+\label{sec:ch2_Pykno_vs_GSFM}
 Typical overlap detection systems are designed to detect overlapped speech segments in data that are generally clean of any environment noise, which makes them less reliable for data collected in real meeting and conversation scenarios. 
 This section investigates the scenario in which overlap detection takes place in noisy conditions. 
 In other words, in addition to speaker interference, environment noise is also present in the data. 
 For consistent performance in overlap detection, we use overlapped files with average signal-to-interference (SIR) of $0dB$, which means that the two utterances are mixed with the same average energy. 
-So far, the SIR value has been key component in overlapped speech detection performance (Sect.~\ref{sssec:ovl_frame_vs_sir}~\&\ref{sssec:ovl_frame_vs_sir_gsfm}).
+So far, the SIR value has been key component in overlapped speech detection performance (Sect.~\ref{sssec:ovl_frame_vs_sir}~and~\ref{sssec:ovl_frame_vs_sir_gsfm}).
 Alternatively, this section keeps SIR constant and varies additive environment noise signal-to-noise ratio (SNR).
 To measure performance under noise, files are mixed with noise samples extracted from Prof-life-log\cite{ziaei2013prof} recordings with SNR values ranging from clean($100dB$) to $-10dB$. 
 It is important in this context that the difference between SIR and SNR be clear to the reader. 
@@ -938,10 +1003,11 @@ It is worth mentioning that in Sect.~\ref{sssec:ovl_frame_vs_sir_gsfm} it was sh
 	\vspace{-1mm}
 	\includegraphics[height = 2.8in, width=0.8\textwidth]{figures/pykno_vs_GSFM}
 	\vspace{-8mm}
-	\caption{A comparison of overlap detection equal error rates (EER) for pyknogram (proposed) and GSFM-based systems for different amounts of added noise. It is clear that GSFM is vulnerable even to the slightest amount of noise (high SNR).}
+	\caption{\it A comparison of overlap detection equal error rates (EER) for pyknogram (proposed) and GSFM-based systems for different amounts of added noise. It is clear that GSFM is vulnerable even to the slightest amount of noise (high SNR).}
 	\vspace{-1mm}
 	\label{fig:ovl_detect_eer_noise}
 \end{figure}
 
 
 Performances from other overlap detection algorithms were not included here, since to the best of our knowledge none of the existing algorithms claim robustness in noisy conditions. 
+
