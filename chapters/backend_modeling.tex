@@ -26,7 +26,11 @@
 This chapter addresses the problem of speaker recognition for co-channel recordings, rather than speaker recognition in overlap. 
 The main focus is on interference from secondary speakers, be it overlapped or not. 
 Secondary speech interference, the main characteristic of co-channel, is an important source of error for all automatic speech processing systems. Speaker recognition experiments are highly influenced by the presence of secondary speakers, due to reduced reliability of the trained models. 
-Although the target speaker is a common factor in all training samples for a given speaker model, the standard structure of speaker recognition systems has not been designed to average out interfering speech. 
+Although the target speaker is a common factor in all training samples for a given speaker model, the standard structure of speaker recognition systems has not been designed to effectively average out interfering speech. With this in mind, the contributions of this chapter are:
+\begin{itemize}
+	\item systematically dissect the effects of overlap and co-channel speech on speaker verification, 
+	\item investigate three proposed methods to improve probabilistic linear discriminant analysis in co-channel. 
+\end{itemize}
 
 To the best of our knowledge, few studies address speaker recognition in co-channel speech signals. 
 However, the effects of artificially adding {\bf overlapped speech} in a speaker verification setup has received considerable attention~\cite{yantorno_report,yantorno_SID,Dwang_03}. 
@@ -446,7 +450,7 @@ Updating ${\bf V}^\prime$ before estimating the statistical statistics of latent
 
 \begin{figure*}[b!]
 	\centering
-	\includegraphics[height = 2.5in, width=0.5\textwidth]{figures/eer_vs_sir_dualeigenvoice}
+	\includegraphics[height = 3in, width=0.6\textwidth]{figures/eer_vs_sir_dualeigenvoice}
 	\vspace{-2mm}
 	\caption{\it \small Comparing {\it dual eigenvoice PLDA}(yellow) with {\it mixed PLDA} (red) and {\it simplified PLDA} (blue). A steady improvement over {\it mixed PLDA} is observed across co-channel conditions. }
 	\label{fig:eer_dualeigenvoice}
@@ -495,15 +499,15 @@ Although some improvement is attainable, we expect that the original PLDA formul
 
 We propose that in order to improve performance, information can be shared from the between-speaker covariance to within-class covariances. 
 For an i-vector with speaker $A$ as the foreground speaker and some speaker $X$ as secondary speaker, PLDA assumes a normal distribution $\mathcal{N} ({\bf m}_A,{\bf \Phi} | A)$. 
-While (\ref{eq:within_spk_dist}), considers ${\bf \Phi}$ to be a unique within-class covariance matrix for all speakers in the i-vector space (i.e., $\Phi_w$), we argue that an additional component is required to model within speaker variations in the case of co-channel i-vectors. 
+While (\ref{eq:within_spk_dist}), considers ${\bf \Phi}$ to be a unique within-class covariance matrix for all speakers in the i-vector space (i.e., ${\bf \Phi}_w$), we argue that an additional component is required to model within speaker variations in the case of co-channel i-vectors. 
 The additional component contributing to within-class covariance is of the same nature of the between-class covariance. 
 Therefore, one can assume that ${\bf \Phi}$ is a function of both ${\bf \Phi}_w$ and ${\bf \Phi}_b$, $ \mathcal{F} ({\bf \Phi}_w,{\bf \Phi}_b)$. 
 Our suggested structure for $ \mathcal{F} (.,.)$ is a linear combination of the two covariance matrices: 
 
 \begin{equation}
 \label{eq:complex_phiw}
-\Phi = \mathcal{F} (\Phi_w,\Phi_b) = 
-\alpha_w\Phi_w + \alpha_b\Phi_b
+\Phi = \mathcal{F} ({\bf \Phi}_w,{\bf \Phi}_b) = 
+\alpha_w{\bf \Phi}_w + \alpha_b{\bf \Phi}_b
 \end{equation}
 where $\alpha_w$ and $\alpha_b$ are functions of the signal-to-interference ratio between the foreground and background speaker. 
 
@@ -525,12 +529,12 @@ Replacing the probabilities using (\ref{eq:within_spk_dist}) and (\ref{eq:betwee
 \begin{equation}
 \label{eq:llk_twocov}
 \begin{split}
-\mathcal{L}(m^1 m^2 ... m^n) = -\frac{c}{2}(ln | {\bf \Phi}_b + \frac{1}{n}{\bf \Phi}_w | + tr(({\bf \Phi}_b + \frac{1}{n}{\bf \Phi}_w)^{-1}S_b) \\+ (n-1)ln|{\bf \Phi}_w| + ntr({\bf \Phi}_w^{-1}S_w)),
+\mathcal{L}(m^1 m^2 ... m^n) = -\frac{c}{2}(ln | {\bf \Phi}_b + \frac{1}{n}{\bf \Phi}_w | + tr(({\bf \Phi}_b + \frac{1}{n}{\bf \Phi}_w)^{-1}{\bf S}_b) \\+ (n-1)ln|{\bf \Phi}_w| + ntr({\bf \Phi}_w^{-1}{\bf S}_w)),
 \end{split}
 \end{equation}
-where $S_b$ and $S_w$ are the between-speaker and within-speaker scatter matrices calculated from the training i-vectors. $c$ is a normalizing constant. 
+where ${\bf S}_b$ and ${\bf S}_w$ are the between-speaker and within-speaker scatter matrices calculated from the training i-vectors. $c$ is a normalizing constant. 
 The log-likelihood is maximized using (\ref{eq:llk_twocov}), resulting in expectation-maximization (EM) steps that estimate values for ${\bf \Phi}_w$ and ${\bf \Phi}_b$. 
-If we ignore channel variability across sessions and assume that the only source of variation across different sessions is between-speaker variability, the probabilities $\mathcal{P} (x_i | y)$ change from $\mathcal{N} (y,\Phi_w)$ to: 
+If we ignore channel variability across sessions and assume that the only source of variation across different sessions is between-speaker variability, the probabilities $\mathcal{P} (x_i | y)$ change from $\mathcal{N} (y,{\bf \Phi}_w)$ to: 
 
 \begin{equation}
 \mathcal{P} (x_i|y) = \mathcal{N} (y,\Phi_b).
@@ -543,11 +547,10 @@ The upside of setting ${\bf \Phi}$ to ${\bf \Phi}_b$ is twofold: 1) it increases
 \begin{equation}
 \label{eq:llk_onecov}
 \begin{split}
-\mathcal{L}(m^1 m^2 ... m^n) = -\frac{c}{2}(nln | {\bf \Phi}_b | + ln(\frac{n+1}{n})+ \frac{n}{n+1}tr({\bf \Phi}_b^{-1}S_b) \\+ ntr({\bf \Phi}_b^{-1}S_b)),
+\mathcal{L}(m^1 m^2 ... m^n) = -\frac{c}{2}(nln | {\bf \Phi}_b | + ln(\frac{n+1}{n})+ \frac{n}{n+1}tr({\bf \Phi}_b^{-1}{\bf S}_b) \\+ ntr({\bf \Phi}_b^{-1}{\bf S}_b)),
 \end{split}
 \end{equation}
-which is simpler to maximize. In fact, when all speakers have the same number of training i-vectors ($n$), the solution is to set $\Phi_b$ to $S_b$. 
-
+which is simpler to maximize. In fact, when all speakers have the same number of training i-vectors ($n$), the solution is to set ${\bf \Phi}_b$ to ${\bf S}_b$. 
 
 
 \subsection{Co-channel Interference in Trials with caPLDA}
@@ -596,5 +599,18 @@ From the last two columns, mixed PLDA ($0, 100dB$) and clean PLDA, we see that p
 	\label{tbl:alpha_w_0}
 \end{table*}
 
+
+\section{Summary}
+\label{sec:ch3_summary}
+This studies carries the most weight in terms of novelty for this dissertation. 
+As mentioned in Chapters~\ref{chap:intro}~and~\ref{chapter:backend}, the entire perspective of separating overlapped speech from co-channel is a missing concept in existing literature. 
+It was argued in Section~\ref{sec:cochannl_in_sid} that in conventional conversational English, the detrimental impact of co-channel interference is an order of magnitude greater than the impact of overlap. 
+This was shown over a number of experiments on existing large-scale conversational datasets. 
+
+The second part of this chapter provides solutions to the problem of co-channel speech in the latent variable space (i.e., i-vector sub-space). 
+The proposed methods were: 1) mixedPLDA, which is considered the standard way of compensating mismatch using probabilistic linear discriminant analysis (PLDA); 2) dual-eigenvoice PLDA, which considers adding a second eigenvoice matrix to the PLDA formulation; 3) co-channel aware PLDA, which uses the two-covariance interpretation of PLDA to adjust/modify covariance matrices in PLDA. 
+Each of these methods shows improvement from a different aspect. 
+MixedPLDA shows stable performance moderate improvement over all signal-to-interference conditions, but requires adequately tuned co-channel development data. 
+While dual-eigenvoice PLDA shows superior performance and does not require tuned parameters, co-channel aware PLDA is more stable and does not suffer from singularities during the training process. 
 
 

@@ -7,6 +7,11 @@ I consider these studies a driving force during my work as a PhD students, since
 Collaborative studies, on the other hand, open room for discussion and often lead to constructive feedback. 
 Each of the studies presented in this chapter have lead to major advancement in this dissertation. 
 
+The contribution of this chapter is:
+\begin{itemize}
+	\item use overlap detection to improve word-count estimation in real environment noise conditions. 
+	\item use overlap detection to predict competitiveness in conversations in in-vehicle speech analysis. 
+\end{itemize}
 Prior to the study on word-count-estimation, the main overlap detection algorithm developed for this dissertation was Gammatone sub-band frequency modulation (GSFM; see Sect.~\ref{sec:ch2_GSFM} in Chapter~\ref{chapter:front-end}). As we have learned, GSFM is highly susceptible to noisy conditions. 
 This observation was made while evaluating overlapped speech detection in Prof-life-log data, a dataset with various types and amounts of noise~\cite{ziaei2013prof}. 
 Pyknograms were the solution to a long-lasting effort of developing a robust overlap detection method for noisy conditions (see Sect.~\ref{sec:ch2_Pykno}~and~\ref{sec:ch2_Pykno_vs_GSFM} in Chapter~\ref{chapter:front-end}). 
@@ -96,7 +101,7 @@ The sampling frequency from the LENA device is $44.1kHz$, which we have down-sam
 	\begin{tabular}{p{0.8cm}*{6}{c}}
 		\bf $\frac{minimum\hspace{1mm} mean \hspace{1mm} square \hspace{1mm} Error}{\# of words}$\\ \hline \hline
 		overlaps & NOT&\hspace{-7mm}removed	&  &     &    5.71\% \\ 
-		overlaps&removed	&		&	&     &    \bf3.69\% \\ \hline
+		overlaps&\hspace{1mm} removed	&		&	&     &    \bf3.69\% \\ \hline
 	\end{tabular}
 	\vspace{-1mm}
 \end{table}
@@ -259,10 +264,16 @@ Each plot belongs to a different scenario.
 	%\vspace{-5mm}
 \end{figure*}
 
-
+\newpage
 If both the turn-taking and overlapped speech rates increase before the performance drops, the conversation can be a potential source of distraction. 
 Figures~\ref{fig:turntaking_and_overlap}-a and b are more interesting, since both features increase with time. 
 Figure~\ref{fig:turntaking_and_overlap}-c was also observed in our experiments, where the overlapped speech rate increases and goes back to $0$ per second before driving performance drops. 
 Figure~\ref{fig:turntaking_and_overlap}-d shows an instance where turn-taking and overlapped speech rate significantly drop prior to any changes are observed in driving performance, lowering the possibility that the conversation being the source of distraction. 
 
-
+\section{Summary}
+\label{sec:ch4_summary}
+The final chapter highlights a selection of collaborative studies between co-channel speech analysis and other signal processing applications. 
+The content was presented in the form of an applications chapter. 
+The first section describes how overlap detection can be integrated into a word-count estimation system to reduce false-alarm errors in detecting syllables. 
+The second section uses co-channel speech analysis, namely turn-taking rate estimation and overlap detection, to measure speakers' attentiveness in conversations. 
+The predicted ``attentive'' is used in a driver safety system to identify in-vehicle conversations that jeopardize driver and passenger safety. 

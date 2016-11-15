@@ -4,12 +4,15 @@
 
 Throughout the course of this study, part of the agenda has been to acknowledge non-overlapping speech as an important component of co-channel. 
 It was shown that distinguishing overlap from co-channel introduces more realistic scenarios to the scope of co-channel speech problems. 
-An important example of such kinds of problem is conversational speech, a common and realistic form of speech. 
+An important example of such problems is conversational speech, a common and realistic form of speech. 
 Among the various aspects of analyzing conversations, {\it speaker diarization} is closest to speaker recognition\footnote{As a reminder for the readers, speaker recognition is the main theme of this thesis.}.
 Speaker diarization refers to the task of automatically determining ``who spoke when?'' within an audio signal containing two or more speakers. 
 This chapter addresses the tasks of 1) segmenting co-channel data into single-speaker excerpts and 2) clustering segments, which means to group them by speakers. 
 Tasks are described within the context of CRSS-SpkrDiar, a speaker diarization tool-kit designed to perform diarization while simultaneously supporting speaker recognition and speech recognition using Kaldi\cite{kaldi}. 
-Therefore, the contribution of this chapter is an end-to-end conversation analysis research platform that is tightly connected to Kaldi and does not require cross-platform coding interfaces. 
+Therefore, the contribution of this chapter is to: 
+\begin{itemize}
+	\item introduce an end-to-end conversation analysis research platform that is tightly connected to Kaldi and does not require cross-platform coding interfaces. 
+\end{itemize}
 
 CRSS-SpkrDiar is a speaker diarization tool-kit developed as part of a collaboration between myself and Chengzhu Yu, a fellow PhD student at the Center for Robust Speech Systems (CRSS). 
 The main motivation behind developing this tool-kit is to establish an integrated end-to-end conversation analysis system that provides the capability of diarizing  signals while supporting speech recognition. 
@@ -509,6 +512,7 @@ The novel approach of using PLDA-based scores in ILP clustering significantly ou
 Figure~\ref{fig:compare_crssdiar_distances} also shows that conditional Bayes only slightly outperforms Mahalanobis distance. 
 This observation is reasonable, since Mahalanobis and conditional Bayes essentially follow the same form and the difference is in the choice of covariance matrix. 
 
+\newpage
 \section{Future Work}
 \label{sec:chDiar_future}
 As mentioned throughout this chapter, CRSS-SpkrDiar is a promising new research platform for speaker diarization. 
@@ -516,8 +520,16 @@ Every few weeks we, the developers, receive requests for collaboration and quest
 This chapter provided an outline of CRSS-SpkrDiar modules implemented so far. 
 But as mentioned before, CRSS-SpkrDiar is a work in progress, both as a research platform and a means of achieving state-of-the-art speaker diarization performance. 
 It was pointed out that speech activity detection and overlap detection modules are integrated into CRSS-SpkrDiar. 
-A major advancement would be to re-implement these components using Kaldi APIs, instead of using existing code in a plug-and-play manner. 
+A major improvement to CRSS-SpkrDiar would be to re-implement these components using Kaldi APIs, instead of using existing code in a plug-and-play manner. 
 Finally, in addition to the two main components of speaker diarization, segmentation and clustering, some minor additions can help significantly improve performance. 
 These additions include: alternative clustering algorithms, Viterbi resegmentation, and GMM-based speaker modeling. 
 Considering the current state of CRSS-SpkrDiar and the reported error rates, provided sufficient time and effort, state-of-the-art diarization performance is well within our reach.
+
+
+\section{Summary}
+\label{sec:ch4_summary}
+Chapter~\ref{chap:spkr_diar} introduced CRSS-SpkrDiar, a  speaker diarization system. 
+The objective of CRSS-SpkrDiar is to create an all-encompassing research platform that supports state-of-the-art speaker and speech recognition, in addition to its primary objective, which is speaker diarization. 
+This chapter focused on to main components of a speaker diarization system: 1) segmentation and 2) clustering. 
+CRSS-SpkrDiar is considered a work in progress and further studies on this tool-kit are in development. 
 

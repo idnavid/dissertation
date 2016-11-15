@@ -127,11 +127,11 @@
 \signaturepage
 %\copyrightpage{2012} % optional
 
-\begin{dedication} % optional
-This thesis class file \\
-is dedicated to ..., \\
-who ...
-\end{dedication}
+%\begin{dedication} % optional
+%This thesis class file \\
+%is dedicated to ..., \\
+%who ...
+%\end{dedication}
 
 \maketitle
 
@@ -146,7 +146,17 @@ who ...
 \end{preface}
 
 \begin{abstract}
-350 word Abstract.
+Co-channel speech refers to the presence of two or more speakers in a single-channel audio stream. 
+This study focuses on finding tangible solutions for problems caused by the presence of multiple speakers. 
+A categorization of the various kinds of co-channel speech is presented along with alternative solutions proposed for each class of problems. 
+Two approaches are considered to solve different frameworks for speaker recognition in co-channel speech. 
+In the first approach, two methods for overlapped speech detection are proposed. 
+These methods can be used in both speaker recognition and diarization problems. 
+The second approach is a modification to the back-end classification used in probabilistic linear discriminant analysis for speaker recognition, tailored to address co-channel speech in large scale speaker recognition problems. 
+The final two chapters investigate more comprehensive aspects of co-channel speech. 
+A speaker diarization tool-kit, called CRSS-SpkrDiar, is introduced as a research platform for end-to-end co-channel speech analysis. 
+In addition, a series of collaborative studies are presented that show the impact of co-channel analysis in other signal processing applications. 
+
 
 \end{abstract}
 
@@ -158,8 +168,9 @@ who ...
 
 \include{chapters/introduction}
 
-
 \include{chapters/frontend_sp}
+
+\include{chapters/ovl_in_sid}
 
 \include{chapters/backend_modeling}
 
