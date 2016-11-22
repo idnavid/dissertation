@@ -135,27 +135,56 @@
 
 \maketitle
 
-\begin{acks}{November 2016} % date when thesis first submitted to committee
+%\begin{acks}{November 2016} % date when thesis first submitted to committee
+%
+%\end{acks}
 
-\end{acks}
-
-\begin{preface} % may or may not be required, depending on thesis content
-% author may insert additional preface text here
-%\prefacetext
-% author may insert additional preface text here
-\end{preface}
+%\begin{preface} % may or may not be required, depending on thesis content
+%% author may insert additional preface text here
+%%\prefacetext
+%% author may insert additional preface text here
+%\end{preface}
 
 \begin{abstract}
-Co-channel speech refers to the presence of two or more speakers in a single-channel audio stream. 
-This study focuses on finding tangible solutions for problems caused by the presence of multiple speakers. 
-A categorization of the various kinds of co-channel speech is presented along with alternative solutions proposed for each class of problems. 
-Two approaches are considered to solve different frameworks for speaker recognition in co-channel speech. 
-In the first approach, two methods for overlapped speech detection are proposed. 
-These methods can be used in both speaker recognition and diarization problems. 
-The second approach is a modification to the back-end classification used in probabilistic linear discriminant analysis for speaker recognition, tailored to address co-channel speech in large scale speaker recognition problems. 
-The final two chapters investigate more comprehensive aspects of co-channel speech. 
-A speaker diarization tool-kit, called CRSS-SpkrDiar, is introduced as a research platform for end-to-end co-channel speech analysis. 
-In addition, a series of collaborative studies are presented that show the impact of co-channel analysis in other signal processing applications. 
+%500 words
+This study investigates various aspects of multi-speaker interference and its impact on speaker recognition. 
+Single-channel multi-speaker speech signals, otherwise known as co-channel speech, comprise a significant portion of data used in speech processing. 
+Examples of co-channel signals are recordings from meetings, conversations, debates, etc. 
+The nuisances of co-channel speech in speech processing are two-fold: 1) simultaneous speech (i.e. overlapped speech), 2) non-overlapping speaker interference. 
+In the case of overlap, the direct effects of two stochastically similar, non-stationary signals added together can disrupt speech processing performance. 
+For example, in speaker recognition, identifying target speakers in overlapped segments is substantially more difficult compared to single-speaker signals. 
+Analyses in this study show that introducing overlapped speech can increase speaker recognition error rates by an order of magnitude. 
+In addition to the direct impact of overlap, its secondary effect is in how one speaker forces the other to change his/her speech characteristics. 
+These changes in speech characteristics include modified volume, fundamental frequency, speech rate, etc. 
+The mere presence of secondary speakers in a signal is a significant source of error for speaker recognition. 
+Secondary speech reduces the reliability of speaker-dependent statistical models and also confuses the recognition system when faced with a co-channel audio signal, since different segments of audio belongs to different speakers. 
+
+This study investigates different forms of co-channel data. 
+In scenarios where the focus is primarily on overlap, independent cross-talk is used. 
+Independent cross-talk refers to the summation of two independent audio signals from different speakers to simulate overlapped data. 
+The alternative form of data used in this study is real conversation recordings. 
+Although conversations contain both overlapped and non-overlapped speech, independent cross-talk is a better source to target overlaps. 
+The reason real conversations are not deemed sufficient for overlap analysis is the scarcity of overlaps in typical conversations. 
+Independent cross-talk is obtained from the GRID corpus. GRID was used in the speech separation challenge as a source of overlapped speech. 
+Real conversations are obtained from the Switchboard telephone conversation corpus. 
+Other real conversational data used throughout this study include: the AMI meeting corpus, Prof-life-log, and UTDrive data. 
+These datasets provide a perspective towards real environment noise and co-channel interference in day-to-day speech. 
+
+Categorizing datasets allows for a separate and meticulous analysis of different aspects of co-channel speech. 
+Most of the focus in analyzing overlaps is presented in the form of overlap detection techniques. 
+This study proposes two overlap detection methods: 1) Pyknogram-based 2) Gammatone sub-band frequency modulation (GSFM). 
+Both methods take advantage of the harmonic structure of speech to detect overlaps. 
+Pyknograms do so by enhancing speech harmonics and evaluating dynamics across time, while GSFM magnifies the presence of multiple harmonics in different sub-bands. 
+The other advancements proposed in this study use back-end modeling techniques to compensate co-channel speech in real conversational data. 
+These techniques are presented to reduce the impact of interfering speech in speaker-dependent models. 
+Several methods are investigated, all of which propose a different modification to the popular probabilistic linear discriminant analysis used in state-of-the-art speaker recognition systems. 
+In addition to model compensation techniques, this study presents CRSS-SpkrDiar, which is a speaker diarization research platform aimed at tackling conversational co-channel speech data. 
+CRSS-SpkrDiar was developed during the course of this study and alleviates end-to-end co-channel speech analysis. 
+
+The main contribution of this study is in distinguishing overlap from co-channel speech. 
+The majority of existing co-channel speech research considers overlap and co-channel to be synonymous. 
+Here it is pointed out that such a simplification of the problem limits prospects. 
+In addition to proposing different overlap detection methods, this study introduces novel techniques to deal with the more general case of co-channel speech. 
 
 
 \end{abstract}
@@ -178,7 +207,7 @@ In addition, a series of collaborative studies are presented that show the impac
 
 \include{chapters/applications}
 
-
+\include{chapters/conclusions}
 
 \chapter*{Appendix}
 \label{a:other}
