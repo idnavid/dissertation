@@ -1,0 +1,32 @@
+	\item[API] Application Programming Interface
+	\item[ASR] Automatic Speech Recognition
+	\item[BIC] Bayesian Information Criterion
+	\item[DCF] Detection Cost Function
+	\item[DER] Diarization Error Rate
+	\item[DESA] Discrete Energy Separation Algorithm
+	\item[EER] Equal Error Rate
+	\item[ERB] Equivalent Rectangular Bandwidth
+	\item[FA] False Alarm
+	\item[FM] Frequency Modulation
+	\item[GLPK] GNU Linear Programming Kit
+	\item[GMM] Gaussian Mixture Model
+	\item[GSFM] Gammatone Sub-band Frequency Modulation
+	\item[HMM] Hidden Markov Model
+	\item[ILP] Integer Linear Programming
+	\item[LDA] Linear Discriminant Analysis
+	\item[MFCC] Mel Frequency Cepstral Coefficients
+	\item[NIST] National Institute of Standards and Technology
+	\item[PLDA] Probabilistic Linear Discriminant Analysis
+	\item[SAD] Speech Activity Detection
+	\item[SAPVR] Spectral Autocorrelation Peak-Valley Ratio
+	\item[SFM] Spectral Flatness Measure
+	\item[SIR] Signal-to-Interference Ratio
+	\item[SNR] Signal-to-Noise Ratio
+	\item[SRE] Speaker Recognition Evaluation
+	\item[SVM] Support Vector Machine
+	\item[TEO] Teager Energy Operator
+	\item[TV] Total Variability
+	\item[UBM] Universal Background Model
+	\item[WCE] Word-Count Estimation
+	\item[SSC] Speech Separation Challenge
+	\item[OVL] Overlap

@@ -65,7 +65,7 @@ Currently, the most common form of modeling speaker-dependent features are i-vec
 I-vectors are latent parameters that model the covariance of speaker/session-dependent Gaussian mixture models (GMM) with respect to a generic GMM (aka Universal background model -- UBM).  
 The UBM is ideally both session- and speaker-independent.
 The use of i-vectors, has become a standard way of modeling speaker specific traits for speaker recognition. 
-In many cases i-vector extraction is considered a preprocessing step in performing speaker recognition\footnote{See Appendix~\ref{apndx:ivector_plda_spkr_id}}. 
+In many cases i-vector extraction is considered a preprocessing step in performing speaker recognition\footnote{See Appendix~\ref{appendix:ivector_plda_spkr_id}}. 
 Therefore, it is both reasonable and desirable to concentrate on post i-vector analysis to deal with co-channel speech interference~\cite{ivector_challenge}. 
 The goal of this study is to build upon the latent variable perspective, popularized by i-vectors~\cite{dehak2011front} and its predecessors~\cite{kenny2010bayesian}, to improve speaker recognition in co-channel signals. 
 Working in the latent variable subspace provides the luxury of short-circuiting speaker diarization, a computationally intensive and potentially error-prone solution. 
@@ -189,7 +189,7 @@ Section~\ref{ssec:cch_in_trials} will investigate the effect of overlap and co-c
 \subsection{Co-channel Interference in Trials}
 \label{ssec:cch_in_trials}
 In this section, a series of speaker verification experiments are conducted on Switchboard2 to demonstrate the effect of using co-channel speech in enrollment and test data. 
-We do not introduce these experiments as ``baseline'', since it is an unfair assessment to add co-channel interference to trials and expect PLDA to perform well. 
+These experiments are not introduced as ``baseline'', since it is an unfair assessment to add co-channel interference to trials and expect PLDA to perform well. 
 The purpose of this section is to show the increase in equal error rates as a result of co-channel speech. 
 We also further emphasize the point made in Sect.~\ref{sec:cochannl_in_sid} by identifying the impact of overlap from co-channel interference on the EER. 
 

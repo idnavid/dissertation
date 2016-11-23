@@ -9,58 +9,101 @@ Although this contribution may appear trivial at first glance, it was shown that
 In other words, addressing overlap in co-channel speech is not sufficient for a large class of speaker recognition problems. 
 This narrative is carried out throughout the first few investigations of this study. 
 
-The study considers the impact of overlapped speech on speaker recognition performance. 
+\section{Overlapped speech analysis in speaker recognition}
+This study considers the impact of overlapped speech on speaker recognition performance. 
 Speaker recognition is typically manifested through speaker verification experiments. 
 It was shown that replacing single-speaker audio data with overlapped data reduces verification performance to up to one order of magnitude. 
-For example, equal error rates increase from 1.5\% for single-speaker audio from the GRID corpus to approximately 23\% for overlapped data (depending on the nominal signal-to-interference ratio). 
-This observation shows the legitimacy of past studies in prioritizing overlap relative to other forms of co-channel data. 
+For example, equal error rates (EER) increase from $1 - 2\%$ for single-speaker audio from the GRID corpus to over $20\%$ for overlapped data (depending on the nominal signal-to-interference ratio). 
+This observation shows the legitimacy of concerns in past studies, which prioritize overlap over other forms of co-channel data. 
 The traditional approach to deal with such drastic performance drop is to measure/detect overlapped segments in speaker recognition experiments. 
 Therefore, the second stage of this study provides an extensive investigation of overlap detection methods. 
 
+\section{Overlap detection}
 Overlap detection provides a unique perspective in highlighting the differences between single-speaker and overlapped speech. 
 The algorithms proposed in this study focus on the harmonic structure of speech. 
 Speech harmonics have traditionally been used as a way to identify overlapped speech. 
 The fact that speaker recognition is highly influenced by voiced speech further motivates this approach. 
-Harmonics are an important component of voiced speech and therefore, harmonic based analyses of overlapped speech fits well with the theme of this study. 
-The two methods proposed for overlap detection are: 1) Pyknograms and 2) Gammatone sub-band frequency modulation (GSFM). 
+Harmonics are an important component of voiced speech and therefore, harmonic based analyses of overlapped speech fits well with the theme of this study (i.e., speaker recognition). 
+
+The two methods proposed for overlap detection are: 1) Pyknograms, and 2) Gammatone sub-band frequency modulation (GSFM). 
 Pyknogram extraction is a 2 step process of obtaining a binary mask for time-frequency units corresponding to the amplitude spectrogram. 
 Frequencies across the spectrogram are first estimated using the Teager Energy Operator (step 1). 
 The estimated frequencies are then pruned to only include prominent resonances (step 2). 
-Pyknograms provide two important features that are useful for overlap detection: 1) unlike many existing speech representations, Pyknograms do not depend on the number of speakers; 2) Pyknograms are effective in suppressing non-harmonic speech, which provides robust performance in noisy conditions. 
+Pyknograms provide two important features that are useful for overlap detection: 1) unlike many existing speech representations, Pyknograms do not depend on the number of speakers; 2) Pyknograms are effective in suppressing non-harmonic speech. This suppression provides robust performance in noisy conditions. 
 In addition to Pyknograms, GSFM was also proposed as a way to magnify the presence of multiple harmonics in time-frequency units. 
 GSFM incorporates the non-linearity of sinusoidal frequency modulation to obtain frequency modulation spectra. 
 The relative roll-off of FM spectra is then used to summarize the information in each time-frequency unit. 
-Evaluations show that although in controlled conditions GSFM outperforms Pyknograms for overlap detection, under noisy conditions Pyknograms are significantly more reliable. 
+Evaluations show that although in controlled conditions GSFM outperforms Pyknograms for overlap detection, Pyknograms are significantly more reliable under noisy conditions. 
 
-In addition to introducing overlap detection methods, a novel technique is proposed that uses overlap detection decisions as quality measures for speaker recognition experiments. 
+\section{Incorporating overlap detection in speaker recognition}
+In addition to introducing overlap detection methods, a novel technique is proposed that uses overlap detection decisions as quality measures for speaker verification experiments. 
 Using overlap detection as quality measures (aka meta-data) is more desirable compared to the traditional approach, which is to detect and remove overlapped segments. 
-The advantage of quality measures is in the fact that not all overlapped speech should be thrown away, especially with limited data. 
+The advantage of quality measures is in the fact that not all overlapped speech should be thrown away, especially when the amount of available data is limited. 
 The algorithm used to fuse quality measures with speaker recognition decisions is called Q-stack, which concatenates multiple scores and summarizes the final speaker verification decision using support vector machine (SVM) certainties. 
 Fusing overlap meta-data with speaker verification scores relatively reduces speaker verification error rates by approximately 20\%. 
 
-The study also focused on evaluating speaker recognition performance in co-channel speech. 
+\section{Modified PLDA for speaker recognition in co-channel speech}
+Although overlaps can significantly impact speaker recognition performance, the practicality of this concern is debatable. 
+Therefore, this study also focused on evaluating speaker recognition performance in the more general case of co-channel speech, rather than overlap. 
 It was shown that although overlap is damaging to speaker recognition performance, the impact of co-channel is much more significant. 
-In the case of Switchboard2 telephone conversations, the impact due to non-overlapping co-channel speech is over 18\% absolute increase in EER (single-speaker performance is 5\%). 
+In the case of Switchboard2 telephone conversations, the impact due to non-overlapping co-channel speech is observed as an 18\% increase in EER (single-speaker performance is 5\%). 
 Meanwhile, the increase in EER due to overlapped speech is slightly over 2\%. 
-This puts the impact of overlap vs. co-channel speech in perspective for real conversational speech. 
-In an effort to compensate co-channel in realistic speaker recognition probelms, a standard i-vector/PLDA system was evaluated. 
+This puts the impact of overlap vs. co-channel speech in perspective when addressing real conversational speech. 
+In an effort to compensate co-channel in realistic speaker recognition problems, a standard i-vector/PLDA system was evaluated. 
 Many approaches were investigated to improve probabilistic linear discriminant analysis (PLDA) for co-channel speech. 
-1) One method was to add co-channel data to PLDA training, called mixed PLDA. 
-Mixed PLDA was presented to treat speaker interference in the same manner PLDA addresses channel mismatch.
-2) A second method was dual-eigenvoice PLDA (dePLDA). dePLDA uses two identical eigenvoice matrices to model within- and between-speaker variability. The difference between dePLDA and standard PLDA is in replacing the eigen-channel matrix with a second eigen-voice. 
-3) The study also introduced co-channel aware PLDA (caPLDA), which proposed alternative formulations to PLDA for speaker recognition in co-channel speech. 
-These alternative formulations replace within-speaker variability with a linear combination of between- and within-speaker covariances. 
-Different coefficients are investigated in the proposed linear combination framework. 
-Results show that although some performance improvement is obtained by the proposed caPLDA. 
-dePLDA on the other provides significant improvement over mixedPLDA and standard PLDA.  
 
-A speaker diarization research platform is presented in this study, called CRSS-SpkrDiar. 
-Speaker diarization addresses the problem of ``who spoke when?'', which is a relevant question for co-channel signals. 
+The first method was to add co-channel data to PLDA training, called mixed-PLDA. 
+Mixed-PLDA was presented to treat speaker interference in the same manner PLDA addresses channel mismatch. 
+Although mixed-PLDA was proposed in this study, it is also considered a baseline; since comparing proposed systems with standard PLDA, which is not designed to compensate for co-channel data, is not a fair assessment. 
+A second method proposed in this study is dual-eigenvoice PLDA (dePLDA). dePLDA uses two identical eigenvoice matrices to model within- and between-speaker variability. 
+The difference between dePLDA and standard PLDA is in replacing the eigen-channel matrix with a second eigenvoice. 
+The third method is co-channel aware PLDA (caPLDA), which proposed alternative formulations to PLDA for speaker recognition in co-channel speech. 
+These alternative formulations replace within-speaker variability with a linear combination of between- and within-speaker covariances. 
+Replacing the traditional within-speaker covariance is motivated by the fact that secondary speaker interference poses a more significant impact on i-vector distributions, compared to channel variability. 
+Different coefficients are investigated in the proposed linear combination framework. 
+Results show that by a careful consideration of linear combination parameters, speaker recognition performance is expected to improve using caPLDA. 
+dePLDA also provides significant improvement.  
+
+\section{CRSS-SpkrDiar}
+A speaker diarization research platform called CRSS-SpkrDiar was presented in this study.
+Speaker diarization addresses the problem of ``who spoke when?'', which is a relevant question for co-channel speech signals. 
 Therefore, diarization is considered an important aspect of speaker recognition in co-channel speech. 
-In a sense, most of this thesis considered speaker recognition over entire co-channel signals, while speaker diarization addresses speaker recognition within a co-channel signal. 
+In a sense, while most of this thesis considered speaker recognition over entire co-channel audio-streams, speaker diarization addresses speaker recognition within a co-channel signal. 
 CRSS-SpkrDiar is a C++ library that includes the implementation of state-of-the-art speaker diarization techniques. 
 This study presents the main components of CRSS-SpkrDiar while providing sufficient details related to speaker diarization in general. 
-CRSS-SpkrDiar is considered a major contribution of this comprehensive study on co-channel speech and is presented as a stepping stone for future work. 
+CRSS-SpkrDiar is considered a major contribution of this study on co-channel speech and is presented as a stepping stone for future work. 
+
+\section{Applications}
+As a final stage for this study, two applications of co-channel analysis in other signal processing applications were investigated. 
+It was shown that the techniques developed for overlap detection and co-channel analysis in general could be used to improve word-count estimation in realistic conversational co-channel data. 
+Co-channel estimation was also proven useful in assessing conversations in in-vehicle conversations, in an effort to monitor the impact of driver conversations with driving performance. 
+
+
+\section{Future work}
+A wide range of topics in co-channel speech were covered throughout this study. 
+Care was taken to assure that everything that affects speaker recognition be fully analyzed and some novel techniques were proposed. 
+
+The algorithms used for overlap detection mostly considers unsupervised signal processing techniques. 
+A natural improvement on unsupervised methods has always been to investigate these methods in supervised frameworks. 
+A more elaborate setup to track harmonic trajectories in Pyknograms involves using a hidden Markov model (HMM) to model Pyknogram patterns. 
+This allows for a supervised classification of speech segments into overlap and single-speaker speech. 
+The proposed system uses an initial segmentation of a given audio stream based on the Bayesian Information Criterion (BIC segmentation)~\cite{BIC}. 
+The shorter segments are then compared against two pre-trained HMMs, one for overlapped and the other for single-speaker speech. 
+The initial BIC segmentation is to allow for detection on shorter segments, since overlapped speech is considerably less frequent in a conversation compared to the total amount of speech. 
+The combination of BIC segmentation and HMM-based classification allows for a practical overlap detection mechanism that fits well with analyzing conversations recorded in real conditions (as opposed to artificial datasets with simulated overlaps). 
+Among other benefits of this framework is its compatibility with speaker diarization tools in which overlapped speech is considered a nuisance. 
+
+Although the developments in modified PLDA algorithms resulted in some improvement for co-channel PLDA, further efforts can find an optimal structure to model within-speaker variability for co-channel speech. 
+The assumption is that for co-channel audio, each class correponds to a fixed primary speaker and varying secondary speakers. 
+The solution proposed here was to share information from inter-speaker variabilities to improve performance. 
+An alternative model could use a separate dataset to obtain inter-speaker information, therefore removing the convergence issues associated with sharing parameters in the PLDA training process. 
+On that note, EM convergence could be an interesting starting point for analyses in modified PLDA, especially in the case of dual-eigenvoice PLDA. 
+
+The third component of this dissertation that has the most potential to contribute to future studies is CRSS-SpkrDiar. 
+This tool-kit was designed with the intention of providing comprehensive source code that directly relates to problems addressed in this study (co-channel, overlap, speaker recognition, speaker diarization). 
+CRSS-SpkrDiar provides full control to users and is constantly under development to alleviate future studies. 
+
+
 
 
 
