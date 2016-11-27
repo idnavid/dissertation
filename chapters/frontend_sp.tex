@@ -632,7 +632,7 @@ In Fig.\ref{fig:tone_fm_spectra}-a, the amplitude of the $n^{th}$ frequency comp
 Since overlapped speech consists of two speech signals, a closer analogy to the problem of overlapped speech is observed in the case where the modulating signal has more than one sinusoid (as seen in Eq.(\ref{eq:2sin_fm})). 
 Fig.\ref{fig:tone_fm_spectra}-b~and~-c compare the spectra of double-tone FM signals in two scenarios. 
 In Fig.\ref{fig:tone_fm_spectra}-b, the two tones are harmonically related (one is an integer multiple of the other), while in Fig.\ref{fig:tone_fm_spectra}-c, the frequencies of the modulating tones do not share a common integer factor. 
-Consequently, the spectrum in Fig. \ref{fig:tone_fm_spectra}(c) is more disperse than that in Fig.\ref{fig:tone_fm_spectra}-b. 
+Consequently, the spectrum in Fig. \ref{fig:tone_fm_spectra}-c is more disperse than that in Fig.\ref{fig:tone_fm_spectra}-b. 
 The same conclusion can be made from Eq.(\ref{eq:2sin_fm_bessel}) where the number of frequency components of the Fourier transform of $x_c(t)$ is greater when $f_1$ and $f_2$ are not harmonically related. 
 An FM signal for a double-tone modulating signal with frequencies $f_1$ and $f_2$ can be represented as,
 \begin{equation}
@@ -721,7 +721,7 @@ The collection of GSFM roll-off factors are used as a time-frequency representat
 \subsection{Unsupervised overlap detection using GSFM roll-off}
 \label{sssec:unsupervised_ovl_det_gsfm}
 The feature used to detect overlapped speech uses a combination of the information obtained from all sub-bands, since each band can provide a local decision as to whether a frame contains speech from more than one speaker. 
-We use the overall count of highly disperse time-frequency units (i.e., units with higher GSFM roll-off) per time unit as a decision score for the amount of overlapped speech in a given speech segment. 
+We can use the overall count of highly disperse time-frequency units (i.e., units with higher GSFM roll-off) per time unit as a decision score for the amount of overlapped speech in a given speech segment. 
 Highly disperse roll-off values are obtained by applying a 2 class K-means clustering. 
 K-means results in a threshold of the roll-off values, $R_{thr}$. 
 By applying the threshold to the GSFM roll-off values (i.e. $R(t, i)$) for a given speech segment, one can estimate the decision score for overlapped speech detection. 
@@ -813,7 +813,7 @@ It is worth mentioning that in Sect.~\ref{sssec:ovl_frame_vs_sir_gsfm} it was sh
 \end{figure}
 
 
-Performances from other overlap detection algorithms were not included here, since to the best of our knowledge none of the existing algorithms claim robustness in noisy conditions. 
+Performances from other overlap detection algorithms were not included here, since none of the existing algorithms claim robustness in noisy conditions. 
 
 \newpage
 \section{Summary}
@@ -822,7 +822,7 @@ The focus of this chapter was on overlapped speech, which refers to segments whe
 Independent cross-talk data (as defined in Chapter~\ref{chap:intro}) were used in order to isolate overlap from other forms of interference, such as noise.
 Two overlap detection methods were proposed: Pyknogram, and GSFM. 
 Pyknograms are useful for overlap detection, since they enhance speech harmonics regardless of the number of speakers in a signal. 
-The noticeable difference between single-speaker and overlap harmonics allows Pyknograms to be an asset to overlap detection. 
+The significant difference between single-speaker and overlap harmonics allows Pyknograms to be an asset to overlap detection. 
 The second method, GSFM, magnifies dispersive trends in speech sub-bands in the presence of overlap using multi-tone frequency modulation analysis. 
 The two proposed methods are compared in real environmental noise and it is shown that despite outperforming Pyknograms in clean conditions, GSFM is highly affected by adding noise in overlap detection experiments. 
 Therefore, Pyknograms provide more robust overlap detection performance. 

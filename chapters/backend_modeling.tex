@@ -26,21 +26,23 @@
 This chapter addresses the problem of speaker recognition for co-channel recordings, rather than speaker recognition in overlap. 
 The main focus is on interference from secondary speakers, be it overlapped or not. 
 Secondary speech interference, the main characteristic of co-channel, is an important source of error for all automatic speech processing systems. Speaker recognition experiments are highly influenced by the presence of secondary speakers, due to reduced reliability of the trained models. 
-Although the target speaker is a common factor in all training samples for a given speaker model, the standard structure of speaker recognition systems has not been designed to effectively average out interfering speech. With this in mind, the contributions of this chapter are:
+Although the target speaker is a common factor in all training samples for a given speaker model, the standard structure of speaker recognition systems has not been designed to effectively average out interfering speech. With this in mind, the contributions of this chapter are to:
 \begin{itemize}
 	\item systematically dissect the effects of overlap and co-channel speech on speaker verification, 
-	\item investigate three proposed methods to improve probabilistic linear discriminant analysis in co-channel. 
+	\item investigate three proposed methods to improve probabilistic linear discriminant analysis for speaker recognition in co-channel. 
 \end{itemize}
 
 To the best of our knowledge, few studies address speaker recognition in co-channel speech signals. 
-However, the effects of artificially adding {\bf overlapped speech} in a speaker verification setup has received considerable attention~\cite{yantorno_report,yantorno_SID,Dwang_03}. 
+However, the effects of artificially adding {\bf overlapped speech} in a speaker verification setup has received considerable attention~\cite{yantorno_report,yantorno_SID,Dwang_03}, as shown in Chapter~\ref{chapter:ovl_in_sid}. 
 In many of these studies, the approach was to automatically detect and remove overlaps from co-channel speech in training and test data. 
 Although many overlap detection algorithms have been investigated over the years~\cite{Boakye_icassp_08,nav_icassp13,smolenski_tut,sapvr_2000}, none have considered solving the problem in the more general case of co-channel interference. 
 
-This chapter differentiates co-channel speech from overlapped speech by considering the latter a special case of the former where both speakers are active at the same time. 
+This chapter differentiates co-channel speech from overlapped speech by considering the latter a special case of co-channel where both speakers are active at the same time. 
 Co-channel speech refers to the broader case where speakers are not necessarily overlapping (see Fig.~\ref{fig:cochannel_vs_overlap}). 
-We focus on speaker recognition in co-channel speech interference, in which overlaps may occur.  
-This sheds light on a more realistic problem, since only a small percentage of conversational speech contains amounts of overlap that are large enough to significantly lower speaker recognition performance~\cite{cetin_shriberg_06_icassp,smolenski_tut}. 
+Here, the focus is on speaker recognition in co-channel speech interference, in which overlaps may occur.  
+This sheds light on a more realistic problem, since only a small percentage of conversational speech contains amounts of overlap that are large enough to significantly impact speaker recognition performance~\cite{cetin_shriberg_06_icassp,smolenski_tut}. 
+An example is given in Fig.~\ref{fig:cochannel_vs_overlap}, where the overlaps as well as non-overlapping speech interference are labeled. 
+It can be seen that speech from the secondary speaker in a single-channel conversation recording is more likely to appear in non-overlapping segments. 
 
 \begin{figure*}[t!]
 	\centering
