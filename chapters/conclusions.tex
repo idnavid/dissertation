@@ -1,5 +1,5 @@
 \chapter{CONCLUSIONS}
-
+\label{chapter:conclusions}
 This study presented a detailed description of co-channel speech analysis in the context of speaker recognition. 
 As repeatedly mentioned throughout the course of this thesis, co-channel speech refers to single-channel audio signals with more than one speaker. 
 Great care was taken to highlight the difference between overlap and co-channel speech. 
@@ -49,7 +49,7 @@ It was shown that although overlap is damaging to speaker recognition performanc
 In the case of Switchboard2 telephone conversations, the impact due to non-overlapping co-channel speech is observed as an 18\% increase in EER (single-speaker performance is 5\%). 
 Meanwhile, the increase in EER due to overlapped speech is slightly over 2\%. 
 This puts the impact of overlap vs. co-channel speech in perspective when addressing real conversational speech. 
-In an effort to compensate co-channel in realistic speaker recognition problems, a standard i-vector/PLDA system was evaluated. 
+In an effort to compensate co-channel in realistic speaker recognition problems, a standard i-Vector/PLDA system was evaluated. 
 Many approaches were investigated to improve probabilistic linear discriminant analysis (PLDA) for co-channel speech. 
 
 The first method was to add co-channel data to PLDA training, called mixed-PLDA. 
@@ -59,7 +59,7 @@ A second method proposed in this study is dual-eigenvoice PLDA (dePLDA). dePLDA 
 The difference between dePLDA and standard PLDA is in replacing the eigen-channel matrix with a second eigenvoice. 
 The third method is co-channel aware PLDA (caPLDA), which proposed alternative formulations to PLDA for speaker recognition in co-channel speech. 
 These alternative formulations replace within-speaker variability with a linear combination of between- and within-speaker covariances. 
-Replacing the traditional within-speaker covariance is motivated by the fact that secondary speaker interference poses a more significant impact on i-vector distributions, compared to channel variability. 
+Replacing the traditional within-speaker covariance is motivated by the fact that secondary speaker interference poses a more significant impact on i-Vector distributions, compared to channel variability. 
 Different coefficients are investigated in the proposed linear combination framework. 
 Results show that by a careful consideration of linear combination parameters, speaker recognition performance is expected to improve using caPLDA. 
 dePLDA also provides significant improvement.  

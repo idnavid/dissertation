@@ -2,7 +2,7 @@
 \chapter{BACKGROUND}
 \label{chap:intro}
  
-The presence of speech interference is challenging issue for all automatic speech processing systems. 
+The presence of speech interference is a challenging issue for all automatic speech processing systems. 
 As speech technology advances into our daily lives (in the form of text-to-speech recognition, speaker verification systems, etc.), the need to address multi-speaker interference increases. 
 This increase is due to the number and amount of naturalistic human-to-human interactions captured for archiving, entertainment, social media, etc. 
 In this study, multi-speaker interference is referred to as co-channel speech. 
@@ -55,7 +55,7 @@ Aside from overlapped vs. non-overlapped speech, there are different ways of cat
 Among such is a semantic classification that focuses on speakers' interactions with each other and divides co-channel data into two subgroups: 
 \begin{itemize}
 	\item conversational co-channel speech
-	\item co-channel speech with independent parties (aka independent cross-talk)
+	\item co-channel speech with independent parties (i.e., independent cross-talk)
 \end{itemize} 
 
 Conversational co-channel speech refers to recordings in which speakers acknowledge other parties in the recording and engage in dialog. 
@@ -72,7 +72,7 @@ Aside from changes in speech production, the element of interference by competin
 Therefore, in conversational co-channel data, one has to consider both overlaps and speaker specific alterations as sources of distortion and mismatch. 
 
 Co-channel data with independent parties, are examples of co-channel data where the speakers do not interact with each other. 
-An example of this types is cross-talk between separate channels; imagine switching between radio stations on an analog AM radio. 
+An example of this type is cross-talk between separate channels; imagine switching between radio stations on an analog AM radio. 
 The main characteristic of such data is that speakers are not aware of each other and therefore do not pertain to normal conversational mannerisms. 
 That includes following turn-taking rules, which in most cases limits overlapped speech. 
 Artificially generated co-channel data (mixing independent channels) is another example of independent cross-talk. 
@@ -94,7 +94,7 @@ A description of an outreach to signal processing in vehicles is also presented,
 
 \section{Approach}
 
-The goal of this thesis is to provide tangible solutions to problems caused by co-channel speech in automatic speech technology. 
+The goal of this thesis is to provide tangible solutions to problems caused by co-channel speech in automatic speaker recognition. 
 We argue that part of these issues are caused by overlapped speech (direct speech interference), which plays a significant role in making co-channel speech a difficult problem. 
 The presence of overlapped speech can be detrimental to speaker diarization and speech recognition systems. 
 %There is no clear and unique way of labeling or transcribing overlapped segments. 
@@ -139,29 +139,35 @@ Which makes speaker diarization an inseparable part of our approach.
 \label{sec:intro_outline}
 This dissertation is organized in the following manner. 
 Thesis contributions are split into two main categories: 1) signal processing approaches, 2) probabilistic modeling. 
-Chapter~\ref{chapter:front-end}, overlap detection in co-channel speech, presents signal processing techniques used for overlap detection. 
+Chapter~\ref{chapter:front-end}, overlap detection methods, presents signal processing techniques used for overlap detection. 
+Chapter~\ref{chapter:ovl_in_sid}, speaker recognition in overlapped speech, highlights the importance of addressing overlapped speech in speaker recognition problems. 
+In addition, techniques proposed Chapter~\ref{chapter:front-end} are used in Chapter~\ref{chapter:ovl_in_sid} to improve recognition performance. 
 Chapter~\ref{chapter:backend}, speaker recognition in co-channel speech, focuses on probabilistic modeling techniques to improve speaker recognition in co-channel. 
+
 In addition to the two primary contributions, this thesis also covers practical aspects of co-channel speech processing. 
 These aspects are covered in two frameworks. 
 The first is the description of CRSS-SpkrDiar (Chapter~\ref{chap:spkr_diar}), which is an end-to-end speaker diarization system. 
-The second aspect is in the form of an exhibition of interdisciplinary applications of co-channel speech (Chapter~\ref{chap:applications}). 
+The second aspect is an exhibition of interdisciplinary applications of co-channel speech  in other signal processing applications (Chapter~\ref{chap:applications}). 
+
+Finally, a summary of conclusions and references to future studies are presented in Chapter~\ref{chapter:conclusions}. 
 
 \section{Thesis Contributions}
 \label{sec:contributions}
 This dissertation investigates various aspects of co-channel speech and is novel in a number of ways. 
-The most important contribution is:
+The most important contribution is to:
 \begin{itemize}
 	\item separate overlapped speech from co-channel.
 \end{itemize}
 The significance of this contribution is in its different perspective compared to existing studies. 
 Solely focusing on overlap instead of co-channel (or vise versa) limits the applicability of methods and makes it difficult to compare studies, since different studies refer to different phenomena as co-channel. 
+
 The second contribution is in the signal processing perspective, which is to
 \begin{itemize}
-	\item propose features to detect overlap speech from single-speaker speech (overlap speech detection).
+	\item propose features to detect overlapped speech from single-speaker speech (overlapped speech detection).
 \end{itemize}
 This is important, since overlap detection constitutes a significant portion of co-channel research. 
 Being able to detect overlapped segments is also useful in other problems related to co-channel analysis. 
-One of the applications of overlap detection in co-channel speech is used in speaker diarization systems, which is the third contribution. 
+One of the applications of overlap detection in co-channel speech is used in speaker diarization systems. 
 The contribution in regards to speaker diarization is to:
 \begin{itemize}
 	\item provide a detailed description of CRSS-SpkrDiar, a speaker diarization tool-kit. 

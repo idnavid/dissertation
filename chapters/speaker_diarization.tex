@@ -52,7 +52,7 @@ Especially, with regard to segmentation and post-clustering steps.
 Some studies completely ignore the segmentation step and use equal-length segments to perform clustering~\cite{sell_garcia_2015diarization}. 
 Skipping segmentation is an attractive proposition, since as we will see in the following section, segmentation is prone to errors. 
 In addition, using equal lengths instead of varying-length segments to some extent guarantees equal reliability of individual segments for the clustering step. 
-We say equally reliable because speaker-dependent features (e.g. i-vectors) are known to depend largely on the length of the signals~\cite{hasan2013duration} from which they are extracted. 
+We say equally reliable because speaker-dependent features (e.g. i-Vectors) are known to depend largely on the length of the signals~\cite{hasan2013duration} from which they are extracted. 
 When automatic segmentation is used to split the audio recording, segments lengths may vary causing the corresponding speaker-dependent features to vary in quality and reliability. 
 
 Another component of speaker diarization, not mentioned above, is the re-segmentation step. 
@@ -97,8 +97,8 @@ CRSS-SpkrDiar follows the same convention and consists of a {\it diar} and a {\i
 The classes are defined in {\it diar}, while {\it diarbin} contains the executables used to perform segmentation and clustering. 
 CRSS-SpkrDiar uses matrix and utility libraries from Kaldi in its core.  
 Kaldi also includes modules that define Gaussian mixture models and Hidden Markov models ({\it gmm} and {\it hmm}), of which we also take advantage for acoustic modeling. 
-As mentioned in the previous section, i-vectors are used in CRSS-SpkrDiar as speaker-dependent features. 
-Therefore, Kaldi's {\it ivector} is used to extract i-vectors and calculate distances and models such as PLDA\footnote{probabilistic linear discriminant analysis} to perform clustering. 
+As mentioned in the previous section, i-Vectors are used in CRSS-SpkrDiar as speaker-dependent features. 
+Therefore, Kaldi's {\it ivector} is used to extract i-Vectors and calculate distances and models such as PLDA\footnote{probabilistic linear discriminant analysis} to perform clustering. 
 Figure~\ref{fig:crssdiar_vs_kaldi} shows the interaction between {\it diar} and {\it diarbin} components and Kaldi libraries. 
 
 \begin{figure}[t!]
@@ -240,7 +240,7 @@ else
 An important component of change detection is the {\it segment} data type. 
 This class contains all the necessary information to calculate functions used in speaker diarization. 
 For example, each {\it segment} contains to variable {\it Begin} and {\it End} that indicate the start and end frames corresponding to that segment. 
-This class also includes functions used to calculate i-vectors, which will be used extensively in the next section. 
+This class also includes functions used to calculate i-Vectors, which will be used extensively in the next section. 
 Segments is considered the core data type used in CRSS-SpkrDiar and is highly compatible with existing Kaldi classes. 
 
 \newpage
@@ -270,10 +270,10 @@ The most important being the error-propagation that occurs during iterations.
 If two segments are incorrectly grouped together in one iteration, the model (e.g., GMM) used to represent the cluster for the next iteration will not accurately represent the speaker identity, and so on. 
 This issue has led many to use other top-down clustering approaches, which are less likely to suffer from error-propagation. Examples being K-means~\cite{shum2011exploiting} or spectral clustering~\cite{shum2012spectralclustering, ning2006spectral}. 
 To the best of our knowledge, there are no conclusive results that suggest one clustering method over all others for speaker diarization. 
-Another important development with regard to clustering has been to use i-vectors to perform clustering. 
-The standard HAC-GMM framework does not use i-vectors in the clustering process. 
-Some developments have been made to use i-vector distances in an HAC clustering solution~\cite{}. 
-The reader should be reminded that the compatibility of CRSS-SpkrDiar with Kaldi allows for a complete integration of i-vectors with clustering. 
+Another important development with regard to clustering has been to use i-Vectors to perform clustering. 
+The standard HAC-GMM framework does not use i-Vectors in the clustering process. 
+Some developments have been made to use i-Vector distances in an HAC clustering solution~\cite{}. 
+The reader should be reminded that the compatibility of CRSS-SpkrDiar with Kaldi allows for a complete integration of i-Vectors with clustering. 
 
 However, an increasingly popular algorithm that has been used in speaker diarization has been {\it integer linear programming} (ILP). 
 Two reasons that make ILP particularly interesting are: 
@@ -283,17 +283,17 @@ Two reasons that make ILP particularly interesting are:
 \end{itemize}
 
 ILP was introduced as a global optimization solution for the clustering problem in speaker diarization by Rouvier and Meignier~\cite{rouvier2012ilp}. 
-An attractive aspect of ILP for speaker diarization is that it is relatively strait-forward to perform ILP clustering on i-vectors~\cite{dupuy2012ivectorsILP}. 
+An attractive aspect of ILP for speaker diarization is that it is relatively strait-forward to perform ILP clustering on i-Vectors~\cite{dupuy2012ivectorsILP}. 
 The implementation in CRSS-SpkrDiar is based on improvements on the original ILP formulation for speaker diarization~\cite{dupuy2014ILPimprovement}. 
 
-The single-speaker segments from change detection can be used to derive i-vectors. 
-As you may recall from Chapter~\ref{chapter:backend}, i-vectors are fixed-length vectors that represent speaker-specific characteristic of a given audio signal of variable length. 
-ILP is a constrained optimization problem that determines which i-vectors should fall in the same cluster. 
+The single-speaker segments from change detection can be used to derive i-Vectors. 
+As you may recall from Chapter~\ref{chapter:backend}, i-Vectors are fixed-length vectors that represent speaker-specific characteristic of a given audio signal of variable length. 
+ILP is a constrained optimization problem that determines which i-Vectors should fall in the same cluster. 
 The optimization ensures that:
 \begin{enumerate}
-	\item all i-vectors in a cluster are within a predefined distance, $\delta$, of all the other i-vectors in that cluster. 
+	\item all i-Vectors in a cluster are within a predefined distance, $\delta$, of all the other i-Vectors in that cluster. 
 	\item the number of clusters is minimal. 
-	\item every i-vector is assigned to one and only one cluster. 
+	\item every i-Vector is assigned to one and only one cluster. 
 \end{enumerate}
 
 The inherent compatibility of ILP allows formulating the aforementioned conditions in a convex linear programming manner, regardless of the non-linearities of distance metrics. 
@@ -309,12 +309,12 @@ for clusters $C \in \{1 ... N\}$:
 \label{eq:ilp_minimization}
 minimize \hspace{0.2in} \frac{1}{\delta}\sum\limits_{i=1}^{N}\sum\limits_{j=1}^{N}dist(i,j)x_{i,j} + \sum\limits_{k=1}^{N}x_{k,k}
 \end{equation}
-The minimization problem searches for elements of a binary $N x N$ clustering assignment matrix, in which $N$ corresponds to the number of i-vectors (i.e., segments) generated in Sect.~\ref{sec:segmentation}. 
-The value $x_{i,i}$ is $1$ if the $i^{th}$ i-vector is identified as a cluster centroid and $0$ otherwise. 
-$x_{i,j}$ is $1$ if the $j^{th}$ i-vector belongs to the cluster whose centroid is $i$. 
+The minimization problem searches for elements of a binary $N x N$ clustering assignment matrix, in which $N$ corresponds to the number of i-Vectors (i.e., segments) generated in Sect.~\ref{sec:segmentation}. 
+The value $x_{i,i}$ is $1$ if the $i^{th}$ i-Vector is identified as a cluster centroid and $0$ otherwise. 
+$x_{i,j}$ is $1$ if the $j^{th}$ i-Vector belongs to the cluster whose centroid is $i$. 
 The first term in (\ref{eq:ilp_minimization}) makes sure that centroids are picked in a way that minimizes the sum of distances of all elements in a cluster from their assigned centroid. 
-The distance between the $i$ and $j^{th}$ i-vectors is $dist(i,j)$. 
-Clearly, the optimal solution to only minimize the first term, $\frac{1}{\delta}\sum\limits_{i=1}^{N}\sum\limits_{j=1}^{N}dist(i,j)x_{i,j}$, is to choose all i-vectors as a centroid, which will undesirably result in $N$ clusters. 
+The distance between the $i$ and $j^{th}$ i-Vectors is $dist(i,j)$. 
+Clearly, the optimal solution to only minimize the first term, $\frac{1}{\delta}\sum\limits_{i=1}^{N}\sum\limits_{j=1}^{N}dist(i,j)x_{i,j}$, is to choose all i-Vectors as a centroid, which will undesirably result in $N$ clusters. 
 Hence, the second term is introduced to simultaneously minimize the number of clusters. $\sum\limits_{k=1}^{N}x_{k,k}$ is the sum of diagonal elements, also equal to the number of clusters. 
 The first term is normalized by a factor $\delta$. 
 This normalizing factor is the threshold used as the radius for all clusters. 
@@ -324,7 +324,7 @@ Some conditions are implied by the formulation, such as:
 x_{i,j} \in \{0,1\},  \hspace{1in}  1 \leq i,j \leq N
 \end{equation}
 which states that the clustering assignment matrix must have binary elements; hence the term {\it integer} linear programming. 
-Some constraints are straight-forward, for example each i-vector can only be assigned to one cluster: 
+Some constraints are straight-forward, for example each i-Vector can only be assigned to one cluster: 
 \begin{equation}
 \sum\limits_{i=1}^{N}x_{i,j} = 1, \hspace{1in} 1 \leq i \leq N
 \end{equation}
@@ -332,7 +332,7 @@ or that all distances should be less that a pre-determined threshold, $\delta$:
 \begin{equation}
 d(i,j)x_{i,j} < \delta. \hspace{1in} 1 \leq i,j \leq N
 \end{equation}
-A more subtle constraint is that an i-vector $j$ is assigned to a cluster only if the cluster has a centroid. In other words, $j$ can be assigned to $k$ if $k$ is a centroid. 
+A more subtle constraint is that an i-Vector $j$ is assigned to a cluster only if the cluster has a centroid. In other words, $j$ can be assigned to $k$ if $k$ is a centroid. 
 \begin{equation}
 x_{k,j} - x_{k,k} \leq 0. \hspace{1in} 1 \leq k,j \leq N
 \end{equation}
@@ -357,8 +357,8 @@ subject~to:  \hspace{0.2in}& x_{k,j} \in {0,1}, \hspace{1in} k \in K_j , 1 \leq 
 The optimzation problem in (\ref{eq:ilp_minimization_1}) is implemented in CRSS-SpkrDiar using the GNU linear programming kit (GLPK)~\cite{makhorin2008glpk}. GLPK is an open-source C++ library. 
 Therefore, the entire CRSS-SpkrDiar module solely depends on C++ libraries. 
 GLPK reads explicitly objectives, equalities, and inequalities in the form provided in (\ref{eq:ilp_minimization_1}). 
-To create the input file for GLPK, i-vectors are extracted from the segments and indexed appropriately. 
-A distance matrix (see Sect.\ref{sec:plda_ilp} and \ref{sec:other_distances_ilp}) is calculate using all segment i-vectors. 
+To create the input file for GLPK, i-Vectors are extracted from the segments and indexed appropriately. 
+A distance matrix (see Sect.\ref{sec:plda_ilp} and \ref{sec:other_distances_ilp}) is calculate using all segment i-Vectors. 
 Figure~\ref{fig:ilp_clustering} summarizes the process of generating the GLPK input, we is called the {\it GLPK Template} in CRSS-SpkrDiar. 
 
 \begin{figure}[ht!]
@@ -376,7 +376,7 @@ A novel addition in CRSS-SpkrDiar has been in the choice of distance metric, $di
 
 \section{PLDA in ILP clustering}
 \label{sec:plda_ilp}
-Probabilistic linear discriminant analysis (PLDA) was thoroughly investigated in Chapter~\ref{chapter:backend} as a way to determine whether two individual [or groups of] i-vectors belong to the same speaker. 
+Probabilistic linear discriminant analysis (PLDA) was thoroughly investigated in Chapter~\ref{chapter:backend} as a way to determine whether two individual [or groups of] i-Vectors belong to the same speaker. 
 The same question is faced during the clustering process for speaker diarization. 
 Since ILP does not add any restrictions on the distance measures (see (\ref{eq:ilp_minimization_1})), PLDA can be used here as the distance metric, $dist(.,.)$. 
 This creates a more appropriate setting for the clustering step, which aims to compare speaker identities across segments. 
@@ -388,8 +388,8 @@ In this scenario PLDA functions as a channel compensation algorithm.
 CRSS-SpkrDiar proposes to use PLDA as a distance measure to perform global optimization in ILP clustering. 
 This is expected to improve performance relative to Mahalanobis and cosine distances previously proposed for ILP clustering~\cite{dupuy2012ivectorsILP,dupuy2014ILPimprovement}. 
 
-CRSS-SpkrDiar accepts labeled background i-vectors to train a PLDA model (using Kaldi's PLDA class) to calculate distances. 
-The function {\it computeDistanceMatrix}  calculates PLDA distances from segment i-vectors and background i-vectors in {\it writeTemplateILP}. 
+CRSS-SpkrDiar accepts labeled background i-Vectors to train a PLDA model (using Kaldi's PLDA class) to calculate distances. 
+The function {\it computeDistanceMatrix}  calculates PLDA distances from segment i-Vectors and background i-Vectors in {\it writeTemplateILP}. 
 In addition to {\it computeDistanceMatrix} for PLDA, CRSS-SpkrDiar also calculates cosine distance, Mahalanobis distance, and conditional Bayes distance. 
 Section~\ref{sec:other_distances_ilp}
 
@@ -397,7 +397,7 @@ Section~\ref{sec:other_distances_ilp}
 \label{sec:other_distances_ilp}
 In addition to PLDA, three other distance measures are implemented for the clustering procedure in CRSS-SpkrDiar. 
 
-The first is cosine distance, which uses the normalized dot product of i-vector pairs to define similarity. The cosine distance between two i-vectors ${\bf v_i}$ and ${\bf v_j}$ is: 
+The first is cosine distance, which uses the normalized dot product of i-Vector pairs to define similarity. The cosine distance between two i-Vectors ${\bf v_i}$ and ${\bf v_j}$ is: 
 \begin{equation}
 \label{eq:cosine_distance}
 dist_{cos}(i,j) = \frac{<{\bf v_i} , {\bf v_j} >}{|| {\bf v_i} ||||{\bf v_j}|| }
@@ -407,19 +407,19 @@ The problem is that higher cosine distance is associated with closer vectors. Al
 ILP minimization, on the other hand, considers lower distance values (starting from $0$) as close vectors and higher values (always positive) as distant. 
 Therefore, the cosine metric used in CRSS-SpkrDiar is $1 - dist_cos(i,j)$ from (\ref{eq:cosine_distance}). 
 
-The second distance metric is Euclidean distance, defined as the norm-2 distance between ${\bf v_i}$ and ${\bf v_j}$. Similarly, a Mahalanobis distance, which is a weighted Euclidean distance is also applicable. The weight for Mahalanobis distance is calculated from the covariance estimate of all the i-vectors obtained from segments$, \Sigma$. 
+The second distance metric is Euclidean distance, defined as the norm-2 distance between ${\bf v_i}$ and ${\bf v_j}$. Similarly, a Mahalanobis distance, which is a weighted Euclidean distance is also applicable. The weight for Mahalanobis distance is calculated from the covariance estimate of all the i-Vectors obtained from segments$, \Sigma$. 
 \begin{equation}
 dist_{mah}(i,j) = \sqrt{({\bf v_i} - {\bf v_j})^T{\bf \Sigma}^{-1}({\bf v_i} - {\bf v_j})}
 \end{equation}
 For Euclidean distance ${\bf \Sigma} = {\bf I}$. 
 
 The last distance measure is conditional Bayes. This distance was suggested by Rouvier and Meignier~\cite{rouvier2012ilp}} as a substitute for Mahalanobis distance. 
-Instead of calculating ${\bf \Sigma}$ from the segment i-vectors, labeled developments i-vectors are used from an external dataset. 
+Instead of calculating ${\bf \Sigma}$ from the segment i-Vectors, labeled developments i-Vectors are used from an external dataset. 
 This measure computes a Mahalanobis distance using the within-class covariance corresponding to development speakers. 
-The development data contains i-vectors groups of i-vectors from different speakers, for which speaker labels are available. 
-The within-class covariance is calculated by averaging the covariance obtained from the i-vectors of each development speaker. 
+The development data contains i-Vectors groups of i-Vectors from different speakers, for which speaker labels are available. 
+The within-class covariance is calculated by averaging the covariance obtained from the i-Vectors of each development speaker. 
 The implied assumption here is that all speaker classes have a similar within-class covariance. 
-The goal of conditional Bayes is to remove channel-dependent variabilities from the i-vectors. 
+The goal of conditional Bayes is to remove channel-dependent variabilities from the i-Vectors. 
 
  
 \section{Evaluation}
@@ -492,10 +492,10 @@ Experiments are conducted on AMI meeting data.
 Each meeting recording, referred to as a {\it session}, contains a minimum of 4 speakers. 
 Other than the session audio file, no additional information is provided to the diarization system. 
 However, as mentioned before some of the distance metrics, PLDA and conditional Bayers, require external data (i.e., development data). 
-Development data is provided in the form of i-vectors from NIST SRE challenges. 
-For the purposes of these experiments i-vectors were extracted for over 600 NIST SRE04,05,06 speakers. 
-Multiple i-vectors from different recordings were used for each speaker to provide sufficient channel variability. 
-The PLDA model used here does not perform dimension reduction on the original 400-dimensional i-vectors. 
+Development data is provided in the form of i-Vectors from NIST SRE challenges. 
+For the purposes of these experiments i-Vectors were extracted for over 600 NIST SRE04,05,06 speakers. 
+Multiple i-Vectors from different recordings were used for each speaker to provide sufficient channel variability. 
+The PLDA model used here does not perform dimension reduction on the original 400-dimensional i-Vectors. 
 
 \begin{figure}[h!]
 	\vspace{2mm}
