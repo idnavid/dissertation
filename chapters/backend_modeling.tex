@@ -32,7 +32,7 @@ Although the target speaker is a common factor in all training samples for a giv
 	\item investigate three proposed methods to improve probabilistic linear discriminant analysis for speaker recognition in co-channel. 
 \end{itemize}
 
-To the best of our knowledge, few studies address speaker recognition in co-channel speech signals. 
+As far as this study is concerned, few studies address speaker recognition in co-channel speech signals. 
 However, the effects of artificially adding {\bf overlapped speech} in a speaker verification setup has received considerable attention~\cite{yantorno_report,yantorno_SID,Dwang_03}, as shown in Chapter~\ref{chapter:ovl_in_sid}. 
 In many of these studies, the approach was to automatically detect and remove overlaps from co-channel speech in training and test data. 
 Although many overlap detection algorithms have been investigated over the years~\cite{Boakye_icassp_08,nav_icassp13,smolenski_tut,sapvr_2000}, none have considered solving the problem in the more general case of co-channel interference. 
@@ -42,14 +42,14 @@ Co-channel speech refers to the broader case where speakers are not necessarily 
 Here, the focus is on speaker recognition in co-channel speech interference, in which overlaps may occur.  
 This sheds light on a more realistic problem, since only a small percentage of conversational speech contains amounts of overlap that are large enough to significantly impact speaker recognition performance~\cite{cetin_shriberg_06_icassp,smolenski_tut}. 
 An example is given in Fig.~\ref{fig:cochannel_vs_overlap}, where the overlaps as well as non-overlapping speech interference are labeled. 
-It can be seen that speech from the secondary speaker in a single-channel conversation recording is more likely to appear in non-overlapping segments. 
+It can be seen that speech from the secondary speaker in a single-channel conversation recording is more likely to appear as non-overlapping segments. 
 
 \begin{figure*}[t!]
 	\centering
 	\vspace{0mm}
-	\includegraphics[height = 2in, width=0.9\textwidth]{figures/cochannel_vs_overlap-crop}
+	\includegraphics[height = 2.5in, width=0.6\textwidth]{figures/overlapped_vs_cochannel_spkrrec}
 	\vspace{-3mm}
-	\caption{\it \small Difference between co-channel and overlapped speech. Overlap refers to instances where more than one speaker is active. Co-channel is defined as an entire stream that contains multiple speakers. All co-channel files do not necessarily contain overlap. }
+	\caption{\it \small Difference between co-channel and overlapped speech. Overlap refers to instances where more than one speaker is active. Co-channel is defined as an entire stream that contains multiple speakers. Blue is the primary speaker. The figure shows that in a single-channel audio, the amount of non-overlapping co-channel data is typically more significant in conversational speech.}
 	\label{fig:cochannel_vs_overlap}
 	\vspace{-3mm}
 \end{figure*}
@@ -64,34 +64,35 @@ Alternatively, we are interested in modifying model parameters extracted from co
 
 The solution we would like to focus on in this chapter is a model-based approach, rather than signal-based (e.g. speaker diarization). 
 Currently, the most common form of modeling speaker-dependent features are i-Vectors~\cite{dehak2011front}. 
-I-vectors are latent parameters that model the covariance of speaker/session-dependent Gaussian mixture models (GMM) with respect to a generic GMM (aka Universal background model -- UBM).  
-The UBM is ideally both session- and speaker-independent.
+I-Vectors are latent parameters that model the covariance of speaker/session-dependent Gaussian mixture models (GMM) with respect to a generic GMM (aka Universal background model -- UBM).  
+The UBM is ideally both session- and speaker-independent. 
 The use of i-Vectors, has become a standard way of modeling speaker specific traits for speaker recognition. 
 In many cases i-Vector extraction is considered a preprocessing step in performing speaker recognition\footnote{See Appendix~\ref{appendix:ivector_plda_spkr_id}}. 
 Therefore, it is both reasonable and desirable to concentrate on post i-Vector analysis to deal with co-channel speech interference~\cite{ivector_challenge}. 
 The goal of this study is to build upon the latent variable perspective, popularized by i-Vectors~\cite{dehak2011front} and its predecessors~\cite{kenny2010bayesian}, to improve speaker recognition in co-channel signals. 
 Working in the latent variable subspace provides the luxury of short-circuiting speaker diarization, a computationally intensive and potentially error-prone solution. 
 
-
-To further refine our problem statement, the following ground rules are set. We assume that: 1) Sufficient data is available from multiple recording sessions to train speakers. 
+To further refine our problem statement, the following ground rules are set. It is assumed that: 1) Sufficient data is available from multiple recording sessions to train speakers; 
 2) Co-channel data is used in the evaluation set. In the standard i-Vector speaker recognition framework, often a number of recordings are provided for each speaker. 
-These i-Vectors can then be projected onto a subspace using probabilistic linear discriminant analysis (PLDA)~\cite{prince_plda} to compensate for channel variations\footnote{Channel variation refers to differences in recording conditions and devices. The authors feel obligated to remind readers not to confuse channel information with co-channel speech.} across different recordings~\cite{kenny_plda,Daniel2011is}. 
+These i-Vectors can then be projected onto a subspace using probabilistic linear discriminant analysis (PLDA)~\cite{prince_plda} to compensate for channel variations\footnote{Channel variation refers to differences in recording conditions and devices. Readers are reminded not to confuse channel information with co-channel speech.} across different recordings~\cite{kenny_plda,Daniel2011is}. 
 Therefore, latent variables in the PLDA subspace are calculated in a way to only represent speaker-dependent information~\cite{kenny_plda2,cumani_icassp13,burget_icassp11,yun_icassp12}.
 Now if i-Vectors are to be extracted from co-channel signals, the speaker-dependent latent variables from PLDA must represent a combination of all speakers in the original audio file. 
 In the case of speaker recognition in co-channel speech, the task of our proposed system would be to also account for the fact that i-Vectors might have been extracted from co-channel sessions. 
 
-We investigate using modified versions of the PLDA paradigm to make i-Vectors collected from co-channel sessions suitable for speaker recognition experiments. The goal is to create overall robustness with respect to interfering speech. 
+This chapter investigates using modified versions of the PLDA paradigm to make i-Vectors collected from co-channel sessions suitable for speaker recognition experiments. The goal is to create overall robustness with respect to interfering speech. 
 PLDA uses inter- and intra-session variabilities from a development set to find a subspace in the i-Vector space that best represents speaker dependencies. 
 Here we investigate the possibility of performing an i-Vector normalization strategy by considering co-channel interference to be a form of inter-session variability.  
 It is important to us that our experiments be easy to replicate and require minimal additional information (labels, speaker and channel information, etc.). 
 
 An investigative approach to the effects of co-channel speech in speaker recognition is presented in the next section, Sect.~\ref{sec:cochannl_in_sid}. 
-We lay our groundwork by showing how much performance drops when co-channel data is added to speaker verification experiments. In addition, Sect.~\ref{sec:cochannl_in_sid} also compares the impact of overlap and co-channel on speaker verification. 
+This section shows how much performance could drop when co-channel data is added to speaker verification experiments. 
+In addition, Sect.~\ref{sec:cochannl_in_sid} also compares the impact of overlap and co-channel on speaker verification. 
 This comparison is made to show the importance of addressing co-channel rather than overlap for a large group of speaker recognition problems. 
 In Sect.~\ref{sec:background}, standard PLDA and its following modified version, simplified PLDA, are described. 
-We state how channel compensation is performed through these methods~\cite{prince_plda,kenny_plda}. 
-The two-covariance interpretation of PLDA~\cite{ioffePLDA2006} is also presented in Sect.~\ref{sec:background}, this interpretation motivates our proposed {\it co-channel aware PLDA model}. 
-Section~\ref{sec:background} also investigates treating co-channel interference in a manner similar to how PLDA addresses channel mismatch, using a background data preparation scheme we call {\it mixed PLDA}. 
+It is described how channel compensation is performed through these methods~\cite{prince_plda,kenny_plda}. 
+The two-covariance interpretation of PLDA~\cite{ioffePLDA2006} is also presented in Sect.~\ref{sec:background}, this interpretation motivates the proposed {\it co-channel aware PLDA model}. 
+Section~\ref{ssec:plda_data_prep} investigates treating co-channel interference in a manner similar to how PLDA addresses channel mismatch, using a background data preparation scheme we call {\it mixed PLDA}. 
+Section~\ref{sec:dualev_plda} proposes another modification to PLDA, called {\it dual-eigenvoice PLDA}. Dual-eigenvoice PLDA (or dePLDA) removes redundancy in the eigenchannel matrix of PLDA by replacing it with a second eigenvoice matrix. 
 Section~\ref{sec:cch_plda} proposes {\it co-channel aware PLDA}, which is used to remove speaker interference from PLDA's speaker-dependent latent variable subspace. 
 %Section~\ref{sec:exp} describes our experimental framework and presents results co-channel PLDA results. 
 
@@ -101,20 +102,23 @@ Section~\ref{sec:cch_plda} proposes {\it co-channel aware PLDA}, which is used t
 The first step in addressing co-channel speech in speaker verification is to establish how much performance degradation is expected. 
 A number of studies have investigated ``co-channel speech'' and its effect on speaker verification. 
 However, each provides different insight due to the somewhat nuanced definition of co-channel, as explained in the introduction. 
-Many consider overlap synonymous to co-channel, an equivalence which we strongly argue against in this study. 
-We make a clear distinction between overlap and co-channel and prefer addressing co-channel for speaker recognition for a number of reasons. 
+Many consider overlap synonymous to co-channel, an equivalence which is strongly argued against in this study. 
+A clear distinction has been made between overlap and co-channel, a distinction that makes addressing co-channel speech in speaker verification more important than overlap in some regards. 
+
 As we will see in this section, overlap contributes to a small portion of errors compared to co-channel in many large-scale speaker recognition problems. 
 Furthermore, overlap detection and removal is an error-prone approach and many have pointed out that for the purpose speaker recognition, a strict removal of overlaps is not necessarily an ideal solution~\cite{smolenski_tut}. 
 For example,~\cite{yantorno_report} shows that co-channel speech in the form of overlaps significantly increases equal-error-rates for speaker verification systems based on Gaussian mixture models (GMM). 
 An interesting result presented in~\cite{yantorno_report} shows that keeping all ``usable speech'' rather than removing all overlaps yields better performance under co-channel.  
 Therefore, usable speech detection was proposed instead of overlap detection to improve speaker verification performance~\cite{Dwang_03, Dwang_03_trans}. 
-In a sense, usable speech refers to speech from the foreground speaker (speaker of interest) with high signal-to-interference ratio and/or all voiced segments of the foreground speaker in which spectral harmonic patterns have not been severely disrupted~\cite{smolenski_tut}. Another analytic study on overlap in speaker verification was presented in~\cite{navid_pyknogram_jp} by comparing the impact of overlap in test data with overlap in training data. 
+In a sense, usable speech refers to speech from the foreground speaker (speaker of interest) with high signal-to-interference ratio and/or all voiced segments of the foreground speaker in which spectral harmonic patterns have not been severely disrupted~\cite{smolenski_tut}. 
+Another analytic study on overlap in speaker verification was presented in~\cite{navid_pyknogram_jp} by comparing the impact of overlap in test data with overlap in training data. 
 The authors argue that an averaging effect occurs when multiple instances of overlapped training data is provided in enrollment sessions, while test data usually has a more direct role in deriving likelihood ratios for each trial. 
 An alternative to removing overlapped segments for speaker recognition has been to perform speaker separation~\cite{saeidi2010signal, mowlaee2010joint}, or in some cases simultaneous identification of both speakers in an overlapped stream~\cite{zhao2015cochannel, sadjadi_heck_icassp14}. 
 Many of these studies focus on overlapped speech rather than the more general case of co-channel speech. 
+
 Although overlap presents an undeniably difficult challenge in speaker verification, the amount of overlap in conversational co-channel speech is far too small to significantly impact speaker verification in large-scale problems. 
 Later in this section, we will separately evaluate system performance under overlap-only conditions. 
-But first, it would be useful to determine exactly what percentage of everyday conversational data contains overlaps. 
+First, it would be useful to determine exactly what percentage of everyday conversational data contains overlaps. 
 Readers are encouraged to visit~\cite{shriberg_01} for a detailed analysis of overlaps in conversational speech corpora. 
 
 \begin{figure*}[t!]
@@ -155,35 +159,37 @@ Signal energies are required for each time-frame ($25msec window$), since signal
 \label{eq:abs_sir}
 SIR(n) = 10log_{10}(\frac{P_1(n)}{P_2(n)})
 \end{equation}
-where $P_1(n)$ is the per-frame energy of channel 1 and $P_2(n)$ corresponds to channel 2. $n$ represents frame indexes. 
+where $P_1(n)$ is the per-frame energy of channel 1 (i.e., the primary speaker) and $P_2(n)$ corresponds to channel 2 (the secondary speaker). 
+The variable $n$ represents frame indexes. 
 Channels are mixed (per sample addition of the two signals) to create co-channel data. 
 Instances at which both speakers are active are considered overlapped. 
 Since the SIR value varies for different segments, we use a threshold on the SIR to label frames as overlapped. 
 Segments with absolute SIR (i.e., $|SIR|$) lower than the threshold are considered overlapped.
 The amount of overlap varies with the maximum allowable SIR (i.e., threshold) set by the evaluator. 
 For instance, one might consider the mere presence of two speakers at the same time sufficient to label a segment as overlap, which is an indication of high SIR thresholds ($45dB$ in Fig.~\ref{fig:swb_overlap_percentage}). 
-A more pragmatic view, however, is to choose an SIR small enough to preserve as much data possible. 
+A more pragmatic view, however, is to choose an SIR small enough to preserve as much data as possible. 
 This way of preserving some overlapped segments is shared in many studies under the definition of usable speech~\cite{yantorno_report,smolenski_tut}. 
-Lower SIR values, $(0-5) dB$, have a more significant impact on speaker verification, but to provide more insight, three SIR upper bounds have been used in Fig.~\ref{fig:swb_overlap_percentage}; $5$, $20$, $45dB$. 
-We argue that any overlap up to $5dB$ should have noticeable impact on speaker verification. 
+Lower SIR values, $(0-5) dB$, have a more significant impact on speaker verification.
+However, to provide more insight, three SIR upper bounds have been used in Fig.~\ref{fig:swb_overlap_percentage}; $5$, $20$, $45dB$. 
+Any overlap up to $5dB$ should have noticeable impact on speaker verification. 
 An upper bound of $45dB$ is also chosen, since the percentage of overlap is constant beyond $45dB$. 
 It is shown in Fig.~\ref{fig:swb_overlap_percentage} that with a $5dB$ threshold, the percentage of overlap to total speech is below $2\%$. 
-For the curios reader, we have provided overlap percentages for three groups of conversations: male-male, male-female, and female-female pairs. 
+For the curios reader, the overlap percentages for three groups of conversations are provided: male-male, male-female, and female-female pairs. 
 It is clear that for Switchboard gender does not play a role in dictating overlap percentage. 
 
-For a broader perspective, we also analyze the AMI meeting corpus. 
+For a different perspective, the AMI meeting corpus is also analyzed. 
 The difference between meetings and phone conversations is in the number of speakers and face-to-face interaction. 
-we speculate that number of speakers increases overlap while on the other hand the fact that all speakers are present in the same room (i.e., face-to-face interaction) limits the amount of overlap. 
+The speculation is that the number of speakers increases overlap, while on the other hand the fact that all speakers are present in the same room (i.e., face-to-face interaction) limits the amount of overlap. 
 Another difference is that SIR is not as well defined for meetings as it is for two-party phone-calls, since multiple parties may be active at the same time. 
-In Fig.~\ref{fig:ami_overlap_percentage}, we assume at least two speakers should have a relative SIR of up to $5dB$. 
+Figure~\ref{fig:ami_overlap_percentage} assumes that at least two speakers should have a relative SIR of up to $5dB$. 
 Any additional speaker is evaluated with respect to the primary speaker, but with a $20dB$ threshold. 
 As Fig.~\ref{fig:ami_overlap_percentage} suggests, location also plays a significant role in overlap percentage. 
-The authors refrain from speculating the impact of location, since it exceed the scope of this study. 
+It is better to refrain from speculating the impact of location, since such analyses exceed the scope of this study. 
 
 In text-independent speaker recognition, where we are interested in long-term acoustic characteristics, 4-5\% of overlapped speech in our data has little effect on speaker recognition accuracy. 
 The point here is not to say that overlapped speech can be neglected in speaker recognition, but to clarify that speaker recognition in its most common form is more concerned with co-channel speech in general rather than {\it overlap} as it appears in everyday English conversations. 
 In the more general case of co-channel speech interference, the presence of secondary speakers has a significant impact on speaker verification. 
-We roughly estimate that in a two-party phone conversation, approximately $50\%$ of the data contains the unwanted secondary speaker (compare this with $2\%$ in Fig.~\ref{fig:swb_overlap_percentage}). 
+We can roughly estimate that in a two-party phone conversation, approximately $50\%$ of the data contains the unwanted secondary speaker (compare this with $2\%$ in Fig.~\ref{fig:swb_overlap_percentage}). 
 Section~\ref{ssec:cch_in_trials} will investigate the effect of overlap and co-channel on speaker verification EER. 
 
 
@@ -208,7 +214,7 @@ We also further emphasize the point made in Sect.~\ref{sec:cochannl_in_sid} by i
 For these experiments, single-speaker data is used to estimate PLDA parameters (not co-channel data). 
 Trials are evaluated at different levels of co-channel interference (i.e., SIR level). 
 In each scenario, trial recordings are summed with their counterpart channel from the phone conversation to create co-channel data, as if speakers are speaking on a single channel (shown in Fig.~\ref{fig:mix_swb}). 
-Speaker labels for trial recordings are generated based on the foreground speaker. 
+Speaker labels for trial recordings are generated based on the primary speaker. 
 In this context, foreground speaker refers to the speaker of interest. 
 For example, in a $5dB$ co-channel session generated from Switchboard2 containing speakers {\bf X} and {\bf Y}, if {\bf X} were the foreground speaker, the average energy of {\bf X} would be $5dB$ higher than the average energy of {\bf Y}. 
 %Therefore, $SIR_{trial}$ is defined slightly differently from here on after, compared to the per-sample absolute $SIR(n)$ in (\ref{eq:abs_sir}). 
@@ -217,8 +223,8 @@ For example, in a $5dB$ co-channel session generated from Switchboard2 containin
 %\end{equation}
 %where $E_X(t)$ and $E_Y(t)$ are signal energies at frame $t$. 
 Five SIR levels are chosen throughout experiments; $100dB$ (i.e., clean sessions), $20dB$, $10dB$, $5dB$, and $0dB$. 
-In $0dB$ the average energy of the foreground and background data is equal. 
-To avoid mismatch, the clean condition is also generated through the same procedure with an SIR of $100dB$ favoring the foreground speaker. 
+In $0dB$ the average energy of the primary and secondary speakers is equal. 
+To avoid mismatch, the clean condition is also generated through the same procedure with an SIR of $100dB$ favoring the primary speaker. 
 
 A gender-independent universal background model (UBM) is created using 8kHz single-speaker NIST SRE data from 2004, 2005, and 2006 challenges~\cite{NIST04,NIST05,NIST06}. 
 The UBM consists of $2048$ Gaussian mixtures representing a 39 dimensional feature space (13 dimensional MFCC plus $\Delta$ and $\Delta\Delta$). 
@@ -227,10 +233,6 @@ The data used here to estimate PLDA parameters are single-speaker recordings fro
 PLDA training data consists of approximately $11k$ single-speaker utterances from over $1300$ speakers. 
 Trial data is developed from 2500 Switchboard2 recording sessions containing approximately $800$ speakers. 
 Prior to feature extraction, trials are processed using comboSAD, an unsupervised speech activity detection~\cite{sadjadi2013unsupervised}. ComboSAD has previously shown to provide stable performance improvement in such speaker recognition tasks~\cite{hasan2013crss}. 
-
-Figure~\ref{fig:cch_in_sid} shows speaker verification performance for the five SIR cases. 
-As shown, EER for the clean condition is significantly lower than all the other SIR levels, even $20dB$. 
-The sudden jump in EER shows the significance of co-channel interference. 
 
 \begin{figure}[h!]
 	\centering
@@ -242,10 +244,15 @@ The sudden jump in EER shows the significance of co-channel interference.
 	\vspace{-1mm}
 \end{figure}
 
+
+Figure~\ref{fig:cch_in_sid} shows speaker verification performance for the five SIR cases. 
+As shown, EER for the clean condition is significantly lower than all the other SIR levels, even $20dB$. 
+The sudden jump in EER shows the significance of co-channel interference. 
+
 A second experiment is conducted to separate performance drop caused by overlap. To show this, all speech from the secondary speaker is dropped from the recordings, except for segments that overlap with the foreground speaker. 
 This is accomplished by using voice activity detection (VAD) labels from the 100dB trials, while using $0dB$ audio data for the trials. 
 Figure~\ref{fig:ovl_in_sid}, compares speaker verification under overlap with 0dB co-channel speech. 
-
+The figure shows that overlap plays a small part in the rise of EER (red bar) compared to co-channel interference (yellow bar).
 \begin{figure}[h!]
 	\vspace{-1mm}
 	\centering
@@ -256,7 +263,7 @@ Figure~\ref{fig:ovl_in_sid}, compares speaker verification under overlap with 0d
 	\vspace{-1mm}
 \end{figure}
 
-
+\newpage
 \section{Motivation}
 \label{sec:background}
 Before presenting our proposed methods, it is essential to provide a brief overview of the chronological introduction and development of probabilistic linear discriminant analysis (PLDA) in speaker recognition. 
