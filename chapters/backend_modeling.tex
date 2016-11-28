@@ -217,7 +217,7 @@ In each scenario, trial recordings are summed with their counterpart channel fro
 Speaker labels for trial recordings are generated based on the primary speaker. 
 In this context, foreground speaker refers to the speaker of interest. 
 For example, in a $5dB$ co-channel session generated from Switchboard2 containing speakers {\bf X} and {\bf Y}, if {\bf X} were the foreground speaker, the average energy of {\bf X} would be $5dB$ higher than the average energy of {\bf Y}. 
-%Therefore, $SIR_{trial}$ is defined slightly differently from here on after, compared to the per-sample absolute $SIR(n)$ in (\ref{eq:abs_sir}). 
+%Therefore, $SIR_{trial}$ is defined slightly differently from here on after, compared to the per-sample absolute $SIR(n)$ in Eq.~(\ref{eq:abs_sir}). 
 %\begin{equation} 
 %SIR_{trial} = 10log_{10}\Big(\frac{\frac{1}{T}\sum_t E_X(t)}{\frac{1}{T}\sum_t E_Y(t)}\Big), \hspace{30pt} t=1,...,N
 %\end{equation}
@@ -266,9 +266,9 @@ The figure shows that overlap plays a small part in the rise of EER (red bar) co
 \newpage
 \section{Motivation}
 \label{sec:background}
-Before presenting our proposed methods, it is essential to provide a brief overview of the chronological introduction and development of probabilistic linear discriminant analysis (PLDA) in speaker recognition. 
+Before presenting the proposed methods, it is essential to provide a brief overview of the chronological introduction and development of probabilistic linear discriminant analysis (PLDA) in speaker recognition. 
 PLDA was initially proposed for face recognition in~\cite{prince_plda}. 
-It was later adopted as a channel compensation step for speaker recognition using i-Vectors~\cite{kenny2010bayesian}. 
+It was later adopted as a channel compensation step for speaker recognition using i-Vectors\footnote{I-Vectors~\cite{Dehak_ivector} are fixed-length vectors generated from audio recordings and are used to model speaker-dependent information of said recordings. Although i-Vectors can be directly used to compare speakers (for example using cosine distance), removing channel-dependent information is an important step in improving performance for speaker recognition using i-Vectors. See Appendix~\ref{appendix:ivector_plda_spkr_id} for more information on i-Vector based speaker recognition.}~\cite{kenny2010bayesian}. 
 A number of studies since then have presented different formulations for the factor loading paradigm most commonly known as PLDA. 
 In this study, we are specifically interested in three formulations: 1) standard PLDA~\cite{kenny_plda}, 2) simplified PLDA~\cite{kenny_plda2,Daniel2011is}, and 3) the two-covariance model~\cite{brummer2010twocov}. 
 The nomenclature used here is adopted from a recent study by Sizov et al.~\cite{sizov2014unifying} aimed at unifying the variations proposed for PLDA over the past decade. 
@@ -278,53 +278,53 @@ The nomenclature used here is adopted from a recent study by Sizov et al.~\cite{
 \label{ssec:standard_plda}
 The general idea of probabilistic linear discriminant analysis is to find a subspace in the i-Vector space that best represents speaker-specific components. 
 The search for this subspace is based on a training dataset organized in a way that emphasizes differences between speakers as well as variations of each speaker across different recordings (aka sessions). 
-The data organization comprises $n_i$ observation i-Vectors for speaker $i$ from a set of development speakers, PLDA assumes the following linear factorization for each i-Vector ${\bf m}_{ij}$: 
+The data organization comprises $n_i$ observation i-Vectors for speaker $i$ from a set of development speakers. PLDA assumes the following linear factorization for each i-Vector ${\bf m}_{ij}$: 
 
 \begin{equation}
 \label{eq:std_plda}
 {\bf m}_{ij} = {\bf m}_g + {\bf V}{\bf y}_i+{\bf U}{\bf x}_{ij}+{\bf z}_{ij},  \hspace{30pt} j=1,...,n_i
 \end{equation}
-where $m_g$ represents the global i-Vector mean. Speaker- and session-dependent latent variables, ${\bf y}_i$ and ${\bf x}_{ij}$, take a standard normal distribution, $\mathcal{N}({\bf 0},{\bf I})$. ${\bf V}$ and ${\bf U}$ are typically tall matrices representing eigenvoice and eigenchannel subspaces, respectively. Eigenvoice refers to the collection of factor loadings (represented in ${\bf V}$) that construct the speaker-dependent subspace. Eigenchannel refers to the session-dependent subspace. 
-In addition to the eigenchannel subspace a session-dependent and normally distributed slack variable, ${\bf z}_{ij}$, is included to express session variabilities. In (\ref{eq:std_plda}), $z_{ij}$ takes a diagonal covariance matrix, $\mathcal{N}({\bf 0},{\bf \Sigma_d})$,~\cite{kenny_plda,prince_plda}. 
+where ${\bf m}_g$ represents the global i-Vector mean. Speaker- and session-dependent latent variables, ${\bf y}_i$ and ${\bf x}_{ij}$, take a standard normal distribution, $\mathcal{N}({\bf 0},{\bf I})$. ${\bf V}$ and ${\bf U}$ are typically tall matrices representing eigenvoice and eigenchannel subspaces, respectively. Eigenvoice refers to the collection of factor loadings (represented in ${\bf V}$) that construct the speaker-dependent subspace. Eigenchannel refers to the session-dependent subspace. 
+In addition to the eigenchannel subspace a session-dependent and normally distributed slack variable, ${\bf z}_{ij}$, is included to express session variabilities. In Eq.~(\ref{eq:std_plda}), ${\bf z}_{ij}$ takes a diagonal covariance matrix, $\mathcal{N}({\bf 0},{\bf \Sigma_d})$,~\cite{kenny_plda,prince_plda}. 
 PLDA predicts model parameters, $({\bf V},{\bf U},{\bf \Sigma_d})$, using the expectation-maximization (EM) algorithm~\cite{prince_plda}. 
 After estimating subscpace components using background development data, trial i-Vectors are reduced to the same speaker-dependent subspace using PLDA and scored through a hypothesis testing procedure (see~\cite{prince_plda} for details). 
-The hypothesis testing stage estimates the likelihood ratio of whether two trial i-Vectors (train and test) belong to the same speaker, or if they belong to two different speakers. 
+The hypothesis testing stage estimates the likelihood ratio that states whether two trial i-Vectors (train and test) belong to the same speaker, or if they belong to two different speakers. 
 
 \subsection{Simplified PLDA}
 \label{ssec:simplified_plda}
-The second formulation reduces complexity in (\ref{eq:std_plda}) using the fact that session-dependent latent variables (${\bf x}_{ij}$ in (\ref{eq:std_plda})) are not directly used in the scoring process. 
+The second formulation reduces complexity in Eq.~(\ref{eq:std_plda}) using the fact that session-dependent latent variables (${\bf x}_{ij}$ in Eq.~(\ref{eq:std_plda})) are not directly used in the scoring process. 
 Therefore, as long as models are able to effectively estimate the eigenvoice subspace, channel-dependent components (essentially all non-speaker dimensionality) are redundant. 
-With this in mind, the second term in (\ref{eq:std_plda}) is removed in simplified PLDA and all channel information is captured in the slack variable. 
+With this in mind, the second term in Eq.~(\ref{eq:std_plda}) is removed in simplified PLDA and all channel information is captured in the slack variable. 
 The slack variable in this case is assumed to have a full covariance matrix.
 
 \begin{equation}
 \label{eq:simple_plda}
 {\bf m}_{ij} = {\bf m}_g + {\bf V}{\bf y}_i+{\bf z}^f_{ij}.  \hspace{30pt} j=1,...,n_i
 \end{equation}
-The use of a full covariance matrix in the slack variable can be interpreted as combining the diagonal slack covariance in (\ref{eq:std_plda}) with the eigenchannel subspace projection ${\bf UU}^T$~\cite{sizov2014unifying}.
-We consider this formulation our baseline. 
+The use of a full covariance matrix in the slack variable can be interpreted as combining the diagonal slack covariance in Eq.~(\ref{eq:std_plda}) with the eigenchannel subspace projection ${\bf UU}^T$~\cite{sizov2014unifying}.
+In this study, the simplified PLDA formulation is considered the baseline formulation. 
 
 \subsection{PLDA as an extension to LDA}
 \label{sec:twocov}
-The last interpretation, called the two-covariance model~\cite{sizov2014unifying}, is a probabilistic extension to linear discriminant analysis (LDA). 
+The last interpretation, called the two-covariance model~\cite{sizov2014unifying}, is a probabilistic extension of linear discriminant analysis (LDA). 
 The two-covariance model describes the i-Vector space in terms of between- and within-speaker covariances, as does LDA. 
 It is well known that LDA models feature spaces as a mixture of Gaussians, in which each mixture has the same covariance, ${\bf \Phi_w}$. 
 Gaussian mixtures represent within-class (i.e., session) variability, therefore ${\bf \Phi_w}$ is referred to as the within-class covariance matrix. 
 LDA is commonly used to find the optimal discriminating subspace of a given set of training speakers, relative to their within-speaker variation~\cite{ioffePLDA2006}. 
 The problem, however, is that the aforementioned subspace is only optimal for the given training speakers. 
-What LDA fails to provide is a continuous (or in this context, stochastic) representation of each mixture's centroid\footnote{In i-Vectors, centroids are known to correspond to speakers. In other words, each centroid represents a speaker.}. 
+What LDA fails to provide is a continuous (or in this context, stochastic) representation of each mixture's centroid\footnote{In this model, centroids in the i-Vector space are known to correspond to speakers. In other words, each centroid represents a speaker. The assumption here is that if enough session variability is provided for a set of i-Vectors that belong to the same speaker, the mean of i-Vectors in that set is an accurate representation for the speaker.}. 
 Therefore, centroids are considered deterministic in LDA. 
 When a new speaker is introduced, the resulting projection of LDA is not necessarily reliable. 
 PLDA provides a stochastic representation of class centroids using a between-class covariance matrix, ${\bf \Phi_b}$~\cite{ioffePLDA2006}. 
 The centroid distribution assumes a continuous centroid subspace, which acknowledges the possibility of unseen speakers. 
 PLDA can therefore be defined as a combination of two distributions; 
 \begin{enumerate}
-	\item the distribution of i-Vectors in each class representing a certain speaker, which is a Gaussian with mean $m_c$, mean of a speaker's i-Vectors, and covariance ${\bf \Phi_w}$. $c$ here represents the class label, or speaker identity. Therefore, the probability of an i-Vector, $m$, given that it comes from class $c$ is:
+	\item the distribution of i-Vectors in each class representing a certain speaker, which is a Gaussian with mean $m_c$, mean of a speaker's i-Vectors, and covariance ${\bf \Phi_w}$. The subscript $c$ here represents the class label, or speaker identity. Therefore, the probability distribution of any given i-Vector, ${\bf m}$, assuming that it comes from class $c$ is:
 	\begin{equation}
 	\label{eq:within_spk_dist}
 	{\bf m} \sim \mathcal{N} ({\bf m}_c,{\bf \Phi_w} | c),
 	\end{equation}
-	\item the class centroid distribution, also assumed Gaussian:
+	\item the class centroid distribution is also assumed Gaussian:
 	\begin{equation}
 	\label{eq:between_spk_dist}
 	{\bf m}_c \sim \mathcal{N} ({\bf m}_g,{\bf \Phi_b}),
@@ -334,21 +334,24 @@ PLDA can therefore be defined as a combination of two distributions;
 
 Defining channel variability as a function of speaker variation helps PLDA model unseen speakers (i.e., speakers that are not present in the development set). 
 As opposed to LDA, which is incapable of offering optimal solutions to speakers that are absent from the training set~\cite{ioffePLDA2006}. 
-The interpretation in this section, provides a perspective which we will use in our proposed method (Sect.~\ref{sec:cch_plda}) to investigate adding co-channel interference as a contributor to within-class variability. 
-Using a transformation matrix (${\bf V}$), equations (\ref{eq:within_spk_dist}) and (\ref{eq:between_spk_dist}) can be translated to (\ref{eq:simple_plda})~\cite{sizov2014unifying} in which the within- and between-covariances are diagonalized~\cite{ioffePLDA2006}. 
+The interpretation in this section provides a perspective which will be used in the proposed method (Sect.~\ref{sec:cch_plda}) to investigate adding co-channel interference as a contributor to within-class variability. 
+Using a transformation matrix (${\bf V}$), equations Eq.~(\ref{eq:within_spk_dist}) and Eq.~(\ref{eq:between_spk_dist}) can be translated to Eq.~(\ref{eq:simple_plda})~\cite{sizov2014unifying} in which the within- and between-covariances are diagonalized~\cite{ioffePLDA2006}. 
 
+Now that the bases for understanding PLDA were introduced, the next sections will introduce the three proposed methods of this study. The first, mixed PLDA, is not a significant departure from PLDA and only replaces the choice of training data to adapt to co-channel speech. 
+The second method, dual-eigenvoice PLDA, is based on the standard and simplified PLDA models to remove redundancies while modeling secondary speakers in co-channel data. 
+The final method, co-channel aware PLDA, uses the two-covariance interpretation to improve the modeling of co-channel data. 
 
 \section{Proposed method: mixed PLDA}
 \label{ssec:plda_data_prep}
 The search for eigenvoice and eigenchannel subspaces involves a careful selection of development data. 
 The idea in data preparation for PLDA is to provide sufficient channel diversity for each speaker to model within-speaker variations, while maintaining high speaker counts to model between-speaker variability. 
-Channel and speaker variation introduced in the development data are directly translated into within- and between-speaker covariances, respectively. Said covariances are used to estimate PLDA parameters, (\ref{eq:std_plda}) and (\ref{eq:simple_plda})~\cite{sizov2014unifying}. 
-The data-driven perspective towards channel compensation using PLDA has inspired a number of studies to address other types of variability through the same data selection procedure, where instead of channel diversity, one could generate a development set with age~\cite{kelly2013} or language diversity~\cite{misra2014languagemismatch} (in the case of multi-lingual speakers). 
+Channel and speaker variation introduced in the development data are directly translated into within- and between-speaker covariances, respectively. These covariances are used to estimate PLDA parameters, Eq.~(\ref{eq:std_plda}) and Eq.~(\ref{eq:simple_plda})~\cite{sizov2014unifying}. 
+The data-driven perspective towards channel compensation using PLDA has inspired a number of studies to address other types of variability through the same data selection procedure, where instead of channel diversity one could generate a development set with age~\cite{kelly2013,kellyscore2016trans} or language diversity~\cite{misra2014languagemismatch} (in the case of multi-lingual speakers). 
 Therefore, our first approach is to investigate co-channel speaker recognition performance when background PLDA data contains co-channel speech recordings. 
 
 Co-channel recordings for each speaker are obtained from separate conversations. In these conversations, it is important to maintain diversity in secondary (aka interfering) speakers; since without sufficient secondary speaker diversity, the PLDA model will train to both primary and secondary speakers. 
-Figure~\ref{fig:mixedPLDA_diagram} is a diagram of how the PLDA data is arranged in this approach, which we call ``mixed PLDA''. 
-Mixed PLDA introduces speaker interference in the background development data using co-channel mixtures to implicitly train the PLDA model to recognize speaker interference as session variability. 
+Figure~\ref{fig:mixedPLDA_diagram} is a diagram of how the PLDA data is arranged in this approach, called {\it mixed PLDA}. 
+Mixed PLDA introduces speaker interference in the background development data using co-channel mixtures to implicitly train the PLDA model by recognizing speaker interference as session variability. 
 
 
 \begin{figure}[t!]
@@ -361,17 +364,17 @@ Mixed PLDA introduces speaker interference in the background development data us
 	\vspace{-3mm}
 \end{figure}
 
-Mixed PLDA describes the use of co-channel background data in simplified PDLA, (\ref{eq:simple_plda}). 
-This will be used as a baseline to provide fair comparison with our proposed PLDA formulation described in the next section. 
+Mixed PLDA describes the use of co-channel background data in simplified PDLA, Eq.~(\ref{eq:simple_plda}). 
+This will be used as a method to provide fair comparison with our proposed PLDA formulation described in the next section. 
 
 \subsection{Co-channel Interference in Trials with mixedPLDA} 
 \label{sssec:mixedplda_exp}
 
-Now that we have introduced {\it mixed PLDA}, we evaluate its performance by adding co-channel data to the PLDA training set. 
+Now that {\it mixed PLDA} has been introduced, its performance is evaluated by adding co-channel data to PLDA training sets. 
 There are a number of ways co-channel data can be inserted, particularly in the choice of SIR. 
-We investigate three cases in our experiments: 
+Three cases are investigated in the experiments: 
 \begin{itemize}
-	\item $0dB$: All co-channel data used to train PLDA is 0dB. 
+	\item $0dB$: All co-channel data used to train PLDA is $0dB$. 
 	\item $(0,100)dB$: Half of the data is clean and the other half is $0dB$. 
 	\item $(0,5,10,20,100)$: co-channel files are uniformly selected from one of these five SIR values. 
 \end{itemize}
@@ -380,7 +383,7 @@ Table~\ref{tbl:mixed_plda} shows that mixed PLDA with half $0dB$ and half $100dB
 Minimum detection cost functions (minDCF) is calculated over the operating point ($C_{fa}=10, C_{miss}=1, prior = 0.001$). 
 These observation are consistent with those reported in~\cite{shokouhi2015probabilistic}. 
 
-\begin{table*}[b!]
+\begin{table*}[t!]
 	\small
 	\centering
 	\resizebox{\textwidth}{!}
@@ -400,17 +403,18 @@ These observation are consistent with those reported in~\cite{shokouhi2015probab
 	\label{tbl:mixed_plda}
 \end{table*}
 
+\newpage
 It is interesting that the best performance is obtained with a 50-50 split of co-channel and clean data in the PLDA training set. 
 At this point I do not have a clear explanation of why {\it mixed PLDA} ($0,100dB$) is superior to ($0dB$) or ($0,5,10,20,100dB$). 
 
 \section{Proposed method: dual eigenvoice PLDA}
 \label{sec:dualev_plda}
 
-The approach in {\it mixed PLDA} relies on the ability of PLDA that compensates channel mismatch. 
+The approach in {\it mixed PLDA} relies on PLDA's channel compensation capabilities. 
 PLDA recognizes the variabilities observed across different recordings for a given speaker and removes them from the speaker subspace (aka the eigenvoice factors in ${\bf V}$). 
 Therefore, {\it mixed PLDA} treats interfering speech as channel mismatch. 
 This is accomplished by adding co-channel i-Vectors to the PLDA background data and leaving it to the PLDA model estimation process to recognize interfering speech and remove its effects in the speaker subspace. 
-However, interfering speech is not effectively picked up by neither the eigenchannel matrix (in case of the standard PLDA in~(\ref{eq:std_plda})) nor the slack variable, in (\ref{eq:simple_plda}). 
+However, interfering speech is not effectively picked up by neither the eigenchannel matrix (in case of the standard PLDA in~Eq.~(\ref{eq:std_plda})) nor the slack variable, in Eq.~(\ref{eq:simple_plda}). 
 We address this by introducing our second approach which is to add a speaker dependent term intended to model interfering speech. Since the second term also corresponds to speaker identities, it should as well be represented by the speaker subspace. 
 We call this approach {\it dual eigenvoice PLDA}, for which the PLDA factorization is: 
 
@@ -421,16 +425,16 @@ We call this approach {\it dual eigenvoice PLDA}, for which the PLDA factorizati
 Since the model still needs to represent channel variabilities, we keep ${\bf z}_{ij}$ as a full covariance normal distributed vector. 
 ${\bf V}^\prime$ represents the speaker dependent subspace, as does ${\bf V}$, with the difference that one is a rotation of the other with an unknown rotation factor. 
 ${\bf w}_{ij}$ is the latent variable which corresponds to the interfering speaker. 
-There are a few reasons that prevent us from directly using ${\bf V}$ as factor loadings for the interfering components in~(\ref{eq:cchplda}), one being that as part of the degrees of freedom in the PLDA solution, the eigenvoice matrix can only be determined up to an unknown rotation matrix~\cite{sizov2014unifying} (similarly for ${\bf V}^\prime$). 
-Equation (\ref{eq:cchplda}) uses different notation for the second eigenvoice matrix to remind us of this limitation. 
+There are a few reasons that prevent us from directly using ${\bf V}$ as factor loadings for the interfering components in~Eq.~(\ref{eq:cchplda}), one being that as part of the degrees of freedom in the PLDA solution, the eigenvoice matrix can only be determined up to an unknown rotation matrix~\cite{sizov2014unifying} (similarly for ${\bf V}^\prime$). 
+Equation Eq.~(\ref{eq:cchplda}) uses different notation for the second eigenvoice matrix to remind us of this limitation. 
 This prevents directly using ${\bf V}$ to represent the interfering speaker term. However, since we know that ${\bf V}$ and ${\bf V}^\prime$ must be related by a rotation matrix, we can use this knowledge to simultaneously update ${\bf V}$ and ${\bf V}^\prime$ in the EM iterations. 
 
-As discussed, the relation between ${\bf V}$ and ${\bf V}^\prime$ is characterized by an unknown rotation matrix, ${\bf R}$:
+As discussed above, the relation between ${\bf V}$ and ${\bf V}^\prime$ is characterized by an unknown rotation matrix, ${\bf R}$:
 
 \begin{equation}
 {\bf V} = {\bf RV}^\prime.
 \end{equation}
-A reasonable ${\bf R}$ can be estimated via singular value decomposition (SVD) by considering the columns of ${\bf V}$ and ${\bf V}^\prime$ as data points in the speaker dependent subspace. The rotation matrix is derived from the cross-variance between ${\bf V}$ and ${\bf V}^\prime$ basis functions, ${\bf S}$:
+A reasonable ${\bf R}$ can be estimated via singular value decomposition (SVD) by considering the columns of ${\bf V}$ and ${\bf V}^\prime$ as data points in the speaker-dependent subspace. The rotation matrix is derived from the cross-variance between the basis functions of ${\bf V}$ and ${\bf V}^\prime$, ${\bf S}$:
 
 \begin{equation}
 {\bf S} = {\sum\limits_{i=1}^{N_V}\tilde{{v}_i}\tilde{{v}^\prime_i}^T},
@@ -452,8 +456,9 @@ The rotation matrix is used in each iteration of the EM algorithm to update the 
 {\bf V}^\prime \leftarrow {\bf RV^\prime}. 
 \end{equation}
 
-Updating ${\bf V}^\prime$ before estimating the statistical statistics of latent variables, $y_{i}$ and $w_{ij}$, removes the redundancy in the second term of equation~(\ref{eq:cchplda}) by replacing the eigenvoice matrix ${\bf V}^\prime$ with information obtained from the basis vectors in ${\bf V}$. Since both factors in~(\ref{eq:cchplda}) are guided towards representing the speaker space, the overall system achieves a better estimate of ${\bf V}$ and Consequently more accurate estimates for latent variable statistics. 
+Updating ${\bf V}^\prime$ before estimating the statistical statistics of latent variables, ${\bf y}_{i}$ and ${\bf w}_{ij}$, removes the redundancy in the second term of equation~Eq.~(\ref{eq:cchplda}) by replacing the eigenvoice matrix ${\bf V}^\prime$ with information obtained from the basis vectors in ${\bf V}$. Since both factors in~Eq.~(\ref{eq:cchplda}) are guided towards representing the speaker space, the overall system achieves a better estimate of ${\bf V}$ and consequently more accurate estimates for latent variable statistics. 
 
+\newpage
 \subsection{Co-channel Interference in Trials with dual eigenvoice PLDA} 
 \label{ssec:dualevplda_exp}
 
@@ -466,7 +471,7 @@ Updating ${\bf V}^\prime$ before estimating the statistical statistics of latent
 	\vspace{-1mm}
 \end{figure*}
 
-As described in Sect.~\ref{sec:dualev_plda}, {\it dual eigenvoice PLDA} attempts to model a linear factorization of the i-Vectors into a target speaker and an interfering speaker component (see Eq.~(\ref{eq:cchplda})). 
+As described in Sect.~\ref{sec:dualev_plda}, {\it dual eigenvoice PLDA} attempts to model a linear factorization of the i-Vectors into a target speaker and an interfering speaker component (see Eq.~Eq.~(\ref{eq:cchplda})). 
 PLDA is able to distinguish the target speaker using the several recordings available for each speaker. 
 The key difference between this method and {\it mixed PLDA} is that the system is forced to use a similar subspace to model the interfering speaker. 
 Figure~\ref{fig:swb_sid_results} shows the EER for different amounts of co-channel interference introduced to the trials. 
@@ -476,87 +481,87 @@ Since {\it mixed PLDA} has some observation of the co-channel condition, it redu
 Figure~\ref{fig:eer_dualeigenvoice} shows that the clean-to-$0dB$ EER range for {\it mixed PLDA} is more than twice as much as {\it dual eigenvoice PLDA}. 
 
 
-
+\newpage
 \subsection{convergence of Dual eigenvoice PLDA}
 \label{ssec:convergence_dualevplda}
 An interesting observation was made while developing {\it dual eigenvoice PLDA} regarding the convergence of model parameters, specifically the second eigenvoice matrix. 
 Later, with some more investigation and feedback from experts in the field, I realized a significant flaw in the proposed formulation. 
 This section provides a brief description of the issue with {\it dual eigenvoice PLDA}. 
 
-The claim in {\it dual eigenvoice PLDA} is that the first eigenvoice matrix in (\ref{eq:simple_plda}) contains factor loadings corresponding to the primary speaker and the second eigenvoice matrix (i.e., ${\bf V}^\prime$) is for secondary speakers. 
+The claim in {\it dual eigenvoice PLDA} is that the first eigenvoice matrix in Eq.~(\ref{eq:simple_plda}) contains factor loadings corresponding to the primary speaker and the second eigenvoice matrix (i.e., ${\bf V}^\prime$) is for secondary speakers. 
 We also chose a full-covariance slack variable, ${\bf z}$. 
 The problem here arises from the full-covariance slack variable. 
 
 
 \section{Proposed method: Co-channel Aware PLDA}
 \label{sec:cch_plda}
-This section describes our proposed approaches, which are modifications to the PLDA formulation (Sect.~\ref{sec:background}) that allow modeling speaker interference in ways that are more appropriate for co-channel speech. 
-Previously, in~\cite{shokouhi2015probabilistic}, we proposed a modified PLDA formulation to remove secondary speaker interference from the latent variable subspace. 
-This study uses different methods based on the two-covariance interpretation (described in Sect.~\ref{sec:twocov}). 
+This section describes the last proposed approach, which are modifications to the PLDA covariances (Sect.~\ref{sec:background}) that allow modeling speaker interference in ways that are more appropriate for co-channel speech. 
+In Sect.~\ref{sec:dualev_plda}, a modified PLDA formulation was proposed to remove secondary speaker interference from the latent variable subspace~\cite{shokouhi2015}. 
+This section uses different methods based on the two-covariance interpretation (described in Sect.~\ref{sec:twocov}). 
 %Part of the reason for our departure from the co-channel PLDA formulation proposed in~\cite{shokouhi2015probabilistic} was our inability to justify certain behavior in the model. 
-Our method, which we call {\it co-channel aware PLDA} (caPLDA), uses the dual distribution definition of (\ref{eq:within_spk_dist}) and (\ref{eq:between_spk_dist}) to model a co-channel i-Vector. 
+The method, called {\it co-channel aware PLDA} (caPLDA), uses the dual distribution definition of Eq.~(\ref{eq:within_spk_dist}) and Eq.~(\ref{eq:between_spk_dist}) to model a co-channel i-Vector. 
 
-As mentioned before, caPLDA adopts the two-covariance interpretation of PLDA briefly described in (\ref{eq:within_spk_dist}) and (\ref{eq:between_spk_dist}). 
-The i-Vectors of a given class can be modeled as a normally distributed vector with a mean pertaining to the class to which it belongs and a covariance matrix representing within class variability, (\ref{eq:within_spk_dist}). 
+As mentioned before, caPLDA adopts the two-covariance interpretation of PLDA. 
+The i-Vectors of a given class can be modeled as a normally distributed vector with a mean pertaining to the class to which it belongs and a covariance matrix representing within class variability, Eq.~(\ref{eq:within_spk_dist}). 
 Typically, within-class variability is meant to model channel variation across sessions. 
 In the case of co-channel speech, in addition to channel variability, one must consider the variability caused by interfering speakers. 
-We will see in Sect.~\ref{ssec:cch_in_trials} that speaker interference has a dramatic impact on error rates. Much more compared to channel variation in a dataset such as Switchboard. 
+It was shown in Sect.~\ref{ssec:cch_in_trials} that speaker interference has a dramatic impact on error rates. Much more compared to channel variation in a dataset such as Switchboard. 
 It is therefore reasonable to prioritize co-channel interference over channel mismatch. 
 
-In Sect.~\ref{ssec:plda_data_prep}, we proposed capturing speaker interference in the same manner that channel variation is captured by PLDA. 
-Although some improvement is attainable, we expect that the original PLDA formulation, (\ref{eq:simple_plda}), is not capable of fully capturing speaker interference; partly due to the similarity between speaker-dependent latent variables and the cross-session variations that exist in co-channel interference. 
+In Sect.~\ref{ssec:plda_data_prep}, we proposed capturing speaker interference in the same manner that channel variation is captured by PLDA (i.e., mixed PLDA). 
+Although some improvement is attainable, we expect that the original PLDA formulation, Eq.~(\ref{eq:simple_plda}), is not capable of fully capturing speaker interference; partly due to the similarity between speaker-dependent latent variables and the cross-session variations that exist in co-channel interference. 
 
-We propose that in order to improve performance, information can be shared from the between-speaker covariance to within-class covariances. 
-For an i-Vector with speaker $A$ as the foreground speaker and some speaker $X$ as secondary speaker, PLDA assumes a normal distribution $\mathcal{N} ({\bf m}_A,{\bf \Phi} | A)$. 
-While (\ref{eq:within_spk_dist}), considers ${\bf \Phi}$ to be a unique within-class covariance matrix for all speakers in the i-Vector space (i.e., ${\bf \Phi}_w$), we argue that an additional component is required to model within speaker variations in the case of co-channel i-Vectors. 
+In order to improve performance, information can be shared from the between-speaker covariance to within-class covariances. 
+For an i-Vector with speaker $A$ as the foreground (aka primary) speaker and some speaker $X$ as secondary speaker, PLDA assumes a normal distribution $\mathcal{N} ({\bf m}_A,{\bf \Phi} | A)$. 
+While Eq.~(\ref{eq:within_spk_dist}) considers ${\bf \Phi}$ to be a within-class covariance matrix for all speakers in the i-Vector space (i.e., ${\bf \Phi}_w$), it can be argued that an additional component is required to model within-speaker variations in the case of co-channel i-Vectors. 
 The additional component contributing to within-class covariance is of the same nature of the between-class covariance. 
 Therefore, one can assume that ${\bf \Phi}$ is a function of both ${\bf \Phi}_w$ and ${\bf \Phi}_b$, $ \mathcal{F} ({\bf \Phi}_w,{\bf \Phi}_b)$. 
-Our suggested structure for $ \mathcal{F} (.,.)$ is a linear combination of the two covariance matrices: 
+The suggested structure for $ \mathcal{F} (.,.)$ is a linear combination of the two covariance matrices: 
 
 \begin{equation}
 \label{eq:complex_phiw}
 \Phi = \mathcal{F} ({\bf \Phi}_w,{\bf \Phi}_b) = 
-\alpha_w{\bf \Phi}_w + \alpha_b{\bf \Phi}_b
+\alpha_w{\bf \Phi}_w + \alpha_b{\bf \Phi}_b,
 \end{equation}
 where $\alpha_w$ and $\alpha_b$ are functions of the signal-to-interference ratio between the foreground and background speaker. 
 
-Sections~\ref{ssec:alpha_w_0}~and~\ref{ssec:caplda_exp} visits different possibilities of $(\alpha_w, \alpha_b)$. But first, we find it useful to focus on a special case, which is to assume session variability should be of the exact same type as speaker variability in the case of co-channel i-Vectors. 
+Sections~\ref{ssec:alpha_w_0}~and~\ref{ssec:caplda_exp} visit different possibilities of $(\alpha_w, \alpha_b)$. But first, we find it useful to focus on a special case, which is to assume session variability should be of the exact same type as speaker variability in the case of co-channel i-Vectors. 
 This special case assumes equal within- and between-speaker covariances. 
 
 \subsection{Equal within- and between-speaker covariances ($\alpha_w = 0$)}
 \label{ssec:alpha_w_0}
 In~\cite{ioffePLDA2006}, PLDA model parameters are learned by maximizing the likelihood of observation i-Vectors provided for each speaker (i.e., class). 
 The likelihood is calculated by assuming the i-Vectors are conditionally independent given the speaker. 
-In this case, the probability of i-Vectors $m^1, m^2, ..., m^n$ regardless of the speaker they were generated from, represented by $y$, is:
+In this case, the probability of i-Vectors ${\bf m}^1, {\bf m}^2, ..., {\bf m}^n$ regardless of the speaker they were generated from, represented by $y$, is:
 
 \begin{equation}
-\mathcal{P}(m^1 m^2 ... m^n) = \int \mathcal{P}(y) \mathcal{P}(m^1 | y) \mathcal{P}(m^2 | y) ... \mathcal{P}(m^n | y) dy,
+\mathcal{P}({\bf m}^1 {\bf m}^2 ... {\bf m}^n) = \int \mathcal{P}({\bf y}) \mathcal{P}({\bf m}^1 | y) \mathcal{P}({\bf m}^2 | y) ... \mathcal{P}({\bf m}^n | y) dy,
 \end{equation}
-Replacing the probabilities using (\ref{eq:within_spk_dist}) and (\ref{eq:between_spk_dist}), the log-likelihood of $\mathcal{P}(m^1 m^2 ... m^n)$ is: 
+Replacing the probabilities using Eq.~(\ref{eq:within_spk_dist}) and Eq.~(\ref{eq:between_spk_dist}), the log-likelihood of $\mathcal{P}({\bf m}^1 {\bf m}^2 ... {\bf m}^n)$ is: 
 
 
 \begin{equation}
 \label{eq:llk_twocov}
 \begin{split}
-\mathcal{L}(m^1 m^2 ... m^n) = -\frac{c}{2}(ln | {\bf \Phi}_b + \frac{1}{n}{\bf \Phi}_w | + tr(({\bf \Phi}_b + \frac{1}{n}{\bf \Phi}_w)^{-1}{\bf S}_b) \\+ (n-1)ln|{\bf \Phi}_w| + ntr({\bf \Phi}_w^{-1}{\bf S}_w)),
+\mathcal{L}({\bf m}^1 {\bf m}^2 ... {\bf m}^n) = -\frac{C}{2}(ln | {\bf \Phi}_b + \frac{1}{n}{\bf \Phi}_w | + tr(({\bf \Phi}_b + \frac{1}{n}{\bf \Phi}_w)^{-1}{\bf S}_b) \\+ (n-1)ln|{\bf \Phi}_w| + ntr({\bf \Phi}_w^{-1}{\bf S}_w)),
 \end{split}
 \end{equation}
-where ${\bf S}_b$ and ${\bf S}_w$ are the between-speaker and within-speaker scatter matrices calculated from the training i-Vectors. $c$ is a normalizing constant. 
-The log-likelihood is maximized using (\ref{eq:llk_twocov}), resulting in expectation-maximization (EM) steps that estimate values for ${\bf \Phi}_w$ and ${\bf \Phi}_b$. 
-If we ignore channel variability across sessions and assume that the only source of variation across different sessions is between-speaker variability, the probabilities $\mathcal{P} (x_i | y)$ change from $\mathcal{N} (y,{\bf \Phi}_w)$ to: 
+where ${\bf S}_b$ and ${\bf S}_w$ are the between-speaker and within-speaker scatter matrices calculated from the training i-Vectors. The variable $C$ is a normalizing constant. 
+The log-likelihood is maximized using Eq.~(\ref{eq:llk_twocov}), resulting in Expectation-Maximization (EM) steps that estimate values for ${\bf \Phi}_w$ and ${\bf \Phi}_b$. 
+If we ignore channel variability across sessions and assume that the only source of variation across different sessions is between-speaker variability, the probabilities $\mathcal{P} ({\bf x}_i | {\bf y})$ change from $\mathcal{N} ({\bf y},{\bf \Phi}_w)$ to: 
 
 \begin{equation}
-\mathcal{P} (x_i|y) = \mathcal{N} (y,\Phi_b).
+\mathcal{P} ({\bf x}_i | {\bf y}) = \mathcal{N} ({\bf y},\Phi_b).
 \end{equation}
 
 The assumption here is that within-session variation is similar to between-speaker variations (i.e., ${\bf \Phi}_b$). 
-This assumption is equivalent to setting $\alpha_w$ to $0$ and $\alpha_b$ to $1$ in (\ref{eq:complex_phiw}). 
-The upside of setting ${\bf \Phi}$ to ${\bf \Phi}_b$ is twofold: 1) it increases the accuracy of estimating ${\bf \Phi}_b$, since in this scenario within-speaker differences can also be used to calculate ${\bf \Phi}_b$. 2) The maximum likelihood problem in (\ref{eq:llk_twocov}) is reduced to:
+This assumption is equivalent to setting $\alpha_w$ to $0$ and $\alpha_b$ to $1$ in Eq.~(\ref{eq:complex_phiw}). 
+The upside of setting ${\bf \Phi}$ to ${\bf \Phi}_b$ is twofold: 1) it increases the accuracy of estimating ${\bf \Phi}_b$, since in this scenario within-speaker differences can also be used to calculate ${\bf \Phi}_b$. 2) The maximum likelihood problem in Eq.~(\ref{eq:llk_twocov}) is reduced to:
 
 \begin{equation}
 \label{eq:llk_onecov}
 \begin{split}
-\mathcal{L}(m^1 m^2 ... m^n) = -\frac{c}{2}(nln | {\bf \Phi}_b | + ln(\frac{n+1}{n})+ \frac{n}{n+1}tr({\bf \Phi}_b^{-1}{\bf S}_b) \\+ ntr({\bf \Phi}_b^{-1}{\bf S}_b)),
+\mathcal{L}({\bf m}^1 {\bf m}^2 ... {\bf m}^n) = -\frac{c}{2}(nln | {\bf \Phi}_b | + ln(\frac{n+1}{n})+ \frac{n}{n+1}tr({\bf \Phi}_b^{-1}{\bf S}_b) \\+ ntr({\bf \Phi}_b^{-1}{\bf S}_b)),
 \end{split}
 \end{equation}
 which is simpler to maximize. In fact, when all speakers have the same number of training i-Vectors ($n$), the solution is to set ${\bf \Phi}_b$ to ${\bf S}_b$. 
@@ -564,15 +569,15 @@ which is simpler to maximize. In fact, when all speakers have the same number of
 
 \subsection{Co-channel Interference in Trials with caPLDA}
 \label{ssec:caplda_exp}
-Finally, we would like to analyze the potential gain in using alternative PLDA formulations described in Sect.~\ref{sec:cch_plda}. 
-Instead of a grid-search of all possible $(\alpha_w,\alpha_b)$ inputs, only a selection of are presented here that we think provide most useful insight. 
+Finally, it is useful to analyze the potential gain in using alternative PLDA formulations described in Sect.~\ref{sec:cch_plda}. 
+Instead of a grid-search of all possible $(\alpha_w,\alpha_b)$ inputs, only a selection of choices are presented here that we think provide most useful insight. 
 
-Figure~\ref{fig:alpha_w_is_1}, shows the case in which $\alpha_w$ is set to $1$ and $alpha_b$ varies from $0$ to $1$. 
+Figure~\ref{fig:alpha_w_is_1}, shows the case in which $\alpha_w$ is set to $1$ and $\alpha_b$ varies from $0$ to $1$. 
 The EER values are almost unequivocally lower than their counterparts presented in Tab.~\ref{tbl:mixed_plda}, despite the fact that they do not use mixed PLDA training data. 
 In other words, the EER values calculated in Fig.~\ref{fig:alpha_w_is_1} show performance using clean ($100dB$) PLDA training. 
 The bottom line (blue) shows EER for clean trials. 
 As expected, EER values slightly increase in the clean condition, when the original PLDA formulation is modified. 
-However, in lower SIR conditions ($20-0dB$), more performance gain is observed as $alpha_b$ approaches $0.1$. 
+However, in lower SIR conditions ($20-0dB$), more performance gain is observed as $\alpha_b$ approaches $0.1$. 
 
 \begin{figure*}[h!]
 	\centering
@@ -583,7 +588,7 @@ However, in lower SIR conditions ($20-0dB$), more performance gain is observed a
 	\vspace{-1mm}
 \end{figure*}
 
-Our second attempt is to investigate the special case in which $\alpha_w$ is set to $0$ and $\alpha_b=1$, as proposed in Sect.~\ref{ssec:alpha_w_0}. 
+The second attempt is to investigate the special case in which $\alpha_w$ is set to $0$ and $\alpha_b=1$, as proposed in Sect.~\ref{ssec:alpha_w_0}. 
 We argued that in this scenario the estimate for $\Phi_b$ is likely to be most accurate. 
 Table~\ref{tbl:alpha_w_0} compares setting using the three mixed PLDA scenarios plus clean PLDA. 
 From the last two columns, mixed PLDA ($0, 100dB$) and clean PLDA, we see that performances are fairly close despite the additional training data in mixed PLDA ($0,100dB$). 
