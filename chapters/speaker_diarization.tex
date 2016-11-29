@@ -163,7 +163,7 @@ In~\cite{cettolo2005evaluation}, $\Delta BIC_i$ is derived for Gaussian modeling
 \Delta BIC_i = \frac{N}{2} log |\Sigma| - \frac{i}{2} log |\Sigma_1| - \frac{N-i}{2}log |\Sigma_2]| - \lambda P_{M_N}
 \end{equation}
 where $\Sigma$ is the maximum likelihood estimate of the covariance matrix of $\{X_1X_2...X_N\}$. Similarly, $\Sigma_1$ corresponds to the sequence $\{X_1X_2...X_i\}$ and $\Sigma_2$ to $\{X_{i+1}X_{i+2}...X_N\}$. 
-$P_M$ in (\ref{eq:dbic_gaussian}) is the BIC penalty of modeling $N$ samples with a Gaussian. 
+$P_M$ in Eq.~(\ref{eq:dbic_gaussian}) is the BIC penalty of modeling $N$ samples with a Gaussian. 
 The number of free parameters in a multi-variate Gaussian is $d + \frac{d(d+1)}{2}$, in which $d$ is the dimension of the acoustic features. 
 The degrees of freedom include $d$ values for the Gaussian mean and $\frac{d(d+1)}{2}$ values for the symmetric covariance matrix. 
 
@@ -184,7 +184,7 @@ The output of change detection, however, will ideally produce smaller segments t
 
 Given a segment, change detection first examines whether the segment is long enough to sufficiently reliable BIC estimates (as defined in Sect.\ref{ssec:chDiar_secBIC}). 
 For segments that are sufficiently long, a sliding window is defined that incrementally grows in size. 
-This window will grow until: 1) either a change point is detected using the $\Delta BIC$ measure from (\ref{eq:dbic_gaussian}) or 2) the length of the window reaches a maximum acceptable length at which point the window is assumed to contain only one speaker (no change points are detected). 
+This window will grow until: 1) either a change point is detected using the $\Delta BIC$ measure from Eq.~(\ref{eq:dbic_gaussian}) or 2) the length of the window reaches a maximum acceptable length at which point the window is assumed to contain only one speaker (no change points are detected). 
 As mentioned, the window slides until it reaches the end of the segment and returns the change points that were found during the search. 
 
 Every time a change point is detect the window first performs an identical search with more refined search increments until it finds the feature index, $i$, at which $\Delta BIC_i$ is maximized. 
@@ -312,13 +312,13 @@ minimize \hspace{0.2in} \frac{1}{\delta}\sum\limits_{i=1}^{N}\sum\limits_{j=1}^{
 The minimization problem searches for elements of a binary $N x N$ clustering assignment matrix, in which $N$ corresponds to the number of i-Vectors (i.e., segments) generated in Sect.~\ref{sec:segmentation}. 
 The value $x_{i,i}$ is $1$ if the $i^{th}$ i-Vector is identified as a cluster centroid and $0$ otherwise. 
 $x_{i,j}$ is $1$ if the $j^{th}$ i-Vector belongs to the cluster whose centroid is $i$. 
-The first term in (\ref{eq:ilp_minimization}) makes sure that centroids are picked in a way that minimizes the sum of distances of all elements in a cluster from their assigned centroid. 
+The first term in Eq.~(\ref{eq:ilp_minimization}) makes sure that centroids are picked in a way that minimizes the sum of distances of all elements in a cluster from their assigned centroid. 
 The distance between the $i$ and $j^{th}$ i-Vectors is $dist(i,j)$. 
 Clearly, the optimal solution to only minimize the first term, $\frac{1}{\delta}\sum\limits_{i=1}^{N}\sum\limits_{j=1}^{N}dist(i,j)x_{i,j}$, is to choose all i-Vectors as a centroid, which will undesirably result in $N$ clusters. 
 Hence, the second term is introduced to simultaneously minimize the number of clusters. $\sum\limits_{k=1}^{N}x_{k,k}$ is the sum of diagonal elements, also equal to the number of clusters. 
 The first term is normalized by a factor $\delta$. 
 This normalizing factor is the threshold used as the radius for all clusters. 
-To assure that all clustering conditions are satisfied, a set of constraints are added to (\ref{eq:ilp_minimization}). 
+To assure that all clustering conditions are satisfied, a set of constraints are added to Eq.~(\ref{eq:ilp_minimization}). 
 Some conditions are implied by the formulation, such as: 
 \begin{equation}
 x_{i,j} \in \{0,1\},  \hspace{1in}  1 \leq i,j \leq N
@@ -339,7 +339,7 @@ x_{k,j} - x_{k,k} \leq 0. \hspace{1in} 1 \leq k,j \leq N
 
 The minimization problem can be reformulated into a more compact problem~\cite{dupuy2014ILPimprovement}. 
 Using compact solutions with more restrictive constraints reduces the number of variables that need to be solved in the linear programming problem. 
-The following formulation increases the speed of the ILP solver by limiting the number of restrictive variables in (\ref{eq:ilp_minimization}). For $j \in \{1 ... N\}$ let $K_j = \{k | d(k,j) < \delta\}$ 
+The following formulation increases the speed of the ILP solver by limiting the number of restrictive variables in Eq.~(\ref{eq:ilp_minimization}). For $j \in \{1 ... N\}$ let $K_j = \{k | d(k,j) < \delta\}$ 
 
 
 
@@ -354,9 +354,9 @@ subject~to:  \hspace{0.2in}& x_{k,j} \in {0,1}, \hspace{1in} k \in K_j , 1 \leq 
 \end{split}
 \end{equation}
 
-The optimzation problem in (\ref{eq:ilp_minimization_1}) is implemented in CRSS-SpkrDiar using the GNU linear programming kit (GLPK)~\cite{makhorin2008glpk}. GLPK is an open-source C++ library. 
+The optimzation problem in Eq.~(\ref{eq:ilp_minimization_1}) is implemented in CRSS-SpkrDiar using the GNU linear programming kit (GLPK)~\cite{makhorin2008glpk}. GLPK is an open-source C++ library. 
 Therefore, the entire CRSS-SpkrDiar module solely depends on C++ libraries. 
-GLPK reads explicitly objectives, equalities, and inequalities in the form provided in (\ref{eq:ilp_minimization_1}). 
+GLPK reads explicitly objectives, equalities, and inequalities in the form provided in Eq.~(\ref{eq:ilp_minimization_1}). 
 To create the input file for GLPK, i-Vectors are extracted from the segments and indexed appropriately. 
 A distance matrix (see Sect.\ref{sec:plda_ilp} and \ref{sec:other_distances_ilp}) is calculate using all segment i-Vectors. 
 Figure~\ref{fig:ilp_clustering} summarizes the process of generating the GLPK input, we is called the {\it GLPK Template} in CRSS-SpkrDiar. 
@@ -378,7 +378,7 @@ A novel addition in CRSS-SpkrDiar has been in the choice of distance metric, $di
 \label{sec:plda_ilp}
 Probabilistic linear discriminant analysis (PLDA) was thoroughly investigated in Chapter~\ref{chapter:backend} as a way to determine whether two individual [or groups of] i-Vectors belong to the same speaker. 
 The same question is faced during the clustering process for speaker diarization. 
-Since ILP does not add any restrictions on the distance measures (see (\ref{eq:ilp_minimization_1})), PLDA can be used here as the distance metric, $dist(.,.)$. 
+Since ILP does not add any restrictions on the distance measures (see Eq.~(\ref{eq:ilp_minimization_1})), PLDA can be used here as the distance metric, $dist(.,.)$. 
 This creates a more appropriate setting for the clustering step, which aims to compare speaker identities across segments. 
 
 The use of PLDA in speaker diarization has been proposed in a number of studies~\cite{prazak2011PLDAdrz, silovsky2011PLDAdrz, sell2014PLDAdrz}. 
@@ -402,10 +402,10 @@ The first is cosine distance, which uses the normalized dot product of i-Vector 
 \label{eq:cosine_distance}
 dist_{cos}(i,j) = \frac{<{\bf v_i} , {\bf v_j} >}{|| {\bf v_i} ||||{\bf v_j}|| }
 \end{equation}
-Cosine distance in its raw format defined in (\ref{eq:cosine_distance}) is slightly incompatible with the distance metric required in (\ref{eq:ilp_minimization_1}). 
+Cosine distance in its raw format defined in Eq.~(\ref{eq:cosine_distance}) is slightly incompatible with the distance metric required in Eq.~(\ref{eq:ilp_minimization_1}). 
 The problem is that higher cosine distance is associated with closer vectors. Also, $dist_{cos}$ allows negative values. 
 ILP minimization, on the other hand, considers lower distance values (starting from $0$) as close vectors and higher values (always positive) as distant. 
-Therefore, the cosine metric used in CRSS-SpkrDiar is $1 - dist_cos(i,j)$ from (\ref{eq:cosine_distance}). 
+Therefore, the cosine metric used in CRSS-SpkrDiar is $1 - dist_cos(i,j)$ from Eq.~(\ref{eq:cosine_distance}). 
 
 The second distance metric is Euclidean distance, defined as the norm-2 distance between ${\bf v_i}$ and ${\bf v_j}$. Similarly, a Mahalanobis distance, which is a weighted Euclidean distance is also applicable. The weight for Mahalanobis distance is calculated from the covariance estimate of all the i-Vectors obtained from segments$, \Sigma$. 
 \begin{equation}
