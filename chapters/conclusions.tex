@@ -8,6 +8,7 @@ The distinction between overlap and co-channel is the first contribution of this
 Although this contribution may appear trivial at first glance, it was shown that the majority of co-channel research considers overlap synonymous to co-channel speech, a misconception that reduces the applicability of some attempts to compensate overlapped speech in speaker recognition. 
 In other words, addressing overlap in co-channel speech is not sufficient for a large class of speaker recognition problems. 
 This narrative is carried out throughout the first few investigations of this study. 
+The following sections are some of the major contributions of this thesis. 
 
 \section{Overlapped speech analysis in speaker recognition}
 This study considers the impact of overlapped speech on speaker recognition performance. 
@@ -33,7 +34,7 @@ Pyknograms provide two important features that are useful for overlap detection:
 In addition to Pyknograms, GSFM was also proposed as a way to magnify the presence of multiple harmonics in time-frequency units. 
 GSFM incorporates the non-linearity of sinusoidal frequency modulation to obtain frequency modulation spectra. 
 The relative roll-off of FM spectra is then used to summarize the information in each time-frequency unit. 
-Evaluations show that although in controlled conditions GSFM outperforms Pyknograms for overlap detection, Pyknograms are significantly more reliable under noisy conditions. 
+Evaluations show that although in controlled conditions GSFM outperforms Pyknograms for overlap detection, while Pyknograms are significantly more reliable under noisy conditions. 
 
 \section{Incorporating overlap detection in speaker recognition}
 In addition to introducing overlap detection methods, a novel technique is proposed that uses overlap detection decisions as quality measures for speaker verification experiments. 
@@ -52,7 +53,7 @@ This puts the impact of overlap vs. co-channel speech in perspective when addres
 In an effort to compensate co-channel in realistic speaker recognition problems, a standard i-Vector/PLDA system was evaluated. 
 Many approaches were investigated to improve probabilistic linear discriminant analysis (PLDA) for co-channel speech. 
 
-The first method was to add co-channel data to PLDA training, called mixed-PLDA. 
+The first method was to add co-channel data to PLDA training (mixed-PLDA). 
 Mixed-PLDA was presented to treat speaker interference in the same manner PLDA addresses channel mismatch. 
 Although mixed-PLDA was proposed in this study, it is also considered a baseline; since comparing proposed systems with standard PLDA, which is not designed to compensate for co-channel data, is not a fair assessment. 
 A second method proposed in this study is dual-eigenvoice PLDA (dePLDA). dePLDA uses two identical eigenvoice matrices to model within- and between-speaker variability. 
@@ -83,11 +84,11 @@ Co-channel estimation was also proven useful in assessing conversations in in-ve
 A wide range of topics in co-channel speech were covered throughout this study. 
 Care was taken to assure that everything that affects speaker recognition be fully analyzed and some novel techniques were proposed. 
 
-The algorithms used for overlap detection mostly considers unsupervised signal processing techniques. 
+The algorithms used for overlap detection mostly consider unsupervised signal processing techniques. 
 A natural improvement on unsupervised methods has always been to investigate these methods in supervised frameworks. 
 A more elaborate setup to track harmonic trajectories in Pyknograms involves using a hidden Markov model (HMM) to model Pyknogram patterns. 
 This allows for a supervised classification of speech segments into overlap and single-speaker speech. 
-The proposed system uses an initial segmentation of a given audio stream based on the Bayesian Information Criterion (BIC segmentation)~\cite{BIC}. 
+The proposed system could use an initial segmentation of a given audio stream based on the Bayesian Information Criterion (BIC segmentation). 
 The shorter segments are then compared against two pre-trained HMMs, one for overlapped and the other for single-speaker speech. 
 The initial BIC segmentation is to allow for detection on shorter segments, since overlapped speech is considerably less frequent in a conversation compared to the total amount of speech. 
 The combination of BIC segmentation and HMM-based classification allows for a practical overlap detection mechanism that fits well with analyzing conversations recorded in real conditions (as opposed to artificial datasets with simulated overlaps). 
