@@ -5,7 +5,7 @@
 Throughout the course of this study, part of the agenda has been to acknowledge non-overlapping speech as an important component of co-channel. 
 It was shown that distinguishing overlap from co-channel introduces more realistic scenarios to the scope of co-channel speech problems. 
 An important example of such problems is conversational speech, a common and realistic form of speech. 
-Among the various aspects of analyzing conversations, {\it speaker diarization} is closest to speaker recognition\footnote{As a reminder for the readers, speaker recognition is the main theme of this thesis.}.
+Among the various aspects of analyzing conversations, {\it speaker diarization} is closest to speaker recognition.\footnote{As a reminder for the readers, speaker recognition is the main theme of this thesis.} 
 Speaker diarization refers to the task of automatically determining ``who spoke when?'' within an audio signal containing two or more speakers. 
 This chapter addresses the tasks of 1) segmenting co-channel data into single-speaker excerpts and 2) clustering segments, which means to group them by speakers. 
 Tasks are described within the context of CRSS-SpkrDiar, a speaker diarization tool-kit designed to perform diarization while simultaneously supporting speaker recognition and speech recognition using Kaldi\cite{kaldi}. 
@@ -18,7 +18,7 @@ CRSS-SpkrDiar is a speaker diarization tool-kit developed as part of a collabora
 The main motivation behind developing this tool-kit is to establish an integrated end-to-end conversation analysis system that provides the capability of diarizing  signals while supporting speech recognition. 
 Currently, one of the most popular speech recognition platforms used in research is Kaldi, developed in Johns Hopkins University~\cite{kaldi}. 
 Existing diarization systems are implemented in different platforms and to the best of our knowledge none support Kaldi I/O functions. 
-Switching between platforms and APIs\footnote{Application Programming Interface} frustrates users who are interested in simultaneously analyzing speaker diarization and speech recognition. 
+Switching between platforms and APIs (Application Programming Interface)  frustrates users who are interested in simultaneously analyzing speaker diarization and speech recognition. 
 We hope that developing a speaker diarization module on top of Kaldi will help students and staff with the kind of multi-purpose research that is common in CRSS. 
 Although CRSS-SpkrDiar is currently in working condition, as a research platform it is always considered under development and is available for those who are interested in investigating various aspects of conversational data. 
 
@@ -69,13 +69,13 @@ This presumed coherence in the sequence of speakers is used to correct errors in
 	\centering
 	\textbf{Speaker diarization system description}\par\medskip
 	\includegraphics[height = 1in, width=1\textwidth]{figures/crssdiar_outline}
-	\caption{\it \small CRSS-SpkrDiar system overview. Two main steps are used in speaker diarization: 1) Segmentation (SAD, overlap detection, and BIC segmentation) and 2) clustering (ILP clustering and resegmentation). }
-	\label{fig:crssdiar}
+	\caption{ \small CRSS-SpkrDiar system overview. Two main steps are used in speaker diarization: 1) Segmentation (SAD, overlap detection, and BIC segmentation) and 2) clustering (ILP clustering and resegmentation). }
+	\label{fig:ch5_crssdiar}
 	\vspace{-3mm}
 \end{figure}
 
 
-Figure~\ref{fig:crssdiar} shows an overview of CRSS-SpkrDiar. 
+Figure~\ref{fig:ch5_crssdiar} shows an overview of CRSS-SpkrDiar. 
 The input is the audio recording of two or more speakers. 
 We start by performing speech activity detection (SAD) and overlap detection to label non-speech and overlapped segments as off-bounds. 
 The next step is segmentation, which uses a measure called Bayesian Information Criterion (BIC) to detect speaker change points~\cite{chen1998BIC}. 
@@ -104,15 +104,15 @@ The classes are defined in {\it diar}, while {\it diarbin} contains the executab
 CRSS-SpkrDiar uses matrix and utility libraries from Kaldi in its core.  
 Kaldi also includes modules that define Gaussian mixture models and Hidden Markov models ({\it gmm} and {\it hmm}), of which we also take advantage for acoustic modeling. 
 As mentioned in the previous section, i-Vectors are used in CRSS-SpkrDiar as speaker-dependent features. 
-Therefore, Kaldi's {\it ivector} is used to extract i-Vectors and calculate distances and models such as PLDA\footnote{probabilistic linear discriminant analysis} to perform clustering. 
-Figure~\ref{fig:crssdiar_vs_kaldi} shows the interaction between {\it diar} and {\it diarbin} components and Kaldi libraries. 
+Therefore, Kaldi's {\it ivector} is used to extract i-Vectors and calculate distances and models such as PLDA (probabilistic linear discriminant analysis) to perform clustering. 
+Figure~\ref{fig:ch5_crssdiar_vs_kaldi} shows the interaction between {\it diar} and {\it diarbin} components and Kaldi libraries. 
 
 \begin{figure}[t!]
 	\centering
 	\textbf{CRSS-SpkrDiar modules}\par\medskip
 	\includegraphics[height = 2in, width=0.8\textwidth]{figures/crssdiar_and_kaldi}
-	\caption{\it \small CRSS-SpkrDiar components and their relation with Kaldi libraries.  }
-	\label{fig:crssdiar_vs_kaldi}
+	\caption{ \small CRSS-SpkrDiar components and their relation with Kaldi libraries.  }
+	\label{fig:ch5_crssdiar_vs_kaldi}
 	\vspace{-3mm}
 \end{figure}
 
@@ -144,8 +144,8 @@ BIC segmentation tests these hypotheses by using the following function in a seq
 \begin{equation}
 BIC(H) = log\mathcal{L}_{M}(H) - P_{M_{N}}, 
 \end{equation}
-where $\mathcal{L}_{M}(H)$ is the maximum likelihood of the model $M$ under hypothesis $H$. $P_M$ is the BIC penalty function~\cite{schwarz1978BIC} when $M$ is used to parameterize $N$ samples. The indexes correspond to time frames\footnote{As we know, acoustic features, $X_i$, are calculated over typically $25 msec$ frames. 
-The framing used throughout this chapter uses $25 msec$ frames with an increment of $10 msec$. These frames are not to be mistaken with windows used to search for change points.}. 
+where $\mathcal{L}_{M}(H)$ is the maximum likelihood of the model $M$ under hypothesis $H$. $P_M$ is the BIC penalty function~\cite{schwarz1978BIC} when $M$ is used to parameterize $N$ samples. The indexes correspond to time frames.\footnote{As we know, acoustic features, $X_i$, are calculated over typically $25 msec$ frames. 
+The framing used throughout this chapter uses $25 msec$ frames with an increment of $10 msec$. These frames are not to be mistaken with windows used to search for change points.} 
 \begin{equation}
 P_{M_N} = \frac{F_M}{2}log(N),
 \end{equation}
@@ -279,7 +279,7 @@ To the best of our knowledge, there are no conclusive results that suggest one c
 Another important development with regard to clustering has been to use i-Vectors to perform clustering. 
 The standard HAC-GMM framework does not use i-Vectors in the clustering process. 
 Some developments have been made to use i-Vector distances in an HAC clustering solution. 
-The reader should be reminded that the compatibility of CRSS-SpkrDiar with Kaldi allows for a complete integration of i-Vectors with clustering\footnote{While this manuscript was under preparation, HAC was also added to CRSS-SpkrDiar. The most current version of the software supports both HAC and ILP clustering methods.}. 
+The reader should be reminded that the compatibility of CRSS-SpkrDiar with Kaldi allows for a complete integration of i-Vectors with clustering.\footnote{While this manuscript was under preparation, HAC was also added to CRSS-SpkrDiar. The most current version of the software supports both HAC and ILP clustering methods.} 
 
 An increasingly popular algorithm that has been used in speaker diarization has been {\it integer linear programming} (ILP). 
 Two reasons that make ILP particularly interesting are: 
@@ -364,13 +364,13 @@ The optimzation problem in Eq.~(\ref{eq:ilp_minimization_1}) is implemented in C
 GLPK explicitly reads the objectives, equalities, and inequalities in the form provided in Eq.~(\ref{eq:ilp_minimization_1}). 
 To create the input file for GLPK, i-Vectors are extracted from the segments and indexed appropriately. 
 A distance matrix (see Sect.\ref{sec:plda_ilp} and \ref{sec:other_distances_ilp}) is calculate using all segment i-Vectors. 
-Figure~\ref{fig:ilp_clustering} summarizes the process of generating the GLPK input, we is called the {\it GLPK Template} in CRSS-SpkrDiar. 
+Figure~\ref{fig:ch5_ilp_clustering} summarizes the process of generating the GLPK input, we is called the {\it GLPK Template} in CRSS-SpkrDiar. 
 
 \begin{figure}[ht!]
 	\centering
 	\includegraphics[height = 2.6in, width=1\textwidth]{figures/ilp_clustering_summary}
-	\caption{\it \small Summary of ILP clustering using CRSS-SpkrDiar. The binary executables used for each step are shown in the figure. }
-	\label{fig:ilp_clustering}
+	\caption{ \small Summary of ILP clustering using CRSS-SpkrDiar. The binary executables used for each step are shown in the figure. }
+	\label{fig:ch5_ilp_clustering}
 	\vspace{-3mm}
 \end{figure}
 
@@ -450,15 +450,15 @@ This error rate is a combination of three types of errors made by a speaker diar
 
 The last type of error is the most difficult to verify, since the diarization system has no prior knowledge of speakers and therefore assigns its own labels to segments. 
 Hence, the labeling produced by the diarization system does not correspond to labels from ground-truth. The figure below shows an example problem. It shows all three types of error in a diarization system (false-alarm, miss, and incorrect labeling of speakers). 
-Figure~\ref{fig:diarization_der} highlights the types of error that are made during diarization. 
+Figure~\ref{fig:ch5_diarization_der} highlights the types of error that are made during diarization. 
 
 \begin{figure}[h!]
 	\centering
 	\textbf{Speaker Diarization Errors}\par\medskip
 	\includegraphics[height = 3.5in, width=1\textwidth]{figures/diarization_example_der}
-	\caption{\it \small Shows three types of errors made by a diarization system. 1) false alarms: segment that does not contain speech is labeled by diarization system. 2) miss: segment containing speech is not labeled by diarization system. 
+	\caption{ \small Shows three types of errors made by a diarization system. 1) false alarms: segment that does not contain speech is labeled by diarization system. 2) miss: segment containing speech is not labeled by diarization system. 
 		3) incorrect labeling: the third type of error assumes that A is 1 and B is 2. It is up to the diarization error rate calculator to make this assignment.}
-	\label{fig:diarization_der}
+	\label{fig:ch5_diarization_der}
 	\vspace{-3mm}
 \end{figure}
 
@@ -467,7 +467,7 @@ It is up to the diarization error rate calculator to recognize the correct label
 This is done by considering all possibilities, in this case $(A:1,B:2)$ and $(A:2,B:1)$, and returning the assignment that results in minimum labeling error. 
 
 
-The formulation proposed by NIST for diarization error rate\footnote{Unfortunately, NIST has removed the online evaluation plan from its website. The equations provided here are from Xavier Anguera's PhD thesis~\cite{anguera2007phd}.} is~\cite{anguera2012DRZreview}:
+The formulation proposed by NIST for diarization error rate is~\cite{anguera2012DRZreview}:\footnote{Unfortunately, NIST has removed the online evaluation plan from its website. The equations provided here are from Xavier Anguera's PhD thesis~\cite{anguera2007phd}.}
 \begin{equation}
 DER = E_{spkr} + E_{miss} + E_{fa}, 
 \end{equation}
@@ -498,8 +498,8 @@ The output of the GLPK clustering module can also be converted into RTTM using g
 	\centering
 	\textbf{DER for different distance measures in CRSS-SpkrDiar}\par\medskip
 	\includegraphics[height = 3.5in, width=1\textwidth]{figures/crssdiar_distances_der}
-	\caption{\it \small Comparison of diarization error rates calculated for different distance measures implemented in CRSS-SpkrDiar. DER is calculated for 11 AMI meetings (IS1009a-IS1001). Although absolute DER values have considerable room for improvement, it is clear that PLDA scoring significantly outperforms other distance measures.}
-	\label{fig:compare_crssdiar_distances}
+	\caption{ \small Comparison of diarization error rates calculated for different distance measures implemented in CRSS-SpkrDiar. DER is calculated for 11 AMI meetings (IS1009a-IS1001). Although absolute DER values have considerable room for improvement, it is clear that PLDA scoring significantly outperforms other distance measures.}
+	\label{fig:ch5_compare_crssdiar_distances}
 \end{figure}
 
 This section briefly compares CRSS-SpkrDiar performance under the various distance measures described in Sect.~\ref{sec:plda_ilp}~and~\ref{sec:other_distances_ilp}. 
@@ -512,10 +512,10 @@ For the purposes of these experiments i-Vectors were extracted for over 600 NIST
 Multiple i-Vectors from different recordings were used for each speaker to provide sufficient channel variability. 
 The PLDA model used here does not perform dimension reduction on the original 100-dimensional i-Vectors. 
 
-Readers are advised not to examine Fig.~\ref{fig:compare_crssdiar_distances} based on absolute DER values. 
+Readers are advised not to examine Fig.~\ref{fig:ch5_compare_crssdiar_distances} based on absolute DER values. 
 The purpose of this figure is to compare the performance of different distance measures presented in this chapter. 
 The novel approach of using PLDA-based scores in ILP clustering significantly outperforms other distance measures. 
-Figure~\ref{fig:compare_crssdiar_distances} also shows that conditional Bayes only slightly outperforms Mahalanobis distance. 
+Figure~\ref{fig:ch5_compare_crssdiar_distances} also shows that conditional Bayes only slightly outperforms Mahalanobis distance. 
 This observation is reasonable, since Mahalanobis and conditional Bayes essentially follow the same form and the difference is in the choice of covariance matrix. 
 
 \section{Future Work}

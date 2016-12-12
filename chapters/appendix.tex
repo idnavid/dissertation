@@ -1,5 +1,6 @@
-\chapter{Appendix: i-Vector/PLDA speaker recognition}
+\chapter*{Appendix\\i-Vector/PLDA speaker recognition}
 \label{appendix:ivector_plda_spkr_id}
+
 This appendix is presented for the curious reader who is interested in becoming more familiar with the i-Vector/PLDA speaker recognition platform. 
 This is in no means a comprehensive introduction for this type of system, rather its function is to provide context for proposed systems in Chapter~\ref{chapter:backend}. 
 Speaker recognition in i-Vector/PLDA system is implemented in a way to fall in the speaker verification framework. 
@@ -9,12 +10,14 @@ Unlike GMM-UBM, test speakers are also represented by speaker models.
 Therefore, train and test speakers are treated similarly in an i-Vector/PLDA system. 
 Figure~\ref{fig:ivector_plda} summarizes a typical i-Vector/PLDA system~\cite{dehak2011front}. 
 
+\renewcommand{\thefigure}{A.\arabic{figure}}
+\setcounter{figure}{0}
 \begin{figure}[h!]
 	\centering
 	\vspace{0mm} 
 	\includegraphics[height = 4in, width=0.9\textwidth]{figures/ivector_plda}
 	\vspace{-3mm}
-	\caption{\it Overview of i-Vector/PLDA system.}
+	\caption{Overview of i-Vector/PLDA system.}
 	\label{fig:ivector_plda}
 	\vspace{-3mm}
 \end{figure}

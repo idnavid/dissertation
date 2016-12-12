@@ -29,9 +29,9 @@ A wide range of terms have been used to describe various aspects of co-channel s
 which will be clarified throughout this chapter. 
 This study addresses both conversational speech and artificially mixed audio streams as co-channel. 
 Although some studies propose multi-channel solutions to co-channel speech~\cite{panahi2009blind,xiao2011overlapped}, the focus here is solely on single-channel recordings (i.e., a single microphone). 
-In co-channel data, a subset of instances may contain more than one ``active'' speaker at the same time, i.e. multi-speaker segments, 
+In co-channel data, a subset of instances may contain more than one ``active'' speaker at the same time (i.e., multi-speaker segments), 
 which we label as ``overlapped speech''. 
-Overlapped regions are segments of a co-channel signal where both speakers are simultaneously active. This categorization is summarized in Fig.~\ref{fig:cochannel_vs_overlap}.
+Overlapped regions are segments of a co-channel signal where both speakers are simultaneously active. This categorization is summarized in Fig.~\ref{fig:ch1_cochannel_vs_overlap}.
 
 
 \begin{figure}[h!]
@@ -39,8 +39,8 @@ Overlapped regions are segments of a co-channel signal where both speakers are s
 	\vspace{0mm}
 	\includegraphics[height = 2in, width=0.9\textwidth]{figures/cochannel_vs_overlap-crop}
 	\vspace{-3mm}
-	\caption{\it \small Difference between co-channel and overlapped speech. Overlap refers to instances where more than one speaker is active. Co-channel is defined as an entire stream that contains multiple speakers. All co-channel files do not necessarily contain overlap. }
-	\label{fig:cochannel_vs_overlap}
+	\caption{ \small Difference between co-channel and overlapped speech. Overlap refers to instances where more than one speaker is active. Co-channel is defined as an entire stream that contains multiple speakers. All co-channel files do not necessarily contain overlap. }
+	\label{fig:ch1_cochannel_vs_overlap}
 	\vspace{-3mm}
 \end{figure}
 
@@ -101,15 +101,15 @@ The presence of overlapped speech can be detrimental to speaker diarization and 
 In speaker diarization, it becomes difficult to assess system performance at overlaps, due to the inherent ambiguity in labeling overlapped segments. 
 The same goes for speech recognition where aside from determining which is the ``primary'' speaker, recognizing speech at overlaps is more difficult, due to interference coming from other speakers. 
 For this and other reasons detailed in the next chapter, the first portion of this study is devoted to overlapped speech detection. 
-Our approach to overlap detection will be to focus on developing signal processing techniques to detect and separate overlap from single-speaker speech. Figure~\ref{fig:overlap_applications} depicts some applications of overlap detection in speech technology. 
+Our approach to overlap detection will be to focus on developing signal processing techniques to detect and separate overlap from single-speaker speech. Figure~\ref{fig:ch1_overlap_applications} depicts some applications of overlap detection in speech technology. 
 
 \begin{figure}[h!]
 	\centering
 	\vspace{0mm}
-	\includegraphics[height = 3in, width=\textwidth]{figures/overlap_detection_applications}
+	\includegraphics[height = 4in, width=1.\textwidth]{figures/overlap_detection_applications}
 	\vspace{-3mm}
-	\caption{\it \small Various applications of overlap detection. Top: In speaker diarization, ignoring overlapped regions provides a more fair assessment of diarization performance. Middle: Removing overlaps in speaker recognition increases the reliability of training data. Bottom: Overlap detection results can be used as an initial step to recover overlapped regions.}
-	\label{fig:overlap_applications}
+	\caption{ \small Various applications of overlap detection. Top: In speaker diarization, ignoring overlapped regions provides a more fair assessment of diarization performance. Middle: Removing overlaps in speaker recognition increases the reliability of training data. Bottom: Overlap detection results can be used as an initial step to recover overlapped regions.}
+	\label{fig:ch1_overlap_applications}
 	\vspace{-3mm}
 \end{figure}
 
@@ -151,7 +151,7 @@ The second aspect is an exhibition of interdisciplinary applications of co-chann
 
 Finally, a summary of conclusions and references to future studies are presented in Chapter~\ref{chapter:conclusions}. 
 
-\section{Thesis Contributions}
+\section{Dissertation Contributions}
 \label{sec:contributions}
 This dissertation investigates various aspects of co-channel speech and is novel in a number of ways. 
 The most important contribution is to:

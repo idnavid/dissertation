@@ -49,15 +49,15 @@ A speaker verification system usually produces a likelihood value for each verif
 The collection of trial likelihood values produces two distributions, one of which corresponds to true (aka target) trials and the other to imposter (aka non-target) trials. 
 
 The described framework requires a model for the training speakers (for whom we have several recording sessions available), but for the test speakers we only use the features from a test audio signal to compute the maximum likelihood (ML) probability of the test speaker belonging to the corresponding train speaker in each trial. 
-Figure~\ref{fig:speaker_verification} summarizes a speaker verification setup. 
+Figure~\ref{fig:ch3_speaker_verification} summarizes a speaker verification setup. 
 
 \begin{figure}[h!]
 	\centering
 	\vspace{0mm}
 	\includegraphics[height = 3in, width=0.8\textwidth]{figures/speaker_verification_setup}
 	\vspace{-3mm}
-	\caption{\it Speaker verification setup}
-	\label{fig:speaker_verification}
+	\caption{ Speaker verification setup}
+	\label{fig:ch3_speaker_verification}
 	\vspace{0mm}
 \end{figure}
 
@@ -70,15 +70,15 @@ The UBM is trained on background development data.
 In the examples provided in Sect.~\ref{sec:ch3_OvlinTest}~and~\ref{sec:ch3_OvlinTrain}, the development data is TIMIT. 
 The verification system considers to hypotheses: 1) the probability of the test audio being generated from $GMM_i$, 2) the probability of the test audio generated from the UBM, which in this case represents every other speaker except $i$. 
 The ratio between these two ratios is used to quantify the system decision for a given trial. 
-Figure~\ref{fig:gmm_ubm_sid} illustrates the procedure to determine the likelihood ratio for one trial. 
+Figure~\ref{fig:ch3_gmm_ubm_sid} illustrates the procedure to determine the likelihood ratio for one trial. 
 
 \begin{figure}[h!]
 	\centering
 	\vspace{0mm}
 	\includegraphics[height = 3.5in, width=0.9\textwidth]{figures/gmm_ubm_sid_setup}
 	\vspace{-3mm}
-	\caption{\it Speaker verification setup}
-	\label{fig:gmm_ubm_sid}
+	\caption{ Speaker verification setup}
+	\label{fig:ch3_gmm_ubm_sid}
 	\vspace{0mm}
 \end{figure}
 
@@ -93,7 +93,7 @@ Gaussian mixture models (GMM) are adapted from a Universal back model (UBM) trai
 For each model (training) speaker, there are 500 utterances in SSC, which are all used in the training process. Test files are available in all SIR conditions. 
 As expected, lower SIR values correspond to higher equal error rates. 
 The presence of a secondary speaker, clearly causes confusion in the score distribution, leading to less separability between target and imposter trials. 
-recognition performance under clean test files and those with average SIR ranging in $+6, +3, 0, -3, -6, -9 dB$ are provided in Fig.~\ref{fig:sidingrid_ovlintest_train_a}. 
+recognition performance under clean test files and those with average SIR ranging in $+6, +3, 0, -3, -6, -9 dB$ are provided in Fig.~\ref{fig:ch3_sidingrid_ovlintest_train_a}. 
 
 It is worth mentioning that it was tempting to compare these results with stationary noise experiments. 
 However, contrary to expectations, it was observed that performances were better in the overlapped condition when compared to white Gaussian noise and speech-shaped noise interference, even for negative SIR values. 
@@ -105,8 +105,8 @@ Therefore, an important take-away message here is that a certain {\bf SIR} value
 
 \section{Overlap in train data}
 \label{sec:ch3_OvlinTrain}
-This section examines the effect of adding overlapped speech to train files (Fig.~\ref{fig:sidingrid_ovlintest_train_b}). 
-Figures~\ref{fig:sidingrid_ovlintrainvstest_male} and \ref{fig:sidingrid_ovlintrainvstest_female} compares the effects of adding overlapped speech in train and test files. 
+This section examines the effect of adding overlapped speech to train files (Fig.~\ref{fig:ch3_sidingrid_ovlintest_train_b}). 
+Figures~\ref{fig:ch3_sidingrid_ovlintrainvstest_male} and \ref{fig:ch3_sidingrid_ovlintrainvstest_female} compare the effects of adding overlapped speech in train and test files. 
 
 An interesting observation is the higher rate with which the EER increases when the SIR drops for the test condition. 
 We believe this is due to the fact that in train conditions, the training of Gaussian mixture models tends to cancel out the effect of the interfering speech. 
@@ -122,29 +122,29 @@ Such cancellation, however, does not exist across test files.
 	\centering
 	\includegraphics[height = 3.43in, width=0.9\textwidth]{figures/sidingrid_ovlintest}
 	\vspace{-1mm}
-	\caption{\it The rise in EER values as we increase the effect of overlapped speech (via decreasing the SIR). Starting from clean (i.e. single-speaker speech) to lower SIR values. a) Shows the case where train files are clean, but test files contain overlaps. }
-	\label{fig:sidingrid_ovlintest_train_a}
+	\caption{ The rise in EER values as we increase the effect of overlapped speech (via decreasing the SIR). Starting from clean (i.e. single-speaker speech) to lower SIR values. The graph shows the case where train files are clean, but test files contain overlaps. }
+	\label{fig:ch3_sidingrid_ovlintest_train_a}
 \end{figure}
 \begin{figure}[h!]%{0.5\textwidth}
 	\centering
 	\includegraphics[height = 3.43in, width=0.9\textwidth]{figures/sidingrid_ovlintrain}
 	\vspace{-1mm}
-	\caption{\it b) clean test files but train files contain overlaps.}
-	\label{fig:sidingrid_ovlintest_train_b}
+	\caption{Female and male speaker verification experiments with clean (100dB SIR) test files, but train files contain overlaps.}
+	\label{fig:ch3_sidingrid_ovlintest_train_b}
 \end{figure}
 
 
 
 \begin{figure}[h!]
 	\includegraphics[height = 3.43in, width=0.9\textwidth]{figures/sidingrid_ovlintrainvstest_male_rev1}
-	\caption{\it Comparing the impact of increasing overlap (OVL) in train vs. test data by decreasing SIR values. Experiments for male speakers (a). Lower SIR drops the performance more rapidly when applied to test data.}
-	\label{fig:sidingrid_ovlintrainvstest_male}
+	\caption{ Comparing the impact of increasing overlap (OVL) in train vs. test data by decreasing SIR values. Experiments for male speakers. Lower SIR drops the performance more rapidly when applied to test data.}
+	\label{fig:ch3_sidingrid_ovlintrainvstest_male}
 \end{figure}
 
 \begin{figure}[h!]
 	\includegraphics[height = 3.43in, width=0.9\textwidth]{figures/sidingrid_ovlintrainvstest_female_rev1}
-	\caption{\it b) female}
-	\label{fig:sidingrid_ovlintrainvstest_female}
+	\caption{ Shows the counterpart experiments of Fig.~\ref{fig:ch3_sidingrid_ovlintrainvstest_male} for female speakers.}
+	\label{fig:ch3_sidingrid_ovlintrainvstest_female}
 \end{figure}
 
 
@@ -173,13 +173,14 @@ The target to imposter ratio in speaker verification trials is $0.001$.
 An evaluation set of size $18,000$ trials with similar specifics and target-imposter ratio is used to test overall system performance.
 
 
-Table~\ref{tab:sid_stack_results} shows the improvements obtained by using the overlap detection scores individually and combined. 
+Table~\ref{tab:ch3_sid_stack_results} shows the improvements obtained by using the overlap detection scores individually and combined. 
 Kurtosis and SFM show less correlation, however they provide significant complementary information when combined and used alongside SAPVR and pyknogram features. 
 The best result is obtained when all four features are concatenated, since each overlap detection system may yield better performance in certain scenarios.  
 
 
 \begin{table}[t]
 	\centering
+	\caption{ Speaker verification performance (EER) with and without overlap detection scores as meta-data. Grey cells highlight the features used in each experiment. The relative change in EER is presented in the last column.}
 	\begin{tabular}{|c|c|c|c|c|c|}
 		\hline
 		raw GMM/UBM scores & pykno & kurtosis & SFM & SAPVR & $\textit{\textbf{EER (\%)}}$ \\ \hline
@@ -195,8 +196,7 @@ The best result is obtained when all four features are concatenated, since each 
 		\cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{FFFFFF} & \cellcolor[HTML]{C0C0C0} \checkmark & 9.18 \\ \hline
 		\cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & \cellcolor[HTML]{C0C0C0} \checkmark & {\bf 9.10}\\ \hline
 	\end{tabular}
-	\caption{\it Speaker verification performance (EER) with and without overlap detection scores as meta-data. Grey cells highlight the features used in each experiment. The relative change in EER is presented in the last column.}
-	\label{tab:sid_stack_results}
+	\label{tab:ch3_sid_stack_results}
 	\vspace{-5mm}
 \end{table}
 
@@ -209,7 +209,7 @@ Pyknogram-based detection is designed to locate harmonic discontinuities as oppo
 
 Experiments show that the best performance is obtained using an SVM with a radial basis function (RBF) kernel. 
 The SVM parameter(s) (here $\gamma$) are determined through cross-validation on the development set. 
-Class weights (i.e., target/imposter weights for the SVM classifier) and the cost (aka slack) parameter are selected according to the detection cost function (DCF) parameters ($C_{fa}$, $C_{miss}$, and $prior$) used throughout experiments~\cite{bosaris}. %Table~\ref{tab:sid_stack_results}  The highest relative improvement is obtained when all features are concatenated. 
+Class weights (i.e., target/imposter weights for the SVM classifier) and the cost (aka slack) parameter are selected according to the detection cost function (DCF) parameters ($C_{fa}$, $C_{miss}$, and $prior$) used throughout experiments~\cite{bosaris}. %Table~\ref{tab:ch3_sid_stack_results}  The highest relative improvement is obtained when all features are concatenated. 
 
 An additional experiment is also conducted using ideal overlap labels (labels from ground-truth) in the Q-stack paradigm which results in an lower bound in error rates.
 The EER for this lower bound is $8.74\%$ ($23\%$ relative improvement). 

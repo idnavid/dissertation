@@ -2,7 +2,9 @@
 \label{chap:applications}
 
 Previous chapters focused more on various technical aspects of co-channel speech and less on integrating the proposed techniques with other applications. 
-This chapter highlights collaborative studies that address co-channel speech analysis for two problems: word-count estimation\footnote{Word-count estimation in co-channel speech is a collaboration between myself, Ali Ziaei, Abhijheet Sangwan, and my advisor Prof. John Hansen. At the time of the study, Ali Ziaei was a fellow PhD student at CRSS, Abhijeet Sangwan was (and currently still remains) a research professor in the department of Electrical Engineering at UT-Dallas.} and in-vehicle speech pertaining to driver safety systems\footnote{In-vehicle speech analysis studies are a collaboration with Amardeep Sathyanarayanan, Omid Sadjadi, and Prof. John Hansen. Amardeep and Omid were both PhD students at CRSS during the time of these studies.}. 
+This chapter highlights collaborative studies that address co-channel speech analysis for two problems: word-count estimation and in-vehicle speech pertaining to driver safety systems.\footnote{Word-count estimation in co-channel speech is a collaboration between myself, Ali Ziaei, Abhijheet Sangwan, and my advisor Prof. John Hansen. At the time of the study, Ali Ziaei was a fellow PhD student at CRSS, Abhijeet Sangwan was (and currently still remains) a research professor in the department of Electrical Engineering at UT-Dallas. 
+
+In-vehicle speech analysis studies are a collaboration with Amardeep Sathyanarayanan, Omid Sadjadi, and Prof. John Hansen. Amardeep and Omid were both PhD students at CRSS during the time of these studies.} 
 I consider these studies a driving force during my work as a PhD student, since research without outside stimulus can sometimes be mundane and out of touch. 
 Collaborative studies, on the other hand, open up room for discussion and often lead to constructive feedback. 
 Each of the studies presented in this chapter have led to major advancements in this dissertation. 
@@ -35,7 +37,7 @@ The proposed word-count estimator in this study is tested on long duration files
 Establishing a robust automatic framework to achieve high accuracy is non-trivial in realistic scenarios due to various factors such as different conversation styles or types of noise that appear in audio recordings, especially in multi-party conversations (i.e., co-channel speech). 
 This section proposes to use overlap detection to estimate the likelihood of overlapping speech in a given audio file in the presence of environment noise. 
 The resulting overlap information is embedded into a word-count estimator, which uses a linear minimum mean square estimator (LMMSE) to predict the number of words from syllable rates, which are easier to detect using only acoustic information. 
-Figure~\ref{fig:wce_system_overview} shows an overview of the proposed word-count estimator. 
+Figure~\ref{fig:ch6_wce_system_overview} shows an overview of the proposed word-count estimator. 
 The overlap detection system acts as an augmented module in the system, similarly to how speech activity detection removes silence for the word-count estimation (WCE) system. 
 
 \begin{figure}[t!]
@@ -43,7 +45,7 @@ The overlap detection system acts as an augmented module in the system, similarl
 	\includegraphics[height = 2.8in, width=1\textwidth]{figures/wce_ovl_SLT2014_systemconfig_figur-crop}
 	\vspace{-3mm}
 	\caption{Word-count estimation system configuration. The overlap detection system is shown as an addition to the original system.}
-	\label{fig:wce_system_overview}
+	\label{fig:ch6_wce_system_overview}
 \end{figure}
 
 \subsection{Word-count estimation}
@@ -72,7 +74,7 @@ None of these techniques, however, are able to address the issue of overlapped s
 Therefore, the novelty in this study is to use overlap detection as an additional layer of data pruning to reduce false alarms. 
 
 An estimation of the location and amount of overlapped speech in a given speech segment can be combined with SAD labels to supply an additional layer of data pruning before syllable detection. 
-Overlap detection is fed to the syllable detector as additional information (see Fig.~\ref{fig:wce_system_overview}).  
+Overlap detection is fed to the syllable detector as additional information (see Fig.~\ref{fig:ch6_wce_system_overview}).  
 First, SAD is performed on the raw data to detect speech locations. 
 From SAD labels, non-speech regions are used to estimate the noise level in each short segment and submitted to the spectral subtraction algorithm. 
 Speech-only segments are passed to the syllable detector after applying spectral subtraction. 
@@ -127,7 +129,7 @@ It is expected that active engagement conversations results in deviations from u
 Performing certain secondary tasks while driving is likely to adherently impact driving performance. 
 Some tasks are inevitable or difficult to restrict, such as controlling the navigation system. 
 However, other secondary tasks such as engaging in a conversation with other passengers or cell-phone conversations can be controlled if they are determined to compromise driving performance. 
-This sections shows a feedback system which not only evaluates variations in driving performance but also helps mitigate the influence of in-vehicle speech if it is found to adversely influencing the driving performance (see Figure~\ref{fig:system_description_fig}). 
+This sections shows a feedback system which not only evaluates variations in driving performance but also helps mitigate the influence of in-vehicle speech if it is found to adversely influencing the driving performance (see Figure~\ref{fig:ch6_system_description_fig}). 
 There are two separate subsystems in the proposed framework. 
 The first subsystem evaluates the driving performance by identifying maneuvers and then comparing them with the driver's regular driving patterns. 
 If a maneuver is recognized as ``abnormal'', the driver's in-vehicle speech involvement is monitored to see whether that is the cause for unusual driving behavior. 
@@ -136,7 +138,7 @@ If a maneuver is recognized as ``abnormal'', the driver's in-vehicle speech invo
 	\centering
 	\includegraphics[width=\linewidth]{figures/system_description-crop}
 	\caption {System description}
-	\label{fig:system_description_fig}
+	\label{fig:ch6_system_description_fig}
 \end{figure}
 
 The second subsystem evaluates the driver's involvement in conversations. 
@@ -196,7 +198,7 @@ The tasks are described below:
 	\centering
 	\includegraphics[width=0.6\linewidth]{figures/route_map-crop}
 	\caption {Driving route with different conversational task segments.}
-	\label{fig:map}
+	\label{fig:ch6_map}
 	%\vspace{-5mm}
 \end{figure}
 
@@ -206,7 +208,7 @@ The tasks are described below:
 	\item Segment 2: In this segment one of the passengers picks an object and the driver and the other passenger are supposed to guess the object using the hints provided to them. Whoever guesses first is the winner. This game is chosen to increase turn-taking and overlapping speech segments.
 	\item Segment 3: A set of TIMIT sentences are played through a portable tablet and the driver is required to repeat each sentence before the next sentence is played.
 	\item Segment 4: An argument is initiated by one of the passengers. This second conversation is more involved compared to that in segment 1. The difference here is that the driver’s opinion on a debatable topic is asked and based on his/her answer, the passengers take the other side and try to argue on the subject.
-	Each of the tasks described above takes place on one of the legs in the route as labeled on the map in Figure~\ref{fig:map}.
+	Each of the tasks described above takes place on one of the legs in the route as labeled on the map in Figure~\ref{fig:ch6_map}.
 	
 \end{itemize}
 
@@ -222,7 +224,7 @@ Statistical information such as maximum lateral acceleration, mean of the vehicl
 Using Support Vector Machines (SVM), the maneuver segments are recognized and classified with a high average accuracy of over $90\%$. 
 Once classified, driving performance is evaluated for each maneuver according to its class. 
 Thresholds are appropriately set in the feature space to identify any abnormal or risky driving patters. 
-Examples of the driving performance evaluation is shown in Figure~\ref{fig:driving_performance}. 
+Examples of the driving performance evaluation is shown in Figure~\ref{fig:ch6_driving_performance}. 
 This figure compares a drivers performance on the same route with and without the stimulus of competitive conversations. 
 The regions marked green are locations where the driver drove similar to his usual driving pattern. Yellow regions correspond to where the driver showed slight variations in the driving pattern. 
 The red regions are locations where the driver executed an abnormal or risky maneuver. 
@@ -234,13 +236,13 @@ All regions concur with the visual and perceptual verification obtained by looki
 	\includegraphics[scale=0.6]{figures/driving_and_overlap}
 	\vspace{-5mm}
 	\caption {Driving performance evaluation on a section of the route in two phases. Left (phase 1)-  performance with minimal conversations. Right (phase 2)- performance drop as a result of the increase in the amount of overlapping speech.}
-	\label{fig:driving_performance}
+	\label{fig:ch6_driving_performance}
 	\vspace{-5mm}
 	%\vspace{-5mm}
 \end{figure*}
 
 
-As Figure~\ref{fig:driving_performance} suggests, there are some instances in the route where no direct relationship is observed between overlapped speech and performance-drop, see the area marked by a star in the figure. 
+As Figure~\ref{fig:ch6_driving_performance} suggests, there are some instances in the route where no direct relationship is observed between overlapped speech and performance-drop, see the area marked by a star in the figure. 
 This was expected, since there are always other sources that can cause irregularities in the driver's maneuver execution patterns. 
 Hence, speech related features should be analyzed in more detail to confirm that the conversation is the source of distraction. 
 With this intention, the patterns of turn-takings and overlapped speech segments were jointly investigated over time. 
@@ -252,23 +254,23 @@ ovl_{rate} = \dfrac{\textrm{Number\: of\: overlapped\: samples\: in\: window}}{\
 tt_{rate} = \dfrac{\textrm{Number\: of\: turntakings\: in\: window}}{\textrm{window\: length}} \nonumber
 \end{equation}
 
-Figure~\ref{fig:turntaking_and_overlap} depicts the average turn-taking and overlapped speech rate in conversations before observing significant drop in driving performance. 
+Figure~\ref{fig:ch6_turntaking_and_overlap} depicts the average turn-taking and overlapped speech rate in conversations before observing significant drop in driving performance. 
 Each plot belongs to a different scenario. 
 
 \begin{figure*}[h!]
-	\vspace{-5mm}
+	\vspace{1mm}
 	\centering
 	\includegraphics[scale=0.5]{figures/ttr_and_ovl}
 	\caption {Turn-taking and overlapping speech rate before observing the first major drop in performance in different scenarios.}
-	\label{fig:turntaking_and_overlap} 
+	\label{fig:ch6_turntaking_and_overlap} 
 	%\vspace{-5mm}
 \end{figure*}
 
 \newpage
 If both the turn-taking and overlapped speech rates increase before the performance drops, the conversation can be a potential source of distraction. 
-Figures~\ref{fig:turntaking_and_overlap}-a and b are more interesting, since both features increase with time. 
-Figure~\ref{fig:turntaking_and_overlap}-c was also observed in our experiments, where the overlapped speech rate increases and goes back to $0$ per second before driving performance drops. 
-Figure~\ref{fig:turntaking_and_overlap}-d shows an instance where turn-taking and overlapped speech rate significantly drop prior to any changes are observed in driving performance, lowering the possibility that the conversation being the source of distraction. 
+Figures~\ref{fig:ch6_turntaking_and_overlap}-a and b are more interesting, since both features increase with time. 
+Figure~\ref{fig:ch6_turntaking_and_overlap}-c was also observed in our experiments, where the overlapped speech rate increases and goes back to $0$ per second before driving performance drops. 
+Figure~\ref{fig:ch6_turntaking_and_overlap}-d shows an instance where turn-taking and overlapped speech rate significantly drop prior to any changes are observed in driving performance, lowering the possibility that the conversation being the source of distraction. 
 
 \newpage
 \section{Summary}

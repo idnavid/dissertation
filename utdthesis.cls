@@ -1,6 +1,6 @@
 \NeedsTeXFormat{LaTeX2e}[1997/04/30]
 \ProvidesClass{utdthesis}
-  [2013/11/15 v1.4 University of Texas at Dallas Thesis Class]
+  [2016/11/04 v1.7 University of Texas at Dallas Thesis Class]
 
 %% Example Usage:
 %%
@@ -39,10 +39,6 @@
 %% \begin{acks}{March 2012} % month and year when first submitted to committee
 %% Write acknowledgments here.
 %% \end{acks}
-%%
-%% \begin{preface}
-%% \prefacetext
-%% \end{preface}
 %%
 %% \begin{abstract}
 %% Write abstract here.
@@ -106,7 +102,17 @@
 %%%   avoid whitespace below floats whenever possible
 %%% v1.4 (2013/11/15) - \thanks now works correctly within part, chapter, and
 %%%   section titles; capitalization of "Co-Chair" corrected
-
+%%% v1.5 (2015/10/15) - chaptertitlepage added, improved \thanks support for
+%%%   hyperref's hyperfootnotes, set default float placement to "htp", added
+%%%   support for \\ within \subject (for degree specializations)
+%%% v1.6 (2015/10/27) - added support for committees with multiple supervisors
+%%%   having different titles "Chair" and "Co-Chair", changed default float
+%%%   placement to "tp" (complies with Turabian 7 with less drastic deviation
+%%%   from LaTeX default)
+%%% v1.7 (2016/11/04) - revised 2016 guide: top margin 1.5in even on special
+%%%   pages, page numbers always bottom centered, biographical sketch replaces
+%%%   old cv, new cv section is really a cv (no formatting requirements),
+%%%   preface eliminated, 11pt font permitted
 
 %% Initialization
 %% ==============
@@ -114,6 +120,7 @@
 \newcommand\UTD@warn{\ClassWarning{utdthesis}}
 \newcommand\UTD@warnnl{\ClassWarningNoLine{utdthesis}}
 \newcommand\UTD@err{\ClassError{utdthesis}}
+\newcommand\UTD@temp{}
 
 \newcommand\UTD@texorpdf{%
   \@ifundefined{texorpdfstring}\@firstoftwo\texorpdfstring}
@@ -121,23 +128,26 @@
 \DeclareOption{doublespacing}{\AtEndOfClass{\def\baselinestretch{1.655}}}
 \DeclareOption{halfspacing}{\AtEndOfClass{\def\baselinestretch{1.241}}}
 
+\DeclareOption{12pt}{\PassOptionsToClass{12pt}{book}}
+\DeclareOption{11pt}{\PassOptionsToClass{11pt}{book}}
 \DeclareOption{draft}{\PassOptionsToClass{draft}{book}}
 \DeclareOption{final}{\PassOptionsToClass{final}{book}}
+\DeclareOption*{\UTD@warn{Unknown option '\CurrentOption'}}
 
-\ExecuteOptions{doublespacing}
+\ExecuteOptions{doublespacing,12pt}
 \ProcessOptions\relax
-\LoadClass[letterpaper,12pt,oneside,openany]{book}
+\LoadClass[letterpaper,oneside,openany]{book}
 
 % The textcase Package
 % --------------------
-% We make one exception to our mantra of avoiding other packages:  If textcase
-% is available, we load it in order to more safely convert strings to
-% uppercase.  Without it, some unusual chapter titles (e.g., those with math or
-% footnotes) can fail the conversion to uppercase, resulting in strange errors
-% that the user is very unlikely to be able to diagnose.  It is therefore best
-% to load textcase preemptively, since most users who will need it don't know
-% it.  It is relatively safe because it only defines new commands, making it
-% unlikely to conflict with any other packages.
+% We make one exception to our mantra of avoiding dependencies upon other
+% packages:  If textcase is available, we load it in order to more safely
+% convert strings to uppercase.  Without it, some unusual chapter titles
+% (e.g., those with math or footnotes) can fail the conversion to uppercase,
+% resulting in strange errors that the user is unlikely to diagnose.  It is
+% therefore best to load textcase preemptively, since most users who need it
+% don't know that they need it.  Loading it is relatively safe because it only
+% defines new commands, making it unlikely to conflict with any other packages.
 
 \IfFileExists{textcase.sty}{
   \RequirePackage{textcase}
@@ -193,24 +203,20 @@
 
 %% Page numbers
 %% ============
-%% Page numbers on non-title pages within chapters are in the top-right
-%% corner.  We use LaTeX's "myheadings" page style for this.
+%% Page numbers are bottom-centered (.75in from paper bottom).
 
-\def\@oddhead{\reset@font\hfil\thepage}
-\let\@evenhead\@oddhead
+\pagestyle{plain}
 
 \renewcommand\frontmatter{%
   \cleardoublepage
   \@mainmatterfalse
   \pagenumbering{roman}%
-  \pagestyle{plain}%
 }
 
 \renewcommand\mainmatter{%
   \cleardoublepage
   \@mainmattertrue
   \pagenumbering{arabic}%
-  \pagestyle{myheadings}%
 }
 
 %% Paragraphs
@@ -229,7 +235,8 @@
 \renewcommand\contentsname{Table of Contents}
 \renewcommand\bibname{References}
 \newcommand\refname{References}
-\newcommand\vitaname{Vita}
+\newcommand\bioname{Biographical Sketch}
+\newcommand\vitaname{Curriculum Vitae}
 
 \newcommand\UTD@newparam[3]{%
   \newcommand#1{\gdef#2}%
@@ -247,7 +254,10 @@
 \UTD@newparam\prevdegrees\UTD@degprev{}
 \let\UTD@degprev=\@empty
 
-\newif\ifUTD@ischair
+\newcommand\UTD@cmtitle{}
+\newcommand\UTD@chairtitle{, Chair}
+\newcommand\UTD@cochairtitle{, \ifnum\UTD@numchairs>\@ne Co-\fi Chair}
+
 \newcount\UTD@numchairs\UTD@numchairs\z@
 \newif\ifUTD@hadnonchair\UTD@hadnonchairfalse
 
@@ -256,25 +266,28 @@
     \UTD@warn{\protect\committeemember\space not set}%
   \fi
 }
-\newcommand\committeemember{\@ifstar\UTD@chairmem\UTD@nonchairmem}
-\newcommand\UTD@chairmem{%
+\newcommand\committeemember{\@ifstar\UTD@starcm\UTD@nonchairmem}
+\newcommand\UTD@starcm{%
+  \@ifstar{\UTD@chairmem\UTD@chairtitle}{\UTD@chairmem\UTD@cochairtitle}}
+\newcommand\UTD@chairmem[1]{%
   \ifUTD@hadnonchair
     \UTD@warn{Misordered chair member (preceded by non-chair)}%
   \fi
   \advance\UTD@numchairs\@ne
-  \expandafter\UTD@addprof\expandafter{\UTD@profs\UTD@ischairtrue}}
+  \UTD@addprof{\let\UTD@cmtitle#1}}
 \newcommand\UTD@nonchairmem{%
   \ifnum\UTD@numchairs<\@ne
     \UTD@warn{\protect\committeemember\space replaced with \protect\committeemember*}%
-    \expandafter\UTD@chairmem
+    \expandafter\UTD@chairmem\expandafter\UTD@cochairtitle
   \else
     \expandafter\UTD@@nonchairmem
   \fi
 }
 \newcommand\UTD@@nonchairmem{%
   \UTD@hadnonchairtrue
-  \expandafter\UTD@addprof\expandafter{\UTD@profs\UTD@ischairfalse}}
-\newcommand*\UTD@addprof[2]{\def\UTD@profs{#1\do{#2}}}
+  \UTD@addprof{\let\UTD@cmtitle\@empty}}
+\newcommand*\UTD@addprof[2]{%
+  \expandafter\def\expandafter\UTD@profs\expandafter{\UTD@profs#1\do{#2}}}
 
 %% Double-spacing
 %% ==============
@@ -416,30 +429,28 @@
 }
 
 \DeclareRobustCommand\UTD@sep{\par\nobreak\ignorespaces}
-\newcommand\UTD@uptitle{{\let\\\UTD@sep\UTD@upper\@title}}
+\newcommand\UTD@upsep[1]{{\let\\\UTD@sep\UTD@upper#1}}
 
 % signature page
 % --------------
 
-\newcommand\UTD@chairtitle{}
 \newcommand\signaturepage{%
   \if@mainmatter\UTD@warn{Missing \protect\frontmatter}\frontmatter\fi
   \clearpage
   \ifnum\c@page=\@ne\else\UTD@warn{Signature page should be page 1}\fi
   \UTD@order01{signature}%
   \thispagestyle{empty}%
-  \null\nointerlineskip\nobreak\vskip-\topskip\kern.75in\nobreak
+  \null\nointerlineskip\nobreak\vskip-\topskip\kern0pt\nobreak
   {\centering\parskip\z@skip\baselineflex\z@skip\UTD@double
-   \UTD@uptitle\par\nointerlineskip
+   \UTD@upsep\@title\par
    \singlespacing
    \nobreak\vskip2\UTD@blankline\relax
-   by\par\nointerlineskip
+   by\par
    \nobreak\vskip2\UTD@blankline\relax
-   {\frenchspacing\@author\par\nointerlineskip}}%
+   {\frenchspacing\@author\par}}%
   \nobreak\vskip2cm\@plus1fill\@minus\z@
   \hbox to\textwidth{\hfil
     \hbox to3.625in{APPROVED BY SUPERVISORY COMMITTEE:\hfil}}\nointerlineskip
-  \edef\UTD@chairtitle{\ifnum\UTD@numchairs>\@ne Co-Chair\else Chair\fi}%
   {\baselineflex\z@skip\singlespacing
    \raggedright\parskip\z@skip\frenchspacing
    \let\do\UTD@profsigline\UTD@profs}%
@@ -452,9 +463,8 @@
     \vbox{\hsize=3.625in
       \hrule\@height\z@\@depth.4\p@\@width\hsize
       \kern2\p@
-      \noindent\ignorespaces#1\unskip
-      \ifUTD@ischair, \UTD@chairtitle\fi\vphantom p\par
-  }}\nointerlineskip
+      \noindent\ignorespaces#1\unskip\UTD@cmtitle\vphantom p\par
+  }}%
 }
 
 % copyright page
@@ -495,13 +505,13 @@
   \UTD@order14{title}%
   \clearpage
   \thispagestyle{empty}%
-  \null\nointerlineskip\nobreak\vskip-\topskip\kern.75in
+  \null\nointerlineskip\nobreak\vskip-\topskip\kern0pt
   {\centering\parskip\z@skip\interlinepenalty\@M
    \baselineflex\z@skip\UTD@double
-   \UTD@uptitle\par\nointerlineskip
-   \nobreak\vskip4\UTD@blankline\relax
-   {\singlespacing by\par}\nointerlineskip
-   \nobreak\vskip4\UTD@blankline\relax
+   \UTD@upsep\@title\par\nointerlineskip
+   \nobreak\vskip4\UTD@blankline\@minus.15\UTD@blankline\relax
+   {\singlespacing by\par}%
+   \nobreak\vskip4\UTD@blankline\@minus.15\UTD@blankline\relax
    {\singlespacing\frenchspacing
     \UTD@upper\@author
     \ifx\UTD@degprev\@empty\else, \UTD@degprev\fi\par}\nointerlineskip
@@ -511,11 +521,11 @@
    The University of Texas at Dallas\par\nobreak
    in Partial Fulfillment\par\nobreak
    of the Requirements\par\nobreak
-   for the Degree of\par\nointerlineskip
+   for the Degree of\par
    \nobreak\vskip3\UTD@blankline\@minus.75\UTD@blankline\relax
    \UTD@upper\UTD@degfull\nobreakspace IN\par\nobreak
-   \UTD@upper\UTD@subject\par\nointerlineskip
-   \nobreak\vskip4\UTD@blankline\@minus\UTD@blankline\relax
+   \UTD@upsep\UTD@subject\par\nointerlineskip
+   \nobreak\vskip4\UTD@blankline\@minus1.25\UTD@blankline\relax
    THE UNIVERSITY OF TEXAS AT DALLAS\par\nobreak
    \UTD@month\nobreakspace\UTD@year\par}%
 }
@@ -541,57 +551,6 @@
   \clearpage
 }
 
-% preface page
-% ------------
-
-\newenvironment{preface}{%
-  \UTD@order46{preface}%
-  \clearpage
-  \chapter*{Preface}%
-  \begingroup
-    \parindent\z@\parskip6\p@\@plus\z@\@minus\z@
-    \vskip-\parskip
-}{%
-    \ifUTD@hadpreface\else\UTD@warn{Preface missing required text}\fi
-    \par
-  \endgroup
-  \clearpage
-}
-
-\newif\ifUTD@hadpreface
-\UTD@hadprefacefalse
-
-\newcommand\prefacetext{%
-  \par
-  \UTD@hadprefacetrue
-  \UTD@preface{\UTD@lower\UTD@type}}
-
-\newcommand\UTD@preface[1]{%
-  This #1 was produced in accordance with guidelines which permit the
-  inclusion as part of the #1 the text of an original paper or papers
-  submitted for publication.
-  The #1 must still conform to all other requirements explained in the
-  ``Guide for the Preparation of Master's Theses and Doctoral Dissertations
-  at The University of Texas at Dallas.''
-  It must include a comprehensive abstract, a full introduction and literature
-  review, and a final overall conclusion.
-  Additional material (procedural and design data as well as descriptions of
-  equipment) must be provided in sufficient detail to allow a clear and precise
-  judgment to be made of the importance and originality of the research
-  reported.\par
-  It is acceptable for this #1 to include as chapters authentic copies of
-  papers already published, provided these meet type size, margin, and
-  legibility requirements.
-  In such cases, connecting texts which provide logical bridges between
-  different manuscripts are mandatory.
-  Where the student is not the sole author of a manuscript, the student is
-  required to make an explicit statement in the introductory material to that
-  manuscript describing the student's contribution to the work and
-  acknowledging the contribution of the other author(s).
-  The signatures of the Supervising Committee which precede all other material
-  in the #1 attest to the accuracy of this statement.\par
-}
-
 % abstract section
 % ----------------
 
@@ -600,11 +559,11 @@
   \clearpage
   \@ifundefined{phantomsection}{}{\phantomsection}%
   \addcontentsline{toc}{chapter}{\UTD@texorpdf{ABSTRACT}{Abstract}}%
-  \null\nointerlineskip\vskip-\topskip\kern.75in
+  \null\nointerlineskip\vskip-\topskip\kern0pt
   {\parskip\z@skip\baselineflex\z@skip\UTD@double
    {\centering
-    \UTD@uptitle\par
-    Publication No.\nobreakspace\vrule\@height\z@\@width1.625in\@depth.4\p@\par
+    \UTD@upsep\@title\par
+    \vskip\UTD@blankline\relax
     \@author, \UTD@degabbr\par
     \singlespacing
     The University of Texas at Dallas, \UTD@year\par}\nointerlineskip
@@ -612,7 +571,6 @@
    \vskip4\UTD@blankline\relax
    \noindent\kern.5in\frenchspacing
    Supervising Professor\ifnum\UTD@numchairs>\@ne s\fi:
-   \edef\UTD@chairtitle{\ifnum\UTD@numchairs>\@ne , Co-Chair\fi}%
    \let\do\UTD@listchair
    \vtop{\UTD@profs}\par\nointerlineskip
    \vskip4\UTD@blankline\relax}%
@@ -626,10 +584,25 @@
 }
 
 \newcommand\UTD@listchair[1]{%
-  \ifUTD@ischair
+  \ifx\UTD@cmtitle\@empty\else
     \hbox{\vrule\@width\z@\@depth3\p@\@height\baselineskip
-          \ignorespaces#1\unskip\UTD@chairtitle}%
+          \ignorespaces#1\unskip\UTD@cmtitle}%
   \fi
+}
+
+% biosketch section
+% -----------------
+
+\newenvironment{biosketch}{%
+  \UTD@appendixfalse
+  \chapter*{\bioname}%
+  \begingroup
+    \parindent\z@\parskip6\p@\@plus\z@\@minus\z@%
+    \vskip-\parskip
+}{%
+    \par
+  \endgroup
+  \clearpage
 }
 
 % vita section
@@ -647,13 +620,12 @@
   \pagestyle{empty}%
   \thispagestyle{empty}%
   \begingroup
-    \parindent\z@\parskip6\p@\@plus\z@\@minus\z@
-    \vskip-\parskip
+    \parindent\z@\parskip\z@\@plus\z@\@minus\z@%
+    \singlespacing
 }{%
     \par
   \endgroup
   \clearpage
-  \pagestyle{myheadings}%
 }
 
 %% Part, Chapter, and Section Titles
@@ -666,18 +638,20 @@
 % Make the \thanks macro work correctly inside part, chapter, and section
 % titles.  We want it to act like \footnote, except protect it from the
 % upper-casing applied to part and chapter titles, and suppress it in
-% the table of contents and pdf bookmark index.
-
-\newcommand\UTD@chpthanks{}
-\let\UTD@chpthanks=\thanks
+% the table of contents and pdf bookmark index.  Since hyperref does not
+% support footnotemark/footnotetext with the optional arguments, the built-in
+% \thanks does not hyperfootnote properly.  We here fix this by saving and
+% restoring \Hy@footnote@curentHref at footnotemark and footnotetext time,
+% respectively.  This has no effect on non-hyperref users, since the saved
+% and restored macro is unreferenced outside hyperref.
 
 \@ifundefined{NoCaseChange}{
-  \def\thanks{\UTD@texorpdf\UTD@@thanks\@gobble}
+  \def\thanks{\UTD@texorpdf\UTD@protected@thanks\@gobble}
 }{
-  \def\thanks#1{\UTD@texorpdf{\NoCaseChange{\UTD@@thanks{#1}}}{}}
+  \def\thanks#1{\UTD@texorpdf{\NoCaseChange{\UTD@protected@thanks{#1}}}{}}
 }
 
-\newcommand\UTD@@thanks{%
+\newcommand\UTD@protected@thanks{%
   \ifx\protect\@typeset@protect
     \expandafter\UTD@thanks
   \else
@@ -685,12 +659,28 @@
   \fi
 }
 
-\newcommand\UTD@thank{%
+\newcommand\UTD@chpthanks[1]{%
+  \footnotemark
+  \protected@xdef\@thanks{\@thanks
+    \protect\UTD@thankstext
+      {\the\c@footnote}%
+      {\@ifundefined{Hy@footnote@currentHref}{}\Hy@footnote@currentHref}%
+      {#1}%
+  }%
+}
+
+\newcommand\UTD@thankstext[3]{{%
+  \c@footnote#1\relax
+  \def\Hy@footnote@currentHref{#2}%
+  \footnotetext{#3}%
+}}
+
+\newcommand\UTD@nowthank{%
   \@thanks
   \global\let\@thanks\@empty
   \def\UTD@thanks{\footnote}%
 }
-\UTD@thank
+\UTD@nowthank
 
 % numbered chapter
 % ----------------
@@ -725,7 +715,7 @@
     \@makechapterhead{#2}%
     \@afterheading
   \fi
-  \UTD@thank
+  \UTD@nowthank
 }
 
 % unnumbered chapter
@@ -749,15 +739,15 @@
     \@makeschapterhead{#1}%
     \@afterheading
   \fi
-  \UTD@thank
+  \UTD@nowthank
 }
 
 % numbered chapter titles
 % -----------------------
 
 \def\@makechapterhead#1{%
-  \null\nointerlineskip\vskip-\topskip\kern.75in
-  {\centering\parskip\z@skip\UTD@double\normalfont\normalsize
+  \null\nointerlineskip\vskip-\topskip\kern0pt
+  {\centering\let\\\UTD@sep\parskip\z@skip\UTD@double\normalfont\normalsize
    \ifnum\c@secnumdepth>\m@ne
      \if@mainmatter
        \bfseries\UTD@upper\@chapapp\nobreakspace\thechapter
@@ -773,13 +763,56 @@
 % -------------------------
 
 \def\@makeschapterhead#1{%
-  \null\nointerlineskip\vskip-\topskip\kern.75in
-  {\centering\parskip\z@skip\UTD@double\normalfont\normalsize
+  \null\nointerlineskip\vskip-\topskip\kern0pt
+  {\centering\let\\\UTD@sep\parskip\z@skip\UTD@double\normalfont\normalsize
    \if@mainmatter\bfseries\fi
    \interlinepenalty\@M
    \ifUTD@appendix\UTD@upper\@chapapp\par\nobreak\fi
    \UTD@upper{#1}\par\nobreak\nointerlineskip
    \vskip2\UTD@blankline\relax}%
+}
+
+% chapter title page
+% ------------------
+% Chapter title pages are needed for chapters consisting of verbatim-reproduced
+% publications.  Authors may put arbitrary, extra publication information at
+% the bottom of such pages, so we need an environment rather than just a macro.
+
+\newcommand\UTD@ctitle{}
+\newcommand\UTD@cdept{}
+\newcommand\UTD@cauth{}
+
+\newenvironment{chaptertitlepage}[4][\UTD@ctitle]{%
+  \if@twocolumn\@restonecoltrue\onecolumn\else\@restonecolfalse\fi
+  \def\UTD@ctitle{#2}\def\UTD@cauth{#3}\def\UTD@cdept{#4}%
+  {\let\@makechapterhead\UTD@makectphead\let\@afterheading\relax
+   \chapter[{#1}]{#2}}
+  \vfill
+  \singlespacing
+  \interlinepenalty\@M\parindent\z@\parskip\z@skip\normalfont\normalsize
+}
+{\clearpage\if@restonecol\twocolumn\fi}
+
+\newcommand\UTD@makectphead[1]{%
+  \null\nointerlineskip\vskip-\topskip\kern0pt
+  {\centering\let\\\UTD@sep\UTD@double
+   \interlinepenalty\@M\parskip\z@skip\normalfont\normalsize
+   {\bfseries
+    \ifnum\c@secnumdepth>\m@ne
+      \UTD@upper\@chapapp\nobreakspace\thechapter\par\nobreak
+    \fi
+    \UTD@upper{#1}}\par\nobreak\nointerlineskip%
+   \vskip6\UTD@blankline\relax
+   {Authors\nobreakspace--\nobreakspace\sfcode`\.\@m\ignorespaces\UTD@cauth\par
+    \nobreak}%
+   \vskip\UTD@blankline\relax
+   {\ignorespaces\UTD@cdept\par\nobreak}%
+   \vskip\UTD@blankline\relax
+   {The University of Texas at Dallas\par\nobreak}%
+   \vskip\UTD@blankline\relax
+   {800 West Campbell Road\par\nobreak}%
+   \vskip\UTD@blankline\relax
+   {Richardson, Texas 75080-3021\par\nobreak\nointerlineskip}}%
 }
 
 % numbered parts
@@ -798,13 +831,12 @@
     \addcontentsline{toc}{part}{\UTD@upper{#1}}%
   \fi
   \markboth{}{}%
-  {\centering\parskip\z@skip
+  {\centering\let\\\UTD@sep\UTD@double\parskip\z@skip
    \interlinepenalty\@M
-   \normalfont
+   \normalfont\normalsize
    \ifnum\c@secnumdepth>-2\relax
-     \bfseries\UTD@upper\partname\nobreakspace\thepart
-     \par
-     \vskip20\p@
+     \bfseries\UTD@upper\partname\nobreakspace\thepart\par
+     \vskip2\UTD@blankline\relax
    \fi
    \bfseries\UTD@upper{#2}\par}%
   \@endpart
@@ -815,9 +847,9 @@
 
 \def\@spart#1{%
   \setcounter{footnote}\z@
-  {\centering\parskip\z@skip
+  {\centering\let\\\UTD@sep\UTD@double\parskip\z@skip
    \interlinepenalty\@M
-   \normalfont
+   \normalfont\normalsize
    \bfseries\UTD@upper{#1}\par}%
   \@endpart
 }
@@ -1049,6 +1081,8 @@
 \setcounter{totalnumber}{9} % allow many figures per page
 \renewcommand\textfraction{0.07} % allow minimal text with figures
 \renewcommand\floatpagefraction{0.7} % prefer fuller float pages
+\def\fps@figure{tp} % default position of figures is top-or-page
+\def\fps@table{tp} % default position of tables is top-or-page
 
 %% Bibliography
 %% ============
@@ -1081,7 +1115,6 @@
 
 \newcommand\UTD@bibmax{99}
 \newcommand\UTD@nbsn[1]{}
-\newcommand\UTD@temp{}
 
 \newcommand\UTD@bibsetnum[1]{%
   \def\UTD@temp{#1}%
