@@ -80,14 +80,14 @@ A considerable portion of this study will focus on this type of co-channel data 
 We rely on this type of data since it provides the flexibility of controlling the amount of overlapped speech. 
 As we will show in the next chapter, conversational co-channel speech does not necessarily contain sufficient overlapped data for some of our experiments. 
 Therefore, we allow ourselves to neglect some aspects of conversational co-channel speech for the benefit of more overlap. 
-That is why we value ``co-channel data with independent parties'', despite some of its unrealistic characteristics compared to conversational speech. 
+This is the main motivation to value ``co-channel data with independent parties'', despite some of its unrealistic characteristics compared to natural conversational speech. 
 
 The treatment of different speech processing applications for co-channel speech will focus on one of the two categories described above. 
 This study will focus on a number of speech applications including: 
 \begin{itemize}
-	\item Signal processing and audio classification: identifying and separating overlapped segments in co-channel files. 
-	\item Speaker recognition/verification: The ability to automatically decide whether two or more speech samples belong to the same speaker. 
-	\item Speaker diarization: Segmenting an audio stream by counting the number of speakers as well as determining who spoke when. 
+	\item {\bf Signal processing and audio classification:} identifying and separating overlapped segments in co-channel files. 
+	\item {\bf Speaker recognition/verification:} The ability to automatically decide whether two or more speech samples belong to the same speaker. 
+	\item {\bf Speaker diarization}: Segmenting an audio stream by counting the number of speakers as well as determining who spoke when. 
 \end{itemize}
 
 A description of an outreach to signal processing in vehicles is also presented, where algorithms developed for co-channel speech analysis were used to improve driver safety. 
@@ -95,11 +95,11 @@ A description of an outreach to signal processing in vehicles is also presented,
 \section{Approach}
 
 The goal of this thesis is to provide tangible solutions to problems caused by co-channel speech in automatic speaker recognition. 
-We argue that part of these issues are caused by overlapped speech (direct speech interference), which plays a significant role in making co-channel speech a difficult problem. 
-The presence of overlapped speech can be detrimental to speaker diarization and speech recognition systems. 
+We suggest that part of these issues are caused by overlapped speech (direct speech interference), which plays a significant role in making co-channel speech a difficult problem. 
+The presence of overlapped speech can be detrimental to both speaker diarization and speech recognition systems. 
 %There is no clear and unique way of labeling or transcribing overlapped segments. 
-In speaker diarization, it becomes difficult to assess system performance at overlaps, due to the inherent ambiguity in labeling overlapped segments. 
-The same goes for speech recognition where aside from determining which is the ``primary'' speaker, recognizing speech at overlaps is more difficult, due to interference coming from other speakers. 
+In speaker diarization, it becomes difficult to assess system performance during overlaps, due to the inherent ambiguity in labeling overlapped segments. 
+The same goes for speech recognition where aside from determining which is the ``primary'' speaker, recognizing speech at overlaps is more difficult, due to interference stemming from other speakers. 
 For this and other reasons detailed in the next chapter, the first portion of this study is devoted to overlapped speech detection. 
 Our approach to overlap detection will be to focus on developing signal processing techniques to detect and separate overlap from single-speaker speech. Figure~\ref{fig:ch1_overlap_applications} depicts some applications of overlap detection in speech technology. 
 
@@ -113,32 +113,31 @@ Our approach to overlap detection will be to focus on developing signal processi
 	\vspace{-3mm}
 \end{figure}
 
-Although overlap is considered an important aspect of co-channel speech, in many conversational speech data, the amount of overlap can be considered negligible, depending on the application. 
+Although overlap is considered an important aspect of co-channel speech, for many conversational speech data resources, the amount of overlap can be considered negligible, depending on the application. 
 One such application is speaker recognition, which is also the main theme of this thesis. 
 In text-independent speaker recognition, speech content (i.e., what is being said) is of less values compared to long-term speaker dependent characteristics (i.e., who is speaking). 
 The standard approach in dealing with co-channel speech in such cases is speaker diarization. 
 The role of diarization is to segment audio streams into shorter intervals each of which contains only one speaker. 
-We consider speaker diarization a ``signal level'' approach. 
-The term signal level is in respect to co-channel speech, since it is removed from the original signal prior to any other processing.
+We consider speaker diarization to be a ``signal level'' approach. 
+The term signal level is used with respect to co-channel speech, since it is removed from the original signal prior to any subsequent processing.
 Alternately, a novel approach is presented in this study with the intention of bypassing the use of speaker diarization in the aforementioned scenario while preserving speaker recognition performance. 
-This approach is to remove unwanted speaker-dependent information from latent variable subspaces generated from audio files~\cite{dehak2011front,kenny2010bayesian}. 
+This approach is to remove unwanted speaker-dependent information from latent variable subspaces generated from the audio files using the i-vector framework established by~\cite{dehak2011front,kenny2010bayesian}. 
 We refer to such solutions as ``subspace level''. 
 Therefore, Chapters~\ref{chapter:backend}~and~\ref{chap:spkr_diar} each propose a different approach to remove interfering speakers from co-channel data. 
 \begin{enumerate}
-\item Remove interfering speakers in the feature subspace level: i-vector subspace factorization.
-\item Remove interfering speakers in the signal level: speaker diarization.
+\item Remove interfering speakers at the feature subspace level: i-vector subspace factorization.
+\item Remove interfering speakers at the signal level: speaker diarization.
 \end{enumerate}
 
-Speaker diarization, will attempt to recognize and group speech that belongs to the same speaker in a co-channel audio stream. 
-While subspace factorization maps speaker-dependent models to a subspace that will only contain parameters identifying the speaker of interest (aka primary speaker). 
-Once again it should be pointed out that the main theme of this study is to address speaker recognition and identification in co-channel speech. 
+Speaker diarization, will attempt to recognize and group speech that belongs to the same speaker in a co-channel audio stream, while subspace factorization maps speaker-dependent models to a subspace that will only contain parameters identifying the speaker of interest (aka primary speaker). 
+Once again it should be noted that the main theme of this study is to address speaker recognition and identification in co-channel speech. 
 Which makes speaker diarization an inseparable part of our approach. 
 
 
 \section{Outline}
 \label{sec:intro_outline}
 This dissertation is organized in the following manner. 
-Thesis contributions are split into two main categories: 1) signal processing approaches, 2) probabilistic modeling. 
+Thesis contributions are split into two main categories: 1) signal processing approaches, and 2) probabilistic modeling. 
 Chapter~\ref{chapter:front-end}, overlap detection methods, presents signal processing techniques used for overlap detection. 
 Chapter~\ref{chapter:ovl_in_sid}, speaker recognition in overlapped speech, highlights the importance of addressing overlapped speech in speaker recognition problems. 
 In addition, techniques proposed Chapter~\ref{chapter:front-end} are used in Chapter~\ref{chapter:ovl_in_sid} to improve recognition performance. 
@@ -154,14 +153,14 @@ Finally, a summary of conclusions and references to future studies are presented
 \section{Dissertation Contributions}
 \label{sec:contributions}
 This dissertation investigates various aspects of co-channel speech and is novel in a number of ways. 
-The most important contribution is to:
+The first important contribution is to:
 \begin{itemize}
 	\item separate overlapped speech from co-channel.
 \end{itemize}
-The significance of this contribution is in its different perspective compared to existing studies. 
+The significance of this contribution is in its alternative perspective compared to existing studies. 
 Solely focusing on overlap instead of co-channel (or vise versa) limits the applicability of methods and makes it difficult to compare studies, since different studies refer to different phenomena as co-channel. 
 
-The second contribution is in the signal processing perspective, which is to
+The second contribution is from a signal processing perspective, which is to:
 \begin{itemize}
 	\item propose features to detect overlapped speech from single-speaker speech (overlapped speech detection).
 \end{itemize}
@@ -177,4 +176,4 @@ The last contribution of this study focuses on latent space analysis, which is t
 	\item develop and analyze modified probabilistic linear discriminant analysis to suppress interfering speech to improve speaker recognition performance. 
 \end{itemize}
 The theme in all of the aforementioned contributions is speaker recognition. 
-Therefore, all of the techniques and analyses provided in the next chapters are in accordance with speaker recognition frameworks and are intended to improve speaker recognition performance. 
+Therefore, all techniques and analyses provided in the next chapters are in accordance with speaker recognition frameworks and are intended to improve speaker recognition performance. 

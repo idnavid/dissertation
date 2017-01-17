@@ -2,29 +2,29 @@
 \chapter{Speaker Diarization in Co-channel Speech}
 \label{chap:spkr_diar}
 
-Throughout the course of this study, part of the agenda has been to acknowledge non-overlapping speech as an important component of co-channel. 
+Throughout the course of this study, part of the agenda has been to acknowledge non-overlapping speech as an important component of co-channel data in single-channel audio streams. 
 It was shown that distinguishing overlap from co-channel introduces more realistic scenarios to the scope of co-channel speech problems. 
 An important example of such problems is conversational speech, a common and realistic form of speech. 
 Among the various aspects of analyzing conversations, {\it speaker diarization} is closest to speaker recognition.\footnote{As a reminder for the readers, speaker recognition is the main theme of this thesis.} 
 Speaker diarization refers to the task of automatically determining ``who spoke when?'' within an audio signal containing two or more speakers. 
 This chapter addresses the tasks of 1) segmenting co-channel data into single-speaker excerpts and 2) clustering segments, which means to group them by speakers. 
-Tasks are described within the context of CRSS-SpkrDiar, a speaker diarization tool-kit designed to perform diarization while simultaneously supporting speaker recognition and speech recognition using Kaldi\cite{kaldi}. 
+Tasks are described within the context of CRSS-SpkrDiar, a speaker diarization tool-kit designed to perform diarization while simultaneously supporting speaker recognition and speech recognition using Kaldi~\cite{kaldi}. 
 Therefore, the contribution of this chapter is to: 
 \begin{itemize}
 	\item introduce an end-to-end conversation analysis research platform that is tightly connected to Kaldi and does not require cross-platform coding interfaces. 
 \end{itemize}
 
-CRSS-SpkrDiar is a speaker diarization tool-kit developed as part of a collaboration between myself and Chengzhu Yu, a fellow PhD student at the Center for Robust Speech Systems (CRSS). 
+CRSS-SpkrDiar is a speaker diarization tool-kit developed as part of a collaboration with another student, Chengzhu Yu, a fellow PhD student at the Center for Robust Speech Systems (CRSS). 
 The main motivation behind developing this tool-kit is to establish an integrated end-to-end conversation analysis system that provides the capability of diarizing  signals while supporting speech recognition. 
 Currently, one of the most popular speech recognition platforms used in research is Kaldi, developed in Johns Hopkins University~\cite{kaldi}. 
 Existing diarization systems are implemented in different platforms and to the best of our knowledge none support Kaldi I/O functions. 
 Switching between platforms and APIs (Application Programming Interface)  frustrates users who are interested in simultaneously analyzing speaker diarization and speech recognition. 
-We hope that developing a speaker diarization module on top of Kaldi will help students and staff with the kind of multi-purpose research that is common in CRSS. 
+We hope that developing a speaker diarization module that employs Kaldi will help students and staff with the kind of multi-purpose research that is common in CRSS. 
 Although CRSS-SpkrDiar is currently in working condition, as a research platform it is always considered under development and is available for those who are interested in investigating various aspects of conversational data. 
 
 In Sect.~\ref{sec:crssdiar_layout}, a layout of the system and its relationship with Kaldi is presented. 
 Section~\ref{sec:crssdiar_layout} also provides a list of our modules and their Input/Output. 
-I also explain how these modules interact with Kaldi data types. 
+Here, we also explain how these modules interact with Kaldi data types. 
 In Sect.~\ref{sec:segmentation}, segmentation, the first task of speaker diarization, is described. 
 The purpose of segmentation is to split signals into smaller chunks that contain only one speaker. 
 Some segments may contain overlapped speech or no speech at all. 
@@ -36,8 +36,8 @@ Sections~\ref{sec:plda_ilp}~and~\ref{sec:other_distances_ilp} describe some of t
 Section~\ref{sec:chDrz_evaluation} summarizes some evaluations on the AMI meeting corpus. 
 Finally, Sect.~\ref{sec:chDiar_future} points out some of the future work required to further improve CRSS-SpkrDiar. 
 
-Part of the reason this chapter is placed at the end of the dissertation is that it can be viewed as a description of a comprehensive system that contains all of the problems that have been looked at so far. 
-Furthermore, since CRSS-SpkrDiar is a research platform that could potentially benefit those looking beyond the scope of this study, I consider it a gateway to future work for my thesis. 
+Part of the reason this chapter is placed at the end of the dissertation is that it can be viewed as a description of a comprehensive system that contains all problems considered in this thesis. 
+Furthermore, since CRSS-SpkrDiar is a research platform that could potentially benefit those looking beyond the scope of this study, it is considered a gateway to future work beyond this thesis. 
 
 
 
@@ -51,15 +51,15 @@ The assumption is that no prior knowledge of the number of speakers or their ide
 The only possible solution, therefore, is to compare the segments and group those that appear to belong to the same speaker. 
 
 The segment-and-cluster approach is the most common solution to speaker diarization~\cite{meignier2010lium,anguera2012diarization}. 
-That being said, alternative approaches have been proposed. 
-Especially with regard to segmentation and post-clustering steps. 
+That being said, alternative approaches have been proposed, 
+especially with regard to segmentation and post-clustering steps. 
 Some studies completely ignore the segmentation step and use equal-length segments to perform clustering~\cite{sell_garcia_2015diarization}. 
 Skipping segmentation is an attractive proposition, since as will be shown in the following section, segmentation is prone to errors. 
 In addition, using equal lengths instead of varying-length segments to some extent guarantees equal reliability of individual segments for the clustering step. 
 We say equally reliable because speaker-dependent features (e.g. i-Vectors) are known to depend largely on the length of the signals from which they are extracted~\cite{hasan2013duration}. 
 When automatic segmentation is used to split the audio recording, segment lengths may vary causing the corresponding speaker-dependent features to vary in quality and reliability. 
 
-Another component of speaker diarization, not mentioned above, is the re-segmentation step. 
+Another component in speaker diarization, not mentioned above, is the re-segmentation step. 
 Re-segmentation is a post-clustering step used to prevent sudden changes in the speaker. 
 The reason this module is important is the fact that clustering does not take time sequences into account when grouping segments. 
 Meanwhile, as listeners we expect a certain amount of coherence in conversations. 
@@ -78,12 +78,12 @@ This presumed coherence in the sequence of speakers is used to correct errors in
 Figure~\ref{fig:ch5_crssdiar} shows an overview of CRSS-SpkrDiar. 
 The input is the audio recording of two or more speakers. 
 We start by performing speech activity detection (SAD) and overlap detection to label non-speech and overlapped segments as off-bounds. 
-The next step is segmentation, which uses a measure called Bayesian Information Criterion (BIC) to detect speaker change points~\cite{chen1998BIC}. 
+The next step is segmentation, which uses a measure called Bayesian Information Criterion (BIC) to detect speaker change points~\cite{chen1998BIC,zhou2005T2bic}. 
 After BIC-Segmentation, we have access to segments within the audio recordings and would like to label these segments to determine which belongs to which speaker (speaker A, B, C, etc.). 
 Of course, these speaker identities are assigned relative to the input audio and are not actual speaker identities. 
 This means that given another input signal, the speaker diarization system will provide similar labels, but speaker A in audio 1 has no relation to speaker A in audio 2. 
 CRSS-SpkrDiar generates speaker labels using integer linear programming (ILP) to cluster the segments. 
-ILP, described in detail in Sect.~\ref{sec:clustering}, uses a global optimization approach to minimize speaker diversity within each cluster while simultaneously minimizing the number of clusters (aka speakers). 
+ILP, described in detail in Sect.~\ref{sec:clustering}, uses a global optimization approach to minimize speaker diversity within each cluster while simultaneously minimizing the number of clusters (i.e., speakers). 
 
 Thus is the overview of a standard speaker diarization system. 
 As mentioned before, there are many implementations available for speaker diarization. 
@@ -126,7 +126,7 @@ Therefore, the solution is to track acoustic features along the signal and detec
 
 Segmentation in the context of this study is formally defined as detecting the time indexes corresponding to changes in an ordered sequence of acoustic features~\cite{cettolo2005evaluation}. 
 One of the most popular speaker change detection algorithms used in speaker diarization is the Bayesian information criterion (BIC), which is briefly described in this section. 
-I should point out that BIC segmentation has been thoroughly studied in the research community and several resources are available that substantially cover the essentials required to understand its function in a speaker diarization system~\cite{cettolo2003efficient,cettolo2005evaluation,chen1998BIC}. 
+It should be pointed out that BIC segmentation has been thoroughly studied in the research community and several resources are available that substantially cover the essentials required to understand its function in a speaker diarization system~\cite{cettolo2003efficient,cettolo2005evaluation,chen1998BIC,zhou2005T2bic}. 
 The content here is intended to describe all aspects of CRSS-SpkrDiar and share implementation details for the curious reader. 
 
 \subsection{Bayesian Information Criterion}
@@ -161,7 +161,7 @@ The actual measure used in BIC segmentation is the difference between the BIC co
 where $\mathcal{L}_{M_i}$ is short-hand for the maximum likelihood of $H_1$ when the break-point is at index $i$. 
 If $\Delta BIC_i > 0$, the model favors $H_1$ at breaking point $i$, and otherwise the model suggests no break-points ($H_0$).  
 
-$\Delta BIC$ Depends on the model chosen for $M$. 
+$\Delta BIC$ depends on the model chosen for $M$. 
 A common choice in speaker diarization is a Gaussian model, which assesses whether the sequence is best described with one covariance matrix ($H_0$) or two ($H_1$). 
 In~\cite{cettolo2005evaluation}, $\Delta BIC_i$ is derived for Gaussian modeling with the inclusion of a sensitivity factor $\lambda$. 
 \begin{equation}
@@ -193,7 +193,7 @@ For segments that are sufficiently long, a sliding window is defined that increm
 This window will grow until: 1) either a change point is detected using the $\Delta BIC$ measure from Eq.~(\ref{eq:dbic_gaussian}) or 2) the length of the window reaches a maximum acceptable length at which point the window is assumed to contain only one speaker (no change points are detected). 
 As mentioned, the window slides until it reaches the end of the segment and returns the change points that were found during the search. 
 
-Every time a change point is detect the window first performs an identical search with more refined search increments until it finds the feature index, $i$, at which $\Delta BIC_i$ is maximized. 
+Every time a change point is detected the window first performs an identical search with more refined search increments until it finds the feature index, $i$, at which $\Delta BIC_i$ is maximized. 
 After finding $i_{max}$, the window is reset and continues the search at $i_{max}+1$. 
 
 Figure~\ref{alg:changedetection} shows the pseudo-code for change detection implemented in CRSS-SpkrDiar. 
@@ -247,7 +247,7 @@ An important component of change detection is the {\it segment} data type.
 This class contains all the necessary information to calculate functions used in speaker diarization. 
 For example, each {\it segment} contains two variables, {\it Begin} and {\it End} that indicate the start and end frames corresponding to that segment. 
 This class also includes functions used to calculate i-Vectors, which will be used extensively in the next section. 
-{\it Segments} is considered the core data type used in CRSS-SpkrDiar and is highly compatible with existing Kaldi classes. 
+$Segments$ is considered the core data type used in CRSS-SpkrDiar and is highly compatible with existing Kaldi classes. 
 
 \newpage
 \section{Clustering}
@@ -269,7 +269,7 @@ As opposed to the single multivariate Gaussian used to detect change points in t
 Gaussian mixture models (GMM) have been proven effective in modeling clusters~\cite{zelenak2010albayzin}. 
 As clusters merge, the amount of data available to estimate GMM parameters increases. 
 Therefore, GMM reliability increases in HAC iterations. 
-It is easy to see why using GMMs was not feasible in the segmentation step, since the amount of data was too little to model an entire GMM. 
+It is easy to see why using GMMs was not feasible in the segmentation step, since the amount of data is too small to model an entire GMM. 
 
 Despite its popularity, HAC is associated with a number of issues. 
 The most important being the error-propagation that occurs during iterations. 
