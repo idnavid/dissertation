@@ -1,4 +1,4 @@
-\chapter{SPEAKER RECOGNITION IN OVERLAPPED SPEECH}
+\chapter{SPEAKER RECOGNITION IN OVERLAPPED SPEECH}\thanks{Portions of this chapter were adopted from published material with the authors' full consent. \copyright 2011 IEEE}
 \label{chapter:ovl_in_sid}
 Detecting overlapped segments has previously been considered in speaker recognition diarization~\cite{boakye_thesis,yantorno_report}. 
 In such problems, the presence of a secondary speaker either decreases model reliability (in training), or introduces confusion in the decision-making process by distorting test files. 
@@ -123,14 +123,14 @@ Such cancellation, however, does not exist across test files.
 	\centering
 	\includegraphics[height = 3.43in, width=0.9\textwidth]{figures/sidingrid_ovlintest}
 	\vspace{-1mm}
-	\caption{ The rise in EER values as we increase the effect of overlapped speech (via decreasing the SIR). Starting from clean (i.e. single-speaker speech) to lower SIR values. The graph shows the case where train files are clean, but test files contain overlaps. }
+	\caption{ The rise in EER values as we increase the effect of overlapped speech (via decreasing the SIR). Starting from clean (i.e. single-speaker speech) to lower SIR values. The graph shows the case where train files are clean, but test files contain overlaps. \copyright 2017 IEEE}
 	\label{fig:ch3_sidingrid_ovlintest_train_a}
 \end{figure}
 \begin{figure}[h!]%{0.5\textwidth}
 	\centering
 	\includegraphics[height = 3.43in, width=0.9\textwidth]{figures/sidingrid_ovlintrain}
 	\vspace{-1mm}
-	\caption{Female and male speaker verification experiments with clean (100dB SIR) test files, but train files contain overlaps.}
+	\caption{Female and male speaker verification experiments with clean (100dB SIR) test files, but train files contain overlaps. \copyright 2017 IEEE}
 	\label{fig:ch3_sidingrid_ovlintest_train_b}
 \end{figure}
 
@@ -138,13 +138,13 @@ Such cancellation, however, does not exist across test files.
 
 \begin{figure}[h!]
 	\includegraphics[height = 3.43in, width=0.9\textwidth]{figures/sidingrid_ovlintrainvstest_male_rev1}
-	\caption{ Comparing the impact of increasing overlap (OVL) in train vs. test data by decreasing SIR values. Experiments for male speakers. Lower SIR drops the performance more rapidly when applied to test data.}
+	\caption{ Comparing the impact of increasing overlap (OVL) in train vs. test data by decreasing SIR values. Experiments for male speakers. Lower SIR drops the performance more rapidly when applied to test data. \copyright 2017 IEEE}
 	\label{fig:ch3_sidingrid_ovlintrainvstest_male}
 \end{figure}
 
 \begin{figure}[h!]
 	\includegraphics[height = 3.43in, width=0.9\textwidth]{figures/sidingrid_ovlintrainvstest_female_rev1}
-	\caption{ Shows the counterpart experiments of Fig.~\ref{fig:ch3_sidingrid_ovlintrainvstest_male} for female speakers.}
+	\caption{ Shows the counterpart experiments of Fig.~\ref{fig:ch3_sidingrid_ovlintrainvstest_male} for female speakers. \copyright 2017 IEEE}
 	\label{fig:ch3_sidingrid_ovlintrainvstest_female}
 \end{figure}
 
@@ -158,7 +158,7 @@ This is believed to be novel from two perspectives:
 \section{Overlap detection as meta-data for speaker recognition}
 \label{sec:ch2_OvlQualityMeasure} 
 Using meta-data to yield more accurate decisions is a common practice in speaker verification evaluations~\cite{bosaris,qual_sid_13}. 
-Incorporating quality measures such as speech activity detection (SAD) and effective file durations can significantly improve verification performance~\cite{qual_sid_13,CRSSSRE12} regardless of system architecture (be it i-Vector, GMM-UBM, or any other system). 
+Incorporating quality measures such as speech activity detection (SAD) and effective file durations can significantly improve verification performance~\cite{qual_sid_13,hasan2013crss} regardless of system architecture (be it i-Vector, GMM-UBM, or any other system). 
 A quality measure here refers to additional information (i.e. meta-data) used alongside speaker verification likelihood ratios (aka speaker verification scores) to quantify the test and train conditions in trials. 
 Meta-data provides lower-level scores that help increase distinguishability between target/imposter trials. 
 For speaker verification in overlapped speech, the primary source of confusion is caused by the presence of interfering speakers. 
@@ -181,7 +181,7 @@ The best result is obtained when all four features are concatenated, since each 
 
 \begin{table}[t]
 	\centering
-	\caption{ Speaker verification performance (EER) with and without overlap detection scores as meta-data. Grey cells highlight the features used in each experiment. The relative change in EER is presented in the last column.}
+	\caption{ Speaker verification performance (EER) with and without overlap detection scores as meta-data. Grey cells highlight the features used in each experiment. The relative change in EER is presented in the last column. \copyright 2017 IEEE}
 	\begin{tabular}{|c|c|c|c|c|c|}
 		\hline
 		raw GMM/UBM scores & pykno & kurtosis & SFM & SAPVR & $\textit{\textbf{EER (\%)}}$ \\ \hline

@@ -249,7 +249,7 @@ For example, each {\it segment} contains two variables, {\it Begin} and {\it End
 This class also includes functions used to calculate i-Vectors, which will be used extensively in the next section. 
 $Segments$ is considered the core data type used in CRSS-SpkrDiar and is highly compatible with existing Kaldi classes. 
 
-\newpage
+
 \section{Clustering}
 \label{sec:clustering}
 This section describes the second step in speaker diarization, clustering the segments. 
@@ -257,7 +257,7 @@ After single-speaker segments are identified, the speaker diarization system mus
 This is accomplished without prior knowledge of the number of speakers or their identities. 
 The task of grouping segments that belong to the same speaker is known as clustering. 
 
-A number of bottom-up and top-down solutions have been suggested for the clustering step in speaker diarization~\cite{tranterreynolds2006drzoverview,anguera2012DRZreview}. 
+A number of bottom-up and top-down solutions have been suggested for the clustering step in speaker diarization~\cite{tranterreynolds2006drzoverview,anguera2012diarization}. 
 Top-down approaches start by assuming that all segments belong to a single cluster and iteratively split clusters into smaller, more exclusive, groups. 
 Bottom-up clustering, on the other hand, starts by assuming each sample is a separate cluster and iteratively merges clusters into more inclusive groups. 
 The most popular of these is a bottom-up algorithms called hierarchical agglomerative clustering (HAC). 
@@ -440,7 +440,7 @@ In that CRSS-SpkrDiar binaries are independent of the data-set, but users can cr
 
 \subsection{Diarization Error Rates}
 \label{ssec:der}
-The most popular error rate proposed for speaker diarization is diarization error rate (DER)~\cite{anguera2012DRZreview}. 
+The most popular error rate proposed for speaker diarization is diarization error rate (DER)~\cite{anguera2012diarization}. 
 This error rate is a combination of three types of errors made by a speaker diarization system. The errors include:  
 \begin{itemize}
 	\item false alarm errors -- segments that are falsely detected as speech segments,
@@ -467,7 +467,7 @@ It is up to the diarization error rate calculator to recognize the correct label
 This is done by considering all possibilities, in this case $(A:1,B:2)$ and $(A:2,B:1)$, and returning the assignment that results in minimum labeling error. 
 
 
-The formulation proposed by NIST for diarization error rate is~\cite{anguera2012DRZreview}:\footnote{Unfortunately, NIST has removed the online evaluation plan from its website. The equations provided here are from Xavier Anguera's PhD thesis~\cite{anguera2007phd}.}
+The formulation proposed by NIST for diarization error rate is~\cite{anguera2012diarization}:\footnote{Unfortunately, NIST has removed the online evaluation plan from its website. The equations provided here are from Xavier Anguera's PhD thesis~\cite{anguera2007phd}.}
 \begin{equation}
 DER = E_{spkr} + E_{miss} + E_{fa}, 
 \end{equation}

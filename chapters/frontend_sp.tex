@@ -1,6 +1,6 @@
 
 
-\chapter{OVERLAP DETECTION METHODS}
+\chapter{OVERLAP DETECTION METHODS}\thanks{Portions of this chapter were adopted from published material with the authors' full consent. \copyright 2011 IEEE}
 \label{chapter:front-end}
 Overlapped speech constitutes a significant amount of research in co-channel speech. 
 To such an extant that in many cases the terms co-channel and overlapped speech are used interchangeably. Single-channel recordings from meetings or conversations, which we defined as co-channel speech in Chapter~\ref{chap:intro}, are examples of signals during which speakers may overlap. 
@@ -26,7 +26,7 @@ In contrast to what overlap detection entails, most studies on overlapped speech
 Such enhancement techniques are often used to de-noise and thereby improve the performance of automatic speech applications~\cite{Quat_Dan_cch_sup,Chazan_93,cooke20101} (primarily speech recognition). 
 However, due to increased interest in recognition systems such as speaker recognition and diarization, a growing trend of detecting overlapped regions has been observed. 
 In speaker recognition, the presence of interfering speech in conversational speech styles not only reduces the effectiveness of trained speaker models but also increases the uncertainty in scoring test files with overlapped regions~\cite{yantorno_report}. 
-Removing overlapped segments increases model reliabilities to improve recognition performance~\cite{shokouhi2015}.    
+Removing overlapped segments increases model reliabilities to improve recognition performance~\cite{shokouhi2015probabilistic}.    
 State-of-the-art speaker diarization systems are also currently at a stage where one of the main sources of error is the presence of overlapped speech~\cite{Boakye_icassp_08,zelenak12Trans}. 
 One of the reasons overlaps become a source of confusion in speaker diarization systems is that there is no basis for selecting ground-truth in overlapped regions. 
 This makes evaluating speaker diarization systems more challenging.\footnote{Future chapters will describe co-channel speech data in speaker diarization in more detail.} 
@@ -45,7 +45,7 @@ Figure~\ref{fig:ch2_overlap_applications} summarizes incorporating overlap detec
 	%\textbf{Overlap Detection Applications}\par\medskip    
 	\includegraphics[height = 4in, width=1\textwidth]{figures/overlap_detection_applications}
 	\vspace{-3mm}
-	\caption{ Applications of overlap detection. Top: In speaker diarization, removing ignoring overlapped regions provides a more fair assessment of diarization performance. Middle: Removing overlaps from in speaker recognition increases the reliability of training data. Bottom: Overlap detection results can be used as an initial step to recover overlapped regions.}
+	\caption{ Applications of overlap detection. Top: In speaker diarization, removing ignoring overlapped regions provides a more fair assessment of diarization performance. Middle: Removing overlaps from in speaker recognition increases the reliability of training data. Bottom: Overlap detection results can be used as an initial step to recover overlapped regions. \copyright 2017 IEEE}
 	\label{fig:ch2_overlap_applications}
 	\vspace{-3mm}
 \end{figure}
@@ -183,7 +183,7 @@ Note that the experiments conducted in this study do not comply with the objecti
 
 % Reviewer1's comment:
 The choice of dataset for this study is pertinent to the investigative objective of this chapter, overlap detection. 
-Other studies have also focused on controlled datasets such as TIMIT~\cite{nav_icassp13} as well as realistic datasets including Prof-Life-Log (PLL)~\cite{ziaei2013prof,nav_icassp15}, Switchboard~\cite{shokouhi2015}, and UT-Drive in-vehicle conversations~\cite{sathyanarayana2013belt}. 
+Other studies have also focused on controlled datasets such as TIMIT~\cite{nav_icassp13} as well as realistic datasets including Prof-Life-Log (PLL)~\cite{ziaei2013prof,nav_icassp15}, Switchboard~\cite{shokouhi2015probabilistic}, and UT-Drive in-vehicle conversations~\cite{sathyanarayana2013belt}. 
 Some of these studies are described in following chapters. 
 Unfortunately, none of the aforementioned datasets are designed to contain significant amounts of overlap. 
 One may argue that overlaps exist in conversational speech corpora such as Switchboard or the AMI meeting corpus~\cite{amicorpus}. 
@@ -197,7 +197,7 @@ Table~\ref{tab:ch2_data_summary} shows some properties of the dataset used in th
 
 \begin{table}[h!]
 	\begin{center}
-		\caption{ Summary of data used for speaker recognition experiments}
+		\caption{ Summary of data used for speaker recognition experiments. \copyright 2017 IEEE}
 		\begin{tabular}{| c | c |}
 			\hline
 			\hline
@@ -270,7 +270,7 @@ where $n$ is the time sample. $N_s$ is the number of sub-bands in the filter-ban
 \begin{figure}[h!]
 	\centering
 	\includegraphics[height=2in, width=1\textwidth]{figures/teo_amp}
-	\caption{ Outputs of DESA-1: Signal amplitude component estimated using TEO, Eq.~(\ref{eq:instamp}).}
+	\caption{ Outputs of DESA-1: Signal amplitude component estimated using TEO, Eq.~(\ref{eq:instamp}). \copyright 2017 IEEE}
 	\label{fig:ch2_inputamplitude}
 \end{figure}
 
@@ -352,7 +352,7 @@ Since such patterns are frequently observed in overlapped data, this restriction
 	\vspace{0mm}
 	\includegraphics[height = 2.5in, width=1\textwidth]{figures/pyknogram_blockdiagram}
 	\vspace{-3mm}
-	\caption{ Pyknogram extraction block-diagram.}
+	\caption{ Pyknogram extraction block-diagram. \copyright 2015 IEEE}
 	\label{fig:ch2_pykno_blockdiag}
 	\vspace{-3mm}
 \end{figure}
@@ -386,7 +386,7 @@ Figure~\ref{fig:ch2_pyknograms} shows the binary mask and underlying gammatone a
 	\textbf{Pyknogram}\par\medskip
 	\includegraphics[height =2.in, width=0.5\textwidth]{figures/pyknogram_vs_spectrogram}
 	\vspace{-1mm}
-	\caption{ Pyknogram for a given speech signal. The spectrogram is plotted in the background for comparison. Pyknogram markers have been scaled by the amplitudes of corresponding $t$-$f$ units. Frequencies are scaled to equivalent rectangular bandwidth (ERB) rate.}
+	\caption{ Pyknogram for a given speech signal. The spectrogram is plotted in the background for comparison. Pyknogram markers have been scaled by the amplitudes of corresponding $t$-$f$ units. Frequencies are scaled to equivalent rectangular bandwidth (ERB) rate. \copyright 2017 IEEE}
 	\vspace{-1mm}
 	\label{fig:ch2_pyknograms}
 \end{figure}
@@ -407,7 +407,7 @@ The presence of a second speaker creates harmonic tracks that in general do not 
 	\vspace{-1mm}
 	\includegraphics[height =2.0in, width=0.4\textwidth]{figures/co-channel_pyknogram-crop}
 	\vspace{-1mm}
-	\caption{ A closer look on Pyknograms for overlapped speech. The enclosed patches show discontinuities that occur in the presence of an interfering speaker.}
+	\caption{ A closer look on Pyknograms for overlapped speech. The enclosed patches show discontinuities that occur in the presence of an interfering speaker. \copyright 2017 IEEE}
 	\vspace{-1mm}
 	\label{fig:ch2_pyknograms_for_overlaps}
 \end{figure}
@@ -533,7 +533,7 @@ As for precision, we are interested to know how short signals can be before over
 	\textbf{Overlap Detection vs. SIR}\par\medskip
 	\includegraphics[height = 3.1in, width=0.7\textwidth]{figures/ovldet_vs_sir}
 	\vspace{-1mm}
-	\caption{ Overlap detection EER for different SIR values. The higher the SIR, the more difficult it is to detect the presence of interfering speakers. Shown here are results for four algorithms: pykno (Pyknogram-based -- proposed method), kurt (kurtosis), SFM (spectral flatness measure), SAPVR (spectral autocorrelation peak-valley ratio).}
+	\caption{ Overlap detection EER for different SIR values. The higher the SIR, the more difficult it is to detect the presence of interfering speakers. Shown here are results for four algorithms: pykno (Pyknogram-based -- proposed method), kurt (kurtosis), SFM (spectral flatness measure), SAPVR (spectral autocorrelation peak-valley ratio).\copyright 2017 IEEE}
 	\vspace{0mm}
 	\label{fig:ch2_ovl_det}
 \end{figure}
@@ -581,7 +581,7 @@ In other words, the question becomes: ``what is the least number of frames requi
 	\textbf{Precision of Overlap Detection methods}\par\medskip
 	\includegraphics[height = 3.1in, width=0.5\textwidth]{figures/eer_vs_time}
 	\vspace{-1mm}
-	\caption{ Overlap detection EER as a function of segment length. The plot shows that signal lengths should be at least $2$ seconds for the algorithms to start reaching their best performance.}
+	\caption{ Overlap detection EER as a function of segment length. The plot shows that signal lengths should be at least $2$ seconds for the algorithms to start reaching their best performance. \copyright 2017 IEEE}
 	\vspace{0mm}
 	\label{fig:ch2_ovl_det_precision}
 \end{figure}
@@ -597,7 +597,6 @@ Furthermore, we see that performance stabilizes for all features for segments 2 
 While performance drops for all features for short segments, the proposed Pyknogram method maintains better performance compared to other methods as test duration decreases. 
 
 
-\newpage
 \section{Gammatone Sub-band Frequency Modulation Spectra}
 \label{sec:ch2_GSFM}
 So far, one of the two proposed overlap detection methods has been presented. 
@@ -813,7 +812,7 @@ It is worth mentioning that in Sect.~\ref{sssec:ovl_frame_vs_sir_gsfm} it was sh
 	\centering
 	\vspace{-1mm}
 	\includegraphics[height = 2.8in, width=0.8\textwidth]{figures/pykno_vs_GSFM}
-	\caption{ A comparison of overlap detection equal error rates (EER) for pyknogram (proposed) and GSFM-based systems for different amounts of added noise. It is clear that GSFM is vulnerable even to the slightest amount of noise (high SNR).}
+	\caption{ A comparison of overlap detection equal error rates (EER) for pyknogram (proposed) and GSFM-based systems for different amounts of added noise. It is clear that GSFM is vulnerable even to the slightest amount of noise (high SNR). \copyright 2015 IEEE}
 	\vspace{-1mm}
 	\label{fig:ch2_ovl_detect_eer_noise}
 \end{figure}
